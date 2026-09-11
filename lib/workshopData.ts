@@ -991,7 +991,11 @@ export const finalChallenge = {
 API de reserva de turnos para un único consultorio.
 
 ## Actores
-- Paciente autenticado (en el MVP puede ser un userId simulado por header \`X-User-Id\` si no implementan auth real; debe quedar documentado).
+- Paciente autenticado. En el MVP no es obligatorio login real (JWT/sesión/OAuth).
+  - Opción válida y recomendada: simular al usuario con el header HTTP \`X-User-Id\` (string). Quien envía el request “es” ese paciente.
+  - Comportamiento esperado con \`X-User-Id\`: si falta → típicamente 401; listar/cancelar solo sobre reservas de ese userId; reservar asocia el slot a ese userId; los tests envían el header de forma explícita.
+  - Auth real también vale: documentar el flujo y cómo lo ejercitan los tests.
+  - Obligatorio documentar la elección en README.md (cómo autenticarse / qué header mandar) y en SPEC.md (sección “Decisión de auth”).
 - No hay rol admin en el MVP, salvo un seed de slots.
 
 ## En alcance
@@ -1009,8 +1013,10 @@ API de reserva de turnos para un único consultorio.
 3. No se puede reservar un slot en el pasado.
 4. Cancelación permitida solo hasta 24 horas antes del inicio del slot.
 5. Cancelar un slot lo vuelve a dejar disponible.
-6. Operaciones sobre reservas ajenas: 403 o 404 (elegir uno y ser consistente).
-7. Slot inexistente o ya ocupado: 409 o 400 (elegir uno y ser consistente).
+6. Operaciones sobre reservas ajenas → código HTTP 403 o 404 (elegir uno y usarlo siempre igual; documentarlo en SPEC.md).
+7. Slot inexistente o ya ocupado → código HTTP 409 o 400 (elegir uno y usarlo siempre igual; documentarlo en SPEC.md).
+
+Los ítems 6 y 7 son status codes HTTP de la API (no mensajes sueltos). La consistencia cuenta: el evaluador compara respuesta real vs. SPEC.md.
 
 ## Criterios de aceptación (el evaluador los va a intentar romper)
 - CA1: listar disponibles no incluye pasados ni ocupados.
@@ -1022,15 +1028,41 @@ API de reserva de turnos para un único consultorio.
 - CA7: hay tests automatizados que cubren CA1–CA6 (no hace falta un test por CA si uno cubre varios, pero los seis comportamientos tienen que fallar si se rompen).
 
 ## Restricciones técnicas
-- Stack libre, pero \`README.md\` tiene que permitir instalar, testear y (si aplica) levantar el servidor en menos de 10 minutos.
+- Stack libre. El README debe permitir, en menos de 10 minutos: (1) instalar, (2) testear, (3) levantar el servidor local o indicar una URL ya desplegada.
 - Debe existir \`npm test\`, \`pnpm test\`, \`pytest\` o equivalente documentado.
+- Si hospedan la API: Vercel, Render u otro PaaS simple. Dejar la URL en el README. El hosting no reemplaza los tests.
 - Sin secretos reales. Sin llamar APIs pagas en los tests.`,
   constraints: [
-    'Usar al menos una herramienta de IA o agente en el proceso y documentarlo. Entregar código “como si no hubiera IA” sin AI.md incompleto no cumple el objetivo.',
+    'Usar al menos una herramienta de IA o agente en el proceso y documentarlo. Entregar código “como si no hubiera IA” con AI.md incompleto no cumple el objetivo.',
     'No se evalúa originalidad del stack. Se evalúa cumplimiento de reglas, tests y honestidad del proceso.',
     'El alumno puede partir de un repo vacío. No se entrega un starter obligatorio.',
-    'Si usan header \`X-User-Id\` en lugar de auth real, debe decirse en README y SPEC.md. Inventar un JWT a medias sin tests de auth no suma.',
+    'Si usan header `X-User-Id` en lugar de auth real, debe decirse en README y SPEC.md. Inventar un JWT a medias sin tests de auth no suma.',
   ],
+  howToUseSpecAndAi: `## SPEC.md — interpretación operativa
+- Para qué: decisiones que la spec dada deja abiertas (auth, códigos HTTP) + reglas reescritas verificables.
+- Qué va: auth; códigos HTTP (ajena / slot ocupado o inexistente / validaciones); reglas 1–7; fuera de alcance extra; comando de test y mapa CA → casos.
+- Qué no va: bitácora de prompts ni historial con el agente (eso es AI.md).
+- Cuándo: antes o durante la implementación (no al final como relleno).
+- “Listo”: alguien ajeno podría implementar solo con SPEC.md + spec dada; coincide con los tests; no contradice la spec dada.
+
+## AI.md — bitácora del proceso con IA
+- Para qué: demostrar que dirigiste el proceso (herramientas, delegación, rechazos, verificación).
+- Qué va: herramientas por etapa; preguntas; plan; qué delegaste; diffs/ideas cortadas; tests agregados; incidentes; comandos finales en verde.
+- Qué no va: reescritura de reglas de negocio ni contratos HTTP (eso es SPEC.md).
+- Cuándo: durante el trabajo (no una línea el día de la entrega).
+- “Listo”: se puede reconstruir el trabajo con IA; hay al menos un rechazo o incidente; figura el comando de verificación final.`,
+  whatIsDeliverable: `El entregable es un Pull Request al repo de entregas (sin fork) con la carpeta completa. No alcanza con “el código en algún lado”.
+
+Obligatorio:
+- Código (src/ o equivalente): API que cumple alcance y reglas.
+- tests/: suite automatizada que cubre CA1–CA6 (CA7).
+- README.md: install + test (+ server o URL) en menos de 10 min; auth/X-User-Id explicado.
+- SPEC.md: decisiones + reglas reescritas.
+- AI.md: proceso con IA reconstruible.
+
+Opcional pero útil: URL de demo si está hospedada (Vercel/Render/etc.).
+
+No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el repositorio de entregas.`,
   deliveryStructure: `/
 ├── src/
 ├── tests/
@@ -1038,30 +1070,46 @@ API de reserva de turnos para un único consultorio.
 ├── SPEC.md
 └── AI.md`,
   specMd:
-    'Interpretación del alumno: reglas en sus palabras, decisiones (códigos HTTP, auth simulada o real), fuera de alcance y cómo se corre. No copiar y pegar la spec dada sin decidir.',
-  aiMd: 'Bitácora del proceso: herramientas, prompts o instrucciones relevantes, qué se delegó, qué se rechazó, qué falló, cómo se verificó. Debe permitir reconstruir el trabajo.',
+    'Interpretación operativa: auth y códigos HTTP decididos, reglas 1–7 reescritas, fuera de alcance y mapa de tests. Completar antes/durante la impl. “Listo” = coincide con tests y no contradice la spec dada. No es copy-paste ni bitácora de IA.',
+  aiMd:
+    'Bitácora del proceso con IA (durante el trabajo): herramientas, plan, delegación, rechazos, incidentes, comando final en verde. “Listo” = se puede reconstruir el oficio. No pongas acá las reglas HTTP (van en SPEC.md).',
   specMdTemplate: `# SPEC.md — Reservas de turnos
 
+> Completá todas las secciones. Decisiones + reglas verificables (no copy-paste).
+> Antes/durante la implementación. “Listo” = coincide con tests y no contradice la spec dada.
+
 ## Decisión de auth
-(Ej. \`X-User-Id\` / sesión / JWT). Cómo se identifica al usuario en los tests.
+(Ej. \`X-User-Id\` / sesión / JWT).
+- Mecanismo elegido:
+- Cómo se identifica al usuario en los tests:
+- Si falta autenticación, ¿qué responde la API?:
 
 ## Códigos HTTP elegidos
-- Slot ocupado:
-- Reserva ajena:
+> Elegí un código por fila y usalo siempre igual.
+- Operación sobre reserva ajena (403 o 404):
+- Slot inexistente o ya ocupado (409 o 400):
 - Validación (pasado, cupo, ventana de cancelación):
 
 ## Reglas (reescritas, verificables)
 1.
 2.
 3.
+4.
+5.
+6.
+7.
 
 ## Fuera de alcance (además de lo dado)
 -
 
 ## Cómo se prueba
-Comando:
-Casos que cubren CA1–CA6:`,
+- Comando:
+- Casos que cubren CA1–CA6:`,
   aiMdTemplate: `# AI.md
+
+> Bitácora del proceso con IA. Completala durante el trabajo.
+> “Listo” = se puede reconstruir el trabajo, con rechazo/incidente y comando final en verde.
+> Reglas de negocio y códigos HTTP van en SPEC.md, no acá.
 
 ## Herramientas
 - (nombre, para qué etapa: spec / plan / impl / tests / review)
@@ -1083,11 +1131,11 @@ Casos que cubren CA1–CA6:`,
   goodVsBad: [
     {
       title: 'SPEC.md débil',
-      body: '“El usuario puede reservar turnos de forma intuitiva. Se usó Node.” No hay cupo, no hay códigos, no hay CA. El evaluador no sabe qué era intención y qué fue accidente.',
+      body: '“El usuario puede reservar turnos de forma intuitiva. Se usó Node.” No hay cupo, no hay códigos HTTP elegidos, no hay CA. El evaluador no sabe qué era intención y qué fue accidente.',
     },
     {
       title: 'SPEC.md sólida',
-      body: 'Reescribe las 7 reglas, elige 409 en conflicto de slot, documenta X-User-Id, lista los tests por CA, y un párrafo de fuera de alcance (“no hay lista de espera”).',
+      body: 'Reescribe las 7 reglas, elige 409 en conflicto de slot y 404 en reserva ajena, documenta X-User-Id (y 401 si falta), lista los tests por CA, y un párrafo de fuera de alcance (“no hay lista de espera”).',
     },
     {
       title: 'AI.md débil',
@@ -1157,11 +1205,11 @@ Test del evaluador: rejects_fourth_active_reservation
 Esperado: HTTP 4xx | Obtenido: HTTP 201
 Puntos en cumplimiento funcional: recorte proporcional.`,
   deliveryChecklist: [
-    'Estructura src/, tests/, README.md, SPEC.md, AI.md',
-    'SPEC.md con decisiones (auth, códigos HTTP) y reglas reescritas',
+    'Estructura src/, tests/, README.md, SPEC.md, AI.md en el PR del repo de entregas',
+    'SPEC.md con decisiones (auth, códigos HTTP 403/404 y 409/400) y reglas reescritas',
     'AI.md con herramientas, rechazos y verificación — no una línea',
     'Tests que cubren los comportamientos CA1–CA6',
-    'README con instalar, testear y correr en menos de 10 minutos',
+    'README con instalar, testear y (server local o URL) en menos de 10 minutos',
     'Comando de test en verde en un checkout limpio',
     'Sin secretos ni features de fuera de alcance que rompan el MVP',
   ],
@@ -1169,6 +1217,7 @@ Puntos en cumplimiento funcional: recorte proporcional.`,
     'En clase: proyectar la spec dada y CA1–CA6. Decir en voz alta: “el juez va a intentar el cuarto turno y el doble booking”. Eso calibra más que la rúbrica en abstracto.',
     'Aclarar que la spec dada manda sobre el SPEC.md del alumno si hay contradicción. SPEC.md sirve para decisiones (códigos, auth), no para borrar el cupo de 3.',
     'No exigir auth real: un header documentado evita que el desafío se vuelva un curso de JWT. Quien implemente auth bien puede sumar en calidad, no en cumplimiento si los CA fallan.',
+    'Insistir: 403/404 y 409/400 son códigos HTTP; el alumno elige uno por caso y lo documenta. Vercel/Render son opciones fáciles si quieren URL de demo; no sustituyen tests.',
     'Evaluación sugerida: primero \`comando de test del alumno\`; si no corre, techo bajo en rúbrica. Después 4 tests privados (cupo, conflicto, pasado, 24 h). Después lectura de AI.md para el 5% de documentación/proceso.',
     'Si no hay sandbox de agentes el primer año, el docente hace de Judge con la misma rúbrica. El relato multiagente sigue siendo el modelo a futuro, no un bloqueante.',
     'Feedback útil cita evidencia (“tu cuarto POST da 201”) no adjetivos (“poca IA”). El oficio se corrige con contraejemplos.',

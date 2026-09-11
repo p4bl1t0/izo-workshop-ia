@@ -413,7 +413,8 @@ export const slides: Slide[] = [
     bullets: [
       '4–6 h en 7 días · IA obligatoria y documentada',
       'Spec dada: cupo 3, slot único, 24 h, no pasado',
-      'Entrega: src, tests, README, SPEC.md, AI.md',
+      'HTTP: ajena 403|404 · slot 409|400 (elegir y documentar)',
+      'Entrega: PR con src, tests, README, SPEC.md, AI.md',
     ],
     teacherNotes: {
       time: '6 min',
