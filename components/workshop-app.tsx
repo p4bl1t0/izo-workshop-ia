@@ -932,6 +932,7 @@ function ChallengeSection({
           ))}
         </ul>
       </div>
+      <div className="mt-6"><DiagramBlock content={finalChallenge.whatIsDeliverable} label="Qué es el entregable" /></div>
       <div className="mt-6"><DiagramBlock content={finalChallenge.deliveryStructure} label="Estructura de entrega" /></div>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <Card>
@@ -943,6 +944,7 @@ function ChallengeSection({
           <p className="mt-2 text-sm text-white/85">{finalChallenge.aiMd}</p>
         </Card>
       </div>
+      <div className="mt-6"><DiagramBlock content={finalChallenge.howToUseSpecAndAi} label="Cómo usar SPEC.md y AI.md" /></div>
       <div className="mt-6"><DiagramBlock content={finalChallenge.specMdTemplate} label="Plantilla SPEC.md" /></div>
       <div className="mt-6"><DiagramBlock content={finalChallenge.aiMdTemplate} label="Plantilla AI.md" /></div>
       <div className="mt-8 space-y-3">
