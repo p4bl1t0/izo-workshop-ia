@@ -3,6 +3,7 @@ export type WorkshopSection = {
   title: string
   eyebrow: string
   summary: string
+  audience: 'student' | 'teacher'
 }
 
 export type ProgramBlock = {
@@ -83,6 +84,77 @@ REVISIÓN
 SOFTWARE`,
 }
 
+export const studentGuide = {
+  howToUseTitle: 'Cómo usar este sitio',
+  howToUse: [
+    'Leé los seis temas en orden. Cada uno cierra con ideas para recordar y un ejercicio corto.',
+    'Hacé la actividad de gastos sin mirar soluciones: el entregable es spec + contexto + prompt + plan.',
+    'El desafío de turnos es la entrega. La spec dada manda; documentá el proceso en AI.md.',
+    'Cuando trabes, pasá por Glosario y Recursos. Las marcas cambian; los conceptos no.',
+  ],
+  outcomesTitle: 'Al terminar, tenés que poder',
+  outcomes: [
+    'Distinguir modelo, asistente y agente, y ubicar la herramienta que usás todos los días.',
+    'Explicar por qué el contexto y la spec determinan la calidad del software generado.',
+    'Aplicar el flujo requerimiento → spec → contexto → plan → validación a un ticket real.',
+    'Entregar un MVP testeado, con SPEC.md y AI.md honestos, no “usé ChatGPT”.',
+  ],
+  studyPathTitle: 'Camino de estudio',
+  studyPath: [
+    { id: 'contenidos', label: 'Temas', detail: 'Mapa, contexto, ADE, MCP y el flujo completo.' },
+    { id: 'actividad', label: 'Actividad', detail: 'Enunciado de gastos. Sin soluciones.' },
+    { id: 'desafio', label: 'Desafío', detail: 'Reservas de turnos. 4–6 h. IA obligatoria.' },
+    { id: 'glosario', label: 'Glosario', detail: 'Cuando una palabra no cierra.' },
+  ],
+}
+
+export const activityStudentTemplates = {
+  spec: `## Objetivo
+(¿Qué problema resuelve el MVP, en una frase?)
+
+## En alcance
+-
+
+## Fuera de alcance
+-
+
+## Reglas
+- (tienen que poder testearse)
+
+## Criterios de aceptación
+1.
+2.
+3.
+4.
+5.`,
+  context: `## Stack
+-
+
+## Cómo se testea
+Comando:
+
+## Carpetas
+-
+
+## Qué no tocar / no agregar
+-`,
+  prompt: `Sos un agente de implementación. Leé la spec y el contexto de abajo.
+
+Tarea: proponé un plan de implementación paso a paso.
+Restricciones:
+- No escribas código todavía.
+- No agregues features de “Fuera de alcance”.
+- Listá archivos a crear, orden, y 3 tests que vas a escribir primero.
+- Si una regla es ambigua, preguntá. No asumas.
+
+[pegar mini-spec]
+[pegar contexto]`,
+}
+
+export function visibleSections(teacherMode: boolean) {
+  return sections.filter((s) => s.audience === 'student' || teacherMode)
+}
+
 export const pedagogicalIdeas = [
   'La IA no es solamente un chatbot.',
   'Un modelo no es un agente.',
@@ -133,62 +205,72 @@ export const sections: WorkshopSection[] = [
   {
     id: 'inicio',
     title: 'Inicio',
-    eyebrow: 'Workshop',
-    summary: 'Presentación del workshop y objetivos generales.',
-  },
-  {
-    id: 'sobre',
-    title: 'Sobre el workshop',
-    eyebrow: 'Contexto',
-    summary: 'Público, objetivos, mensaje pedagógico y guía de facilitación.',
-  },
-  {
-    id: 'programa',
-    title: 'Programa',
-    eyebrow: 'Agenda',
-    summary: 'Timeline de 2 horas con 8 bloques, reloj acumulado y notas docentes.',
+    eyebrow: 'Estudio',
+    summary: 'Para qué sirve este sitio y cómo usarlo después de clase.',
+    audience: 'student',
   },
   {
     id: 'contenidos',
-    title: 'Contenidos',
-    eyebrow: 'Teoría',
-    summary: 'Seis bloques temáticos con ejemplos, malentendidos, mini-actividades y notas docentes.',
-  },
-  {
-    id: 'diapositivas',
-    title: 'Diapositivas',
-    eyebrow: 'Presentación',
-    summary: 'Diapositivas navegables con modo presentación y notas del docente.',
-  },
-  {
-    id: 'demos',
-    title: 'Demostraciones',
-    eyebrow: 'Práctica guiada',
-    summary: 'Demos en vivo priorizadas y demos de consulta.',
+    title: 'Temas',
+    eyebrow: 'Estudio',
+    summary: 'Los seis temas del workshop, escritos para volver a ellos.',
+    audience: 'student',
   },
   {
     id: 'actividad',
-    title: 'Actividad práctica',
-    eyebrow: 'En clase',
-    summary: 'Ejercicio de 25 minutos para practicar la metodología, con plantillas y debrief.',
+    title: 'Actividad',
+    eyebrow: 'Práctica',
+    summary: 'Enunciado de la práctica de gastos: spec, contexto y plan. Sin código.',
+    audience: 'student',
   },
   {
     id: 'desafio',
-    title: 'Desafío final',
-    eyebrow: 'Asincrónico',
-    summary: 'Consigna completa, especificación, plantillas, rúbrica y evaluación con agentes.',
+    title: 'Desafío',
+    eyebrow: 'Entrega',
+    summary: 'Consigna, spec, plantillas, rúbrica y checklist de entrega.',
+    audience: 'student',
   },
   {
     id: 'recursos',
     title: 'Recursos',
     eyebrow: 'Referencias',
     summary: 'Enlaces oficiales a modelos, herramientas, MCP y documentación.',
+    audience: 'student',
   },
   {
     id: 'glosario',
     title: 'Glosario',
     eyebrow: 'Conceptos',
     summary: 'Definiciones breves orientadas a desarrolladores.',
+    audience: 'student',
+  },
+  {
+    id: 'sobre',
+    title: 'Facilitación',
+    eyebrow: 'Docente',
+    summary: 'Público, ideas pedagógicas y guía de facilitación.',
+    audience: 'teacher',
+  },
+  {
+    id: 'programa',
+    title: 'Programa',
+    eyebrow: 'Docente',
+    summary: 'Timeline de 2 horas con reloj, cortes y notas de ritmo.',
+    audience: 'teacher',
+  },
+  {
+    id: 'diapositivas',
+    title: 'Diapositivas',
+    eyebrow: 'Docente',
+    summary: 'Deck Reveal.js y guion de cada slide.',
+    audience: 'teacher',
+  },
+  {
+    id: 'demos',
+    title: 'Demos',
+    eyebrow: 'Docente',
+    summary: 'Prompts, proyecto base y demos en vivo.',
+    audience: 'teacher',
   },
 ]
 

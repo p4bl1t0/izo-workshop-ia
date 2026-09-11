@@ -1,7 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
+import { TeacherModePrompt } from '@/components/teacher-mode-prompt'
 import {
   Card,
   DiagramBlock,
@@ -17,6 +19,7 @@ import { resourceGroups } from '@/lib/resources'
 import { rubricCriteria, rubricTotal } from '@/lib/rubric'
 import { slides } from '@/lib/slidesData'
 import {
+  activityStudentTemplates,
   closingReflection,
   contentBlocks,
   facilitationGuide,
@@ -26,19 +29,21 @@ import {
   practicalActivity,
   programBlocks,
   sections,
+  studentGuide,
+  visibleSections,
   workshopMeta,
 } from '@/lib/workshopData'
 
 const STORAGE_KEY = 'izo-workshop-ia'
-const TOTAL_SECTIONS = sections.length
-
-type ViewMode = 'site' | 'slides' | 'presentation'
 
 export function WorkshopApp() {
   const [active, setActive] = useState('inicio')
   const [completed, setCompleted] = useState<string[]>([])
   const [teacherMode, setTeacherMode] = useState(false)
-  const [viewMode, setViewMode] = useState<ViewMode>('site')
+  const [teacherToken, setTeacherToken] = useState<string | null>(null)
+  const [showTeacherPrompt, setShowTeacherPrompt] = useState(false)
+  const [teacherAuthError, setTeacherAuthError] = useState('')
+  const [teacherAuthLoading, setTeacherAuthLoading] = useState(false)
   const [slideIndex, setSlideIndex] = useState(0)
   const [glossaryQuery, setGlossaryQuery] = useState('')
   const [expandedDemo, setExpandedDemo] = useState<number | null>(1)
@@ -48,6 +53,11 @@ export function WorkshopApp() {
   const [deliveryChecks, setDeliveryChecks] = useState<boolean[]>(
     () => new Array(finalChallenge.deliveryChecklist.length).fill(false),
   )
+  const [navCollapsed, setNavCollapsed] = useState(false)
+  const [navHovered, setNavHovered] = useState(false)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+
+  const navExpanded = !navCollapsed || navHovered
 
   useEffect(() => {
     const saved = window.localStorage.getItem(STORAGE_KEY)
@@ -56,24 +66,94 @@ export function WorkshopApp() {
       const state = JSON.parse(saved)
       setActive(state.active || 'inicio')
       setCompleted(state.completed || [])
-      setTeacherMode(Boolean(state.teacherMode))
+      const savedToken = typeof state.teacherToken === 'string' ? state.teacherToken : null
+      setTeacherToken(savedToken)
+      setTeacherMode(Boolean(state.teacherMode && savedToken))
       setSlideIndex(state.slideIndex || 0)
       setActivityChecks(state.activityChecks || new Array(practicalActivity.steps.length).fill(false))
       setDeliveryChecks(state.deliveryChecks || new Array(finalChallenge.deliveryChecklist.length).fill(false))
+      setNavCollapsed(Boolean(state.navCollapsed))
     } catch {
       /* ignore */
     }
   }, [])
 
   useEffect(() => {
+    if (!teacherToken) return
+    fetch(`/api/teacher-mode?token=${encodeURIComponent(teacherToken)}`)
+      .then((res) => res.json())
+      .then((data: { valid?: boolean }) => {
+        if (!data.valid) {
+          setTeacherToken(null)
+          setTeacherMode(false)
+        }
+      })
+      .catch(() => {
+        setTeacherToken(null)
+        setTeacherMode(false)
+      })
+  }, [teacherToken])
+
+  useEffect(() => {
     window.localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ active, completed, teacherMode, slideIndex, activityChecks, deliveryChecks }),
+      JSON.stringify({
+        active,
+        completed,
+        teacherMode,
+        teacherToken,
+        slideIndex,
+        activityChecks,
+        deliveryChecks,
+        navCollapsed,
+      }),
     )
-  }, [active, completed, teacherMode, slideIndex, activityChecks, deliveryChecks])
+  }, [active, completed, teacherMode, teacherToken, slideIndex, activityChecks, deliveryChecks, navCollapsed])
 
-  const slide = slides[slideIndex]
+  const handleTeacherModeToggle = async () => {
+    if (teacherMode) {
+      setTeacherMode(false)
+      return
+    }
+    if (teacherToken) {
+      setTeacherMode(true)
+      return
+    }
+    setTeacherAuthError('')
+    setShowTeacherPrompt(true)
+  }
+
+  const submitTeacherKey = async (key: string) => {
+    setTeacherAuthLoading(true)
+    setTeacherAuthError('')
+    try {
+      const res = await fetch('/api/teacher-mode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key }),
+      })
+      const data = (await res.json()) as { token?: string; error?: string }
+      if (!res.ok || !data.token) {
+        setTeacherAuthError(data.error || 'Clave incorrecta.')
+        return
+      }
+      setTeacherToken(data.token)
+      setTeacherMode(true)
+      setShowTeacherPrompt(false)
+    } catch {
+      setTeacherAuthError('No se pudo verificar la clave. Intentá de nuevo.')
+    } finally {
+      setTeacherAuthLoading(false)
+    }
+  }
+
+  const navItems = visibleSections(teacherMode)
   const totalMinutes = programBlocks.reduce((sum, b) => sum + b.minutes, 0)
+
+  useEffect(() => {
+    const current = sections.find((s) => s.id === active)
+    if (current?.audience === 'teacher' && !teacherMode) setActive('inicio')
+  }, [active, teacherMode])
 
   const filteredGlossary = useMemo(() => {
     const q = glossaryQuery.toLowerCase().trim()
@@ -85,90 +165,27 @@ export function WorkshopApp() {
 
   const finishSection = () => {
     setCompleted((old) => (old.includes(active) ? old : [...old, active]))
-    const idx = sections.findIndex((s) => s.id === active)
-    if (idx < sections.length - 1) setActive(sections[idx + 1].id)
-  }
-
-  const goToSlides = (mode: ViewMode) => {
-    setViewMode(mode)
-    setActive('diapositivas')
-  }
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (viewMode === 'site') return
-      if (e.key === 'ArrowRight' || e.key === ' ') {
-        e.preventDefault()
-        setSlideIndex((i) => Math.min(i + 1, slides.length - 1))
-      }
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault()
-        setSlideIndex((i) => Math.max(i - 1, 0))
-      }
-      if (e.key === 'Escape') setViewMode('site')
-    },
-    [viewMode],
-  )
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [handleKeyDown])
-
-  if (viewMode === 'presentation') {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col bg-[#1a1b1e] text-white">
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-3">
-          <span className="font-mono text-xs text-[#bfbfbf]">
-            {String(slideIndex + 1).padStart(2, '0')} / {slides.length}
-          </span>
-          <button
-            onClick={() => setViewMode('site')}
-            className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5] hover:text-white"
-          >
-            Salir (Esc)
-          </button>
-        </div>
-        <div className="flex flex-1 flex-col items-center justify-center px-8 py-12">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9B466]">{slide.section}</p>
-          <h2 className="mt-4 max-w-4xl text-center text-4xl font-bold leading-tight md:text-6xl">{slide.title}</h2>
-          <ul className="mt-10 max-w-2xl space-y-4">
-            {slide.bullets.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-xl text-white/85 md:text-2xl">
-                <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#0077C8]" />
-                {b}
-              </li>
-            ))}
-          </ul>
-          {slide.diagram && (
-            <pre className="mt-10 font-mono text-sm text-[#7ec8f5] md:text-base">{slide.diagram}</pre>
-          )}
-        </div>
-        <div className="flex justify-between border-t border-white/10 px-6 py-4">
-          <button
-            disabled={slideIndex === 0}
-            onClick={() => setSlideIndex((i) => i - 1)}
-            className="rounded-md border border-white/20 px-4 py-2 text-sm font-bold disabled:opacity-30"
-          >
-            ← Anterior
-          </button>
-          <button
-            disabled={slideIndex === slides.length - 1}
-            onClick={() => setSlideIndex((i) => i + 1)}
-            className="rounded-md bg-[#0077C8] px-4 py-2 text-sm font-bold disabled:opacity-30"
-          >
-            Siguiente →
-          </button>
-        </div>
-      </div>
-    )
+    const idx = navItems.findIndex((s) => s.id === active)
+    if (idx < navItems.length - 1) setActive(navItems[idx + 1].id)
   }
 
   return (
     <main className="min-h-screen bg-[#27282B] text-[#FEFEFE]">
+      <TeacherModePrompt
+        open={showTeacherPrompt}
+        error={teacherAuthError}
+        loading={teacherAuthLoading}
+        onClose={() => {
+          if (!teacherAuthLoading) {
+            setShowTeacherPrompt(false)
+            setTeacherAuthError('')
+          }
+        }}
+        onSubmit={submitTeacherKey}
+      />
       <header className="sticky top-0 z-20 border-b border-white/10 bg-[#27282B]/90 px-5 py-4 backdrop-blur-xl md:px-10">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
-          <button className="flex items-center gap-3 text-left" onClick={() => { setActive('inicio'); setViewMode('site') }}>
+          <button className="flex items-center gap-3 text-left" onClick={() => setActive('inicio')}>
             <Image src="/logo-izo.webp" alt="Instituto Zona Oeste" width={44} height={50} className="h-11 w-auto" priority />
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#D9B466]">Instituto Zona Oeste</p>
@@ -177,27 +194,39 @@ export function WorkshopApp() {
           </button>
           <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={() => setTeacherMode((v) => !v)}
+              type="button"
+              onClick={() => setMobileNavOpen((v) => !v)}
+              className="rounded-md border border-white/20 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80 transition hover:bg-white/5 md:hidden"
+              aria-expanded={mobileNavOpen}
+            >
+              {mobileNavOpen ? 'Cerrar menú' : 'Menú'}
+            </button>
+            <button
+              onClick={handleTeacherModeToggle}
               className={`rounded-md px-3 py-2 text-xs font-bold uppercase tracking-wider transition ${
                 teacherMode ? 'bg-[#D9B466] text-[#27282B]' : 'border border-white/20 text-white/80 hover:bg-white/5'
               }`}
             >
               Modo docente
             </button>
-            <button
-              onClick={() => goToSlides('presentation')}
-              className="rounded-md border border-white/20 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80 transition hover:bg-white/5"
-            >
-              Modo presentación
-            </button>
+            {teacherMode && (
+              <Link
+                href="/slides"
+                className="rounded-md border border-white/20 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80 transition hover:bg-white/5"
+              >
+                Presentar
+              </Link>
+            )}
             <div className="hidden items-center gap-3 sm:flex">
               <div className="text-right">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#bfbfbf]">Progreso</p>
-                <p className="font-mono text-sm font-bold">{completed.length} / {TOTAL_SECTIONS}</p>
+                <p className="font-mono text-sm font-bold">
+                  {completed.filter((id) => navItems.some((s) => s.id === id)).length} / {navItems.length}
+                </p>
               </div>
               <div
                 className="h-10 w-10 rounded-full border-4 border-white/15 border-t-[#0077C8]"
-                style={{ transform: `rotate(${completed.length * (360 / TOTAL_SECTIONS)}deg)` }}
+                style={{ transform: `rotate(${completed.filter((id) => navItems.some((s) => s.id === id)).length * (360 / navItems.length)}deg)` }}
                 aria-hidden
               />
             </div>
@@ -205,35 +234,86 @@ export function WorkshopApp() {
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl md:grid-cols-[270px_1fr]">
-        <aside className="border-b border-white/10 px-5 py-5 md:min-h-[calc(100vh-81px)] md:border-b-0 md:border-r md:px-6 md:py-8">
-          <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#D9B466]">Workshop</p>
-          <p className="mb-4 text-sm font-semibold text-white/90">{workshopMeta.subtitle}</p>
-          <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[#bfbfbf]">Navegación</p>
-          <nav className="flex gap-2 overflow-x-auto pb-1 md:flex-col md:gap-1" aria-label="Secciones del workshop">
-            {sections.map((item, index) => (
-              <button
-                key={item.id}
-                onClick={() => { setActive(item.id); setViewMode('site') }}
-                className={`flex min-w-max items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors md:w-full ${
-                  active === item.id
-                    ? 'bg-[#0077C8]/25 font-bold text-white ring-1 ring-[#0077C8]/50'
-                    : 'text-[#bfbfbf] hover:bg-white/5 hover:text-white'
-                }`}
-              >
-                <span className={`font-mono text-xs ${completed.includes(item.id) ? 'text-[#D9B466]' : 'text-white/35'}`}>
-                  {completed.includes(item.id) ? '✓' : String(index + 1).padStart(2, '0')}
-                </span>
-                <span>{item.title}</span>
-              </button>
+      <div className="mx-auto flex max-w-7xl">
+        <aside
+          id="workshop-nav"
+          className={`relative z-10 shrink-0 border-b border-white/10 bg-[#27282B] transition-[width,padding,box-shadow] duration-200 ease-out md:sticky md:top-[81px] md:min-h-[calc(100vh-81px)] md:self-start md:border-b-0 md:border-r ${
+            navExpanded ? 'md:w-[200px] md:px-3 md:py-4' : 'md:w-12 md:px-1.5 md:py-4'
+          } ${navCollapsed && navHovered ? 'md:shadow-xl md:shadow-black/40' : ''} ${
+            mobileNavOpen ? 'w-full px-4 py-3' : 'hidden md:block'
+          }`}
+          onMouseEnter={() => navCollapsed && setNavHovered(true)}
+          onMouseLeave={() => setNavHovered(false)}
+        >
+          <div className={`mb-3 flex items-center ${navExpanded ? 'justify-between gap-2' : 'justify-center md:flex-col md:gap-2'}`}>
+            {navExpanded && (
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D9B466]">Workshop</p>
+                <p className="truncate text-xs font-semibold text-white/90">{workshopMeta.subtitle}</p>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setNavCollapsed((v) => !v)
+                setNavHovered(false)
+                setMobileNavOpen(false)
+              }}
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-white/15 text-white/70 transition hover:bg-white/5 hover:text-white"
+              aria-label={navCollapsed ? 'Expandir navegación' : 'Ocultar navegación'}
+              title={navCollapsed ? 'Expandir navegación' : 'Ocultar navegación'}
+            >
+              <span className={`inline-block text-sm transition-transform duration-200 ${navCollapsed ? 'rotate-180' : ''}`}>
+                ‹
+              </span>
+            </button>
+          </div>
+          {navExpanded && (
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#bfbfbf]">
+              {teacherMode ? 'Alumno' : 'Navegación'}
+            </p>
+          )}
+          <nav
+            className={`flex gap-1.5 pb-1 md:flex-col ${navExpanded ? 'overflow-x-auto md:overflow-visible' : 'md:items-center'}`}
+            aria-label="Secciones del workshop"
+          >
+            {navItems.map((item, index) => (
+              <div key={item.id} className="contents">
+                {teacherMode && navExpanded && item.audience === 'teacher' && navItems[index - 1]?.audience !== 'teacher' && (
+                  <p className="mb-1 mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#D9B466]">Docente</p>
+                )}
+                <button
+                  onClick={() => {
+                    setActive(item.id)
+                    setMobileNavOpen(false)
+                  }}
+                  title={item.title}
+                  className={`flex items-center rounded-md text-left text-xs transition-colors ${
+                    navExpanded ? 'min-w-max gap-2 px-2 py-1.5 md:w-full' : 'h-8 w-8 justify-center md:px-0'
+                  } ${
+                    active === item.id
+                      ? item.audience === 'teacher'
+                        ? 'bg-[#D9B466]/20 font-bold text-white ring-1 ring-[#D9B466]/50'
+                        : 'bg-[#0077C8]/25 font-bold text-white ring-1 ring-[#0077C8]/50'
+                      : 'text-[#bfbfbf] hover:bg-white/5 hover:text-white'
+                  }`}
+                >
+                  <span
+                    className={`shrink-0 font-mono text-[10px] ${completed.includes(item.id) ? 'text-[#D9B466]' : 'text-white/35'}`}
+                  >
+                    {completed.includes(item.id) ? '✓' : String(index + 1).padStart(2, '0')}
+                  </span>
+                  {navExpanded && <span className="truncate">{item.title}</span>}
+                </button>
+              </div>
             ))}
           </nav>
         </aside>
 
-        <section className="relative overflow-hidden px-5 py-8 md:px-12 md:py-12 lg:px-20">
+        <section className="relative min-w-0 flex-1 overflow-hidden px-5 py-8 md:px-10 md:py-10 lg:px-16">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_top,_rgba(0,119,200,0.22),_transparent_65%)]" aria-hidden />
           <div className="relative max-w-3xl">
-            {active === 'inicio' && <HomeSection teacherMode={teacherMode} />}
+            {active === 'inicio' && <HomeSection teacherMode={teacherMode} onNavigate={setActive} />}
             {active === 'sobre' && <AboutSection teacherMode={teacherMode} />}
             {active === 'programa' && <ProgramSection totalMinutes={totalMinutes} teacherMode={teacherMode} />}
             {active === 'contenidos' && <ContentsSection teacherMode={teacherMode} />}
@@ -241,15 +321,12 @@ export function WorkshopApp() {
               <SlidesSection
                 slideIndex={slideIndex}
                 setSlideIndex={setSlideIndex}
-                teacherMode={teacherMode}
-                onPresentation={() => goToSlides('presentation')}
               />
             )}
             {active === 'demos' && (
               <DemosSection
                 expandedDemo={expandedDemo}
                 setExpandedDemo={setExpandedDemo}
-                teacherMode={teacherMode}
               />
             )}
             {active === 'actividad' && (
@@ -277,7 +354,7 @@ export function WorkshopApp() {
                   onClick={finishSection}
                   className="rounded-md bg-[#0077C8] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0099ff]"
                 >
-                  {active === sections[sections.length - 1].id ? 'Workshop completado' : 'Marcar y continuar'}
+                  {active === navItems[navItems.length - 1]?.id ? 'Listo' : 'Marcar y continuar'}
                 </button>
                 <button
                   onClick={() =>
@@ -297,43 +374,102 @@ export function WorkshopApp() {
 
       <footer className="border-t border-white/10 bg-gradient-to-b from-[#27282B] to-[#0077C8] px-5 py-8 text-center text-sm text-white/80 md:px-10">
         <p>Instituto Superior Particular Incorporado Nº 9045 &ldquo;Zona Oeste&rdquo;</p>
-        <p className="mt-1 text-white/60">Workshop · {workshopMeta.title}</p>
+        <p className="mt-1 text-white/60">Material de estudio · {workshopMeta.title}</p>
       </footer>
     </main>
   )
 }
 
-function HomeSection({ teacherMode }: { teacherMode: boolean }) {
+function HomeSection({
+  teacherMode,
+  onNavigate,
+}: {
+  teacherMode: boolean
+  onNavigate: (id: string) => void
+}) {
   return (
     <>
-      <SectionHeader eyebrow="Workshop · 2 horas" title={workshopMeta.title} summary={workshopMeta.tagline} />
+      <SectionHeader
+        eyebrow="Material de estudio"
+        title={workshopMeta.title}
+        summary="Este sitio queda después de la clase: los temas, los enunciados y lo que tenés que entregar. No es un recetario de prompts."
+      />
       <p className="mt-2 text-2xl font-bold text-[#7ec8f5]">{workshopMeta.subtitle}</p>
-      <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <MetaBadge label="Duración" value={workshopMeta.duration} />
-        <MetaBadge label="Nivel" value={workshopMeta.level} />
-        <MetaBadge label="Modalidad" value={workshopMeta.modality} />
-        <MetaBadge label="Conocimientos previos" value={workshopMeta.prerequisites} />
-        <MetaBadge label="Docente" value={workshopMeta.instructor} />
-        <MetaBadge label="Después de clase" value="Desafío · 4–6 h" />
+      <p className="mt-4 text-base leading-7 text-white/80">{workshopMeta.tagline}</p>
+      <div className="mt-8 grid gap-3 sm:grid-cols-2">
+        <MetaBadge label="Clase" value={`${workshopMeta.duration} · ${workshopMeta.instructor}`} />
+        <MetaBadge label="Entrega" value="Desafío · 4–6 h · 7 días" />
       </div>
       <div className="mt-8">
         <QuoteBlock>{workshopMeta.quote}</QuoteBlock>
       </div>
-      <div className="mt-8">
-        <DiagramBlock content={workshopMeta.coreFlow} label="Eje conceptual del workshop" />
-      </div>
       <Card variant="gold">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">Pregunta central</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">La pregunta que estructura todo</p>
         <p className="mt-3 text-base leading-7 text-white/90">{workshopMeta.centralQuestion}</p>
       </Card>
-      <Card variant="blue">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Cómo se usa el tiempo</p>
-        <p className="mt-3 text-sm leading-6 text-white/85">
-          68 minutos de mapa conceptual (paradigma, ecosistema, entornos, contexto, MCP). 37 minutos de método
-          aplicado (walkthrough de turnos + actividad de gastos hasta el plan). 15 minutos de cierre y consignas
-          del desafío. El código completo se hace en casa, con IA, y se documenta.
-        </p>
-      </Card>
+      <div className="mt-8">
+        <DiagramBlock content={workshopMeta.coreFlow} label="El método — memorizá este flujo" />
+      </div>
+      <div className="mt-8">
+        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">{studentGuide.howToUseTitle}</p>
+        <ul className="grid gap-2">
+          {studentGuide.howToUse.map((item, i) => (
+            <li key={item} className="flex gap-3 border border-white/10 bg-white/[0.03] px-4 py-3 text-sm leading-6 text-white/85">
+              <span className="font-mono text-[#D9B466]">{String(i + 1).padStart(2, '0')}</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="mt-8">
+        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">{studentGuide.outcomesTitle}</p>
+        <ul className="grid gap-2">
+          {studentGuide.outcomes.map((item, i) => (
+            <li key={item} className="flex gap-3 border border-white/10 bg-white/[0.03] px-4 py-3 text-sm leading-6 text-white/85">
+              <span className="font-mono text-[#7ec8f5]">{String(i + 1).padStart(2, '0')}</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="mt-8">
+        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">{studentGuide.studyPathTitle}</p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {studentGuide.studyPath.map((step) => (
+            <button
+              key={step.id}
+              type="button"
+              onClick={() => onNavigate(step.id)}
+              className="border border-white/10 bg-white/[0.03] px-4 py-4 text-left transition hover:border-[#0077C8]/40 hover:bg-[#0077C8]/10"
+            >
+              <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">{step.label}</p>
+              <p className="mt-2 text-sm leading-6 text-white/80">{step.detail}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="mt-8">
+        <SectionHeader eyebrow="Cierre del oficio" title="Qué gana valor" summary={closingReflection.question} />
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <Card>
+            <p className="text-xs font-bold uppercase text-[#bfbfbf]">Pierde valor relativo</p>
+            <ul className="mt-3 space-y-1">
+              {closingReflection.losesValue.map((v) => (
+                <li key={v} className="text-sm text-white/75">− {v}</li>
+              ))}
+            </ul>
+          </Card>
+          <Card variant="blue">
+            <p className="text-xs font-bold uppercase text-[#7ec8f5]">Gana valor</p>
+            <ul className="mt-3 space-y-1">
+              {closingReflection.gainsValue.map((v) => (
+                <li key={v} className="text-sm text-white/85">+ {v}</li>
+              ))}
+            </ul>
+          </Card>
+        </div>
+        <div className="mt-6"><QuoteBlock>{closingReflection.closingQuote}</QuoteBlock></div>
+      </div>
       {teacherMode && (
         <TeacherNotesBlock>
           <p><strong>Abrir:</strong> {facilitationGuide.pacing[0]}</p>
@@ -349,9 +485,9 @@ function AboutSection({ teacherMode }: { teacherMode: boolean }) {
   return (
     <>
       <SectionHeader
-        eyebrow="Contexto"
-        title="Sobre el workshop"
-        summary="Workshop de 2 horas para estudiantes y desarrolladores de software. Método primero, herramientas como ejemplos."
+        eyebrow="Docente · facilitación"
+        title="Guía de facilitación"
+        summary="Público, ideas pedagógicas, materiales, ritmo y fallbacks. El alumno no ve esta sección."
       />
       <div className="mt-10 grid gap-5">
         <p className="text-base leading-7 text-white/85">
@@ -373,7 +509,7 @@ function AboutSection({ teacherMode }: { teacherMode: boolean }) {
         </p>
       </Card>
       <div className="mt-8">
-        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Al terminar, el alumno puede</p>
+        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Resultados de aprendizaje</p>
         <ul className="grid gap-2">
           {facilitationGuide.outcomes.map((outcome, i) => (
             <li key={outcome} className="flex gap-3 border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/85">
@@ -475,22 +611,27 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
   return (
     <>
       <SectionHeader
-        eyebrow="Teoría · 6 bloques"
-        title="Contenidos del workshop"
-        summary="Conceptos, ejemplos, malentendidos frecuentes, mini-actividades y notas para facilitar cada bloque."
+        eyebrow="Seis temas · para volver después de clase"
+        title="Material de estudio"
+        summary="Leé en orden. Cada tema tiene el concepto, un ejemplo, los malentendidos típicos y un ejercicio para vos — sin la respuesta."
       />
-      <div className="mt-8 flex flex-wrap gap-2">
+      <div className="mt-8 grid gap-2">
         {contentBlocks.map((block) => (
           <button
-            key={block.id}
+            key={`index-${block.id}`}
+            type="button"
             onClick={() => setExpandedBlock(block.id)}
-            className={`rounded-md px-3 py-2 text-xs font-bold transition ${
+            className={`flex gap-3 border px-4 py-3 text-left text-sm transition ${
               expandedBlock === block.id
-                ? 'bg-[#0077C8] text-white'
-                : 'border border-white/15 text-white/70 hover:bg-white/5'
+                ? 'border-[#0077C8]/50 bg-[#0077C8]/15 text-white'
+                : 'border-white/10 bg-white/[0.03] text-white/80 hover:border-white/20'
             }`}
           >
-            Bloque {block.id}
+            <span className="font-mono text-[#D9B466]">{String(block.id).padStart(2, '0')}</span>
+            <span>
+              <span className="font-semibold">{block.title}</span>
+              <span className="mt-1 block text-xs text-white/55">{block.takeaways[0]}</span>
+            </span>
           </button>
         ))}
       </div>
@@ -500,7 +641,7 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
           <div key={block.id} className="mt-8">
             <h2 className="text-2xl font-bold">{block.title}</h2>
             <Card variant="blue">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Objetivo</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Para qué sirve este tema</p>
               <p className="mt-2 text-sm leading-6 text-white/90">{block.objective}</p>
             </Card>
             <div className="mt-6 grid gap-4">
@@ -534,7 +675,7 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
             )}
             {block.examples && block.examples.length > 0 && (
               <div className="mt-6 space-y-3">
-                <p className="text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Ejemplos de clase</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Ejemplos</p>
                 {block.examples.map((ex) => (
                   <Card key={ex.title}>
                     <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">{ex.title}</p>
@@ -569,23 +710,27 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
             {block.miniActivity && (
               <Card variant="gold">
                 <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">
-                  Mini-actividad · {block.miniActivity.duration} · {block.miniActivity.grouping}
+                  {teacherMode
+                    ? `Mini-actividad · ${block.miniActivity.duration} · ${block.miniActivity.grouping}`
+                    : 'Para practicar'}
                 </p>
                 <p className="mt-2 text-base font-semibold leading-7">{block.miniActivity.title}</p>
                 <p className="mt-2 text-sm leading-6 text-white/85">{block.miniActivity.prompt}</p>
-                <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-white/80">
-                  {block.miniActivity.steps.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ol>
                 {teacherMode && (
-                  <div className="mt-4 border-t border-[#D9B466]/25 pt-3 text-sm text-white/85">
-                    <p className="font-semibold text-[#D9B466]">Salidas esperadas</p>
-                    {block.miniActivity.expectedOutput.map((o) => (
-                      <p key={o} className="mt-1">› {o}</p>
-                    ))}
-                    <p className="mt-3"><strong>Cierre:</strong> {block.miniActivity.debrief}</p>
-                  </div>
+                  <>
+                    <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-white/80">
+                      {block.miniActivity.steps.map((step) => (
+                        <li key={step}>{step}</li>
+                      ))}
+                    </ol>
+                    <div className="mt-4 border-t border-[#D9B466]/25 pt-3 text-sm text-white/85">
+                      <p className="font-semibold text-[#D9B466]">Salidas esperadas</p>
+                      {block.miniActivity.expectedOutput.map((o) => (
+                        <p key={o} className="mt-1">› {o}</p>
+                      ))}
+                      <p className="mt-3"><strong>Cierre:</strong> {block.miniActivity.debrief}</p>
+                    </div>
+                  </>
                 )}
               </Card>
             )}
@@ -609,30 +754,29 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
 function SlidesSection({
   slideIndex,
   setSlideIndex,
-  teacherMode,
-  onPresentation,
 }: {
   slideIndex: number
   setSlideIndex: (i: number) => void
-  teacherMode: boolean
-  onPresentation: () => void
 }) {
   const slide = slides[slideIndex]
   return (
     <>
       <SectionHeader
-        eyebrow={`Presentación · ${slides.length} diapositivas`}
+        eyebrow={`Presentación · Reveal.js`}
         title="Diapositivas"
-        summary="Pensadas para 2 horas. Activá modo docente para ver tiempo, guion y notas de corte."
+        summary="Deck visual para proyectar en clase. Acá podés ensayar el guion; el modo presentación abre Reveal.js."
       />
-      <div className="mt-6 flex flex-wrap gap-3">
-        <button onClick={onPresentation} className="rounded-md bg-[#0077C8] px-4 py-2 text-sm font-bold text-white hover:bg-[#0099ff]">
-          Modo presentación
-        </button>
-        <span className="flex items-center font-mono text-sm text-[#bfbfbf]">
-          {String(slideIndex + 1).padStart(2, '0')} / {slides.length}
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <Link href="/slides" className="rounded-md bg-[#0077C8] px-4 py-2 text-sm font-bold text-white hover:bg-[#0099ff]">
+          Presentar con Reveal.js
+        </Link>
+        <span className="font-mono text-sm text-[#bfbfbf]">
+          Guion {String(slideIndex + 1).padStart(2, '0')} / {slides.length}
         </span>
       </div>
+      <p className="mt-3 text-xs text-white/50">
+        En el deck: flechas para avanzar · F pantalla completa · S notas del docente · O mapa de diapositivas
+      </p>
       <div className="mt-8 border border-white/15 bg-[#1c1d20] p-8">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9B466]">{slide.section}</p>
         <h2 className="mt-3 text-3xl font-bold">{slide.title}</h2>
@@ -645,8 +789,7 @@ function SlidesSection({
         </ul>
         {slide.diagram && <pre className="mt-6 font-mono text-sm text-[#7ec8f5]">{slide.diagram}</pre>}
       </div>
-      {teacherMode && (
-        <Card variant="gold">
+      <Card variant="gold">
           <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">Notas del docente</p>
           <div className="mt-4 grid gap-3 text-sm text-white/85">
             <p><strong>Tiempo:</strong> {slide.teacherNotes.time}</p>
@@ -658,7 +801,6 @@ function SlidesSection({
             {slide.teacherNotes.note && <p><strong>Nota:</strong> {slide.teacherNotes.note}</p>}
           </div>
         </Card>
-      )}
       <div className="mt-6 flex justify-between">
         <button
           disabled={slideIndex === 0}
@@ -694,18 +836,16 @@ function SlidesSection({
 function DemosSection({
   expandedDemo,
   setExpandedDemo,
-  teacherMode,
 }: {
   expandedDemo: number | null
   setExpandedDemo: (id: number | null) => void
-  teacherMode: boolean
 }) {
   return (
     <>
       <SectionHeader
-        eyebrow="Práctica guiada · 8 demos"
+        eyebrow="Docente · demos"
         title="Demostraciones"
-        summary="En 2 horas, como máximo dos en vivo (1 y 3). Prompts listos en demos/prompts/ y un solo proyecto base."
+        summary="En 2 horas, como máximo dos en vivo (1 y 3). Prompts en demos/prompts/. El alumno no ve esta sección."
       />
       <Card variant="blue">
         <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Proyecto base (copiar o abrir)</p>
@@ -758,14 +898,12 @@ function DemosSection({
                 <DemoField label="Resultado esperado" value={demo.expectedResult} />
                 <DemoField label="Qué observar" value={demo.observe} />
                 <DemoField label="Conclusión" value={demo.conclusion} highlight />
-                {teacherMode && (
-                  <div className="mt-4 border-l-2 border-[#D9B466] pl-4">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#D9B466]">Notas del docente</p>
-                    {demo.teacherNotes.map((n) => (
-                      <p key={n} className="mt-1 text-sm leading-6 text-white/85">› {n}</p>
-                    ))}
-                  </div>
-                )}
+                <div className="mt-4 border-l-2 border-[#D9B466] pl-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#D9B466]">Notas del docente</p>
+                  {demo.teacherNotes.map((n) => (
+                    <p key={n} className="mt-1 text-sm leading-6 text-white/85">› {n}</p>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -796,63 +934,45 @@ function ActivitySection({
   return (
     <>
       <SectionHeader
-        eyebrow={`En clase · ${practicalActivity.duration}`}
+        eyebrow={`Práctica · ${practicalActivity.duration}`}
         title={practicalActivity.title}
-        summary={practicalActivity.note}
+        summary="Enunciado. Completá vos la spec, el contexto, el prompt y el plan. No hay código. No hay solución publicada."
       />
       <Card variant="blue">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Requerimiento (deliberadamente pobre)</p>
-        <p className="mt-2 font-semibold text-white">{practicalActivity.requirement}</p>
-        <p className="mt-3 text-sm leading-6 text-white/75">{practicalActivity.whyThis}</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Enunciado</p>
+        <p className="mt-2 text-lg font-semibold text-white">{practicalActivity.requirement}</p>
+        <p className="mt-3 text-sm leading-6 text-white/75">
+          El ticket está pobre a propósito, como en el trabajo. Tu oficio es convertirlo en reglas verificables antes
+          de pedirle nada a un agente.
+        </p>
       </Card>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <MetaBadge label="Agrupación" value={practicalActivity.grouping} />
-        <MetaBadge label="Meta" value="Spec + contexto + prompt + plan. Sin código." />
+        <MetaBadge label="Formato" value={teacherMode ? practicalActivity.grouping : 'Individual o en dupla'} />
+        <MetaBadge label="Entregable" value="Spec + contexto + prompt + plan" />
       </div>
       <Card>
-        <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Objetivo de los 25 minutos</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Qué tenés que producir</p>
         <p className="mt-2 text-sm leading-6 text-white/85">{practicalActivity.goal}</p>
       </Card>
-      <div className="mt-6"><DiagramBlock content={practicalActivity.methodology} label="Metodología" /></div>
+      <div className="mt-6"><DiagramBlock content={practicalActivity.methodology} label="Método a aplicar" /></div>
       <div className="mt-8">
-        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Reloj</p>
-        <ul className="grid gap-2">
-          {practicalActivity.timing.map((t) => (
-            <li key={t.minutes} className="flex gap-3 border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/85">
-              <span className="shrink-0 font-mono text-[#D9B466]">{t.minutes}</span>
-              {t.label}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-8">
-        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Preguntas guía (y decisiones de ejemplo)</p>
+        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Preguntas que no podés saltear</p>
         <div className="space-y-3">
           {practicalActivity.guidedQuestions.map((q) => (
             <div key={q.question} className="border border-white/10 bg-white/[0.03] px-4 py-4">
               <p className="text-sm font-semibold text-white">{q.question}</p>
-              <p className="mt-2 text-sm leading-6 text-white/70">
-                <span className="text-[#7ec8f5]">Ejemplo de decisión: </span>
-                {q.sampleDecision}
-              </p>
+              {teacherMode && (
+                <p className="mt-2 text-sm leading-6 text-white/70">
+                  <span className="text-[#7ec8f5]">Decisión de ejemplo: </span>
+                  {q.sampleDecision}
+                </p>
+              )}
             </div>
           ))}
         </div>
       </div>
-      <div className="mt-8"><DiagramBlock content={practicalActivity.specTemplate} label="Plantilla de mini-spec" /></div>
-      <div className="mt-6"><DiagramBlock content={practicalActivity.contextTemplate} label="Plantilla de contexto" /></div>
-      <div className="mt-6"><DiagramBlock content={practicalActivity.promptTemplate} label="Prompt para pedir el plan" /></div>
-      <div className="mt-6"><DiagramBlock content={practicalActivity.seedPlan} label="Plan semilla (para criticar)" /></div>
       <div className="mt-8">
-        <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Un plan o spec “alcanza” si</p>
-        <ul className="grid gap-2">
-          {practicalActivity.qualityCriteria.map((c) => (
-            <li key={c} className="text-sm text-white/85"><span className="text-[#D9B466]">›</span> {c}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-8">
-        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Checklist interactivo</p>
+        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Checklist</p>
         {practicalActivity.steps.map((step, i) => (
           <label key={step} className="mb-2 flex cursor-pointer items-start gap-3 border border-white/10 bg-white/[0.03] px-4 py-3">
             <input
@@ -871,20 +991,54 @@ function ActivitySection({
           </label>
         ))}
       </div>
-      <Card variant="gold">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">Plenario (3 min)</p>
-        <ul className="mt-3 grid gap-2">
-          {practicalActivity.debriefQuestions.map((q) => (
-            <li key={q} className="text-sm leading-6 text-white/85">› {q}</li>
-          ))}
-        </ul>
-      </Card>
+      <div className="mt-8">
+        <DiagramBlock content={activityStudentTemplates.spec} label="Plantilla vacía · mini-spec" />
+      </div>
+      <div className="mt-6">
+        <DiagramBlock content={activityStudentTemplates.context} label="Plantilla vacía · contexto" />
+      </div>
+      <div className="mt-6">
+        <DiagramBlock content={activityStudentTemplates.prompt} label="Plantilla · prompt del plan" />
+      </div>
       {teacherMode && (
-        <TeacherNotesBlock>
-          {practicalActivity.teacherNotes.map((n) => (
-            <p key={n}>› {n}</p>
-          ))}
-        </TeacherNotesBlock>
+        <>
+          <div className="mt-10 border-t border-[#D9B466]/30 pt-8">
+            <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#D9B466]">Solo docente</p>
+            <ul className="grid gap-2">
+              {practicalActivity.timing.map((t) => (
+                <li key={t.minutes} className="flex gap-3 border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/85">
+                  <span className="shrink-0 font-mono text-[#D9B466]">{t.minutes}</span>
+                  {t.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-6"><DiagramBlock content={practicalActivity.specTemplate} label="Spec resuelta (ejemplo)" /></div>
+          <div className="mt-6"><DiagramBlock content={practicalActivity.contextTemplate} label="Contexto resuelto (ejemplo)" /></div>
+          <div className="mt-6"><DiagramBlock content={practicalActivity.promptTemplate} label="Prompt resuelto (ejemplo)" /></div>
+          <div className="mt-6"><DiagramBlock content={practicalActivity.seedPlan} label="Plan semilla (para criticar)" /></div>
+          <div className="mt-8">
+            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Un plan o spec “alcanza” si</p>
+            <ul className="grid gap-2">
+              {practicalActivity.qualityCriteria.map((c) => (
+                <li key={c} className="text-sm text-white/85"><span className="text-[#D9B466]">›</span> {c}</li>
+              ))}
+            </ul>
+          </div>
+          <Card variant="gold">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">Plenario (3 min)</p>
+            <ul className="mt-3 grid gap-2">
+              {practicalActivity.debriefQuestions.map((q) => (
+                <li key={q} className="text-sm leading-6 text-white/85">› {q}</li>
+              ))}
+            </ul>
+          </Card>
+          <TeacherNotesBlock>
+            {practicalActivity.teacherNotes.map((n) => (
+              <p key={n}>› {n}</p>
+            ))}
+          </TeacherNotesBlock>
+        </>
       )}
     </>
   )
@@ -901,7 +1055,11 @@ function ChallengeSection({
 }) {
   return (
     <>
-      <SectionHeader eyebrow="Asincrónico" title={finalChallenge.title} summary={finalChallenge.description} />
+      <SectionHeader
+        eyebrow="Entrega · asincrónico"
+        title={finalChallenge.title}
+        summary="Enunciado, spec que manda, plantillas y rúbrica. Usá IA. Documentá el proceso. El código sin AI.md no cumple."
+      />
       <p className="mt-2 text-xl font-bold text-[#7ec8f5]">{finalChallenge.subtitle}</p>
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <MetaBadge label="Esfuerzo estimado" value={finalChallenge.estimatedEffort} />
@@ -954,22 +1112,6 @@ function ChallengeSection({
           </Card>
         ))}
       </div>
-      <div className="mt-8"><DiagramBlock content={finalChallenge.evaluationFlow} label="Flujo de evaluación automática" /></div>
-      <div className="mt-6"><DiagramBlock content={finalChallenge.multiAgentFlow} label="Evaluación multiagente" /></div>
-      <div className="mt-6"><DiagramBlock content={finalChallenge.pedagogicalConcept} label="Concepto pedagógico central" /></div>
-      <Card variant="blue">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Agente evaluador</p>
-        <ul className="mt-3 grid gap-2">
-          {finalChallenge.evaluatorCapabilities.map((c) => (
-            <li key={c} className="text-sm text-white/85"><span className="text-[#D9B466]">›</span> {c}</li>
-          ))}
-        </ul>
-      </Card>
-      <div className="mt-6">
-        <pre className="overflow-x-auto border border-white/10 bg-[#1c1d20] p-4 font-mono text-xs leading-5 text-[#7ec8f5]">
-          {finalChallenge.exampleEvidence}
-        </pre>
-      </div>
       <div className="mt-8">
         <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Rúbrica · {rubricTotal} puntos</p>
         <table className="w-full border-collapse text-sm">
@@ -1004,14 +1146,6 @@ function ChallengeSection({
         </table>
       </div>
       <div className="mt-8">
-        <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Seguridad de la evaluación</p>
-        <ul className="grid gap-2">
-          {finalChallenge.securityNotes.map((n) => (
-            <li key={n} className="text-sm text-white/85"><span className="text-[#D9B466]">›</span> {n}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-8">
         <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Checklist de entrega</p>
         {finalChallenge.deliveryChecklist.map((item, i) => (
           <label key={item} className="mb-2 flex cursor-pointer items-start gap-3 border border-white/10 bg-white/[0.03] px-4 py-3">
@@ -1030,34 +1164,39 @@ function ChallengeSection({
         ))}
       </div>
       {teacherMode && (
-        <TeacherNotesBlock title="Notas del docente · evaluación">
-          {finalChallenge.teacherNotes.map((n) => (
-            <p key={n}>› {n}</p>
-          ))}
-        </TeacherNotesBlock>
-      )}
-      <div className="mt-8">
-        <SectionHeader eyebrow="Cierre" title="Reflexión" summary={closingReflection.question} />
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          <Card>
-            <p className="text-xs font-bold uppercase text-[#bfbfbf]">Pierden valor relativo</p>
-            <ul className="mt-3 space-y-1">
-              {closingReflection.losesValue.map((v) => (
-                <li key={v} className="text-sm text-white/75">− {v}</li>
-              ))}
-            </ul>
-          </Card>
+        <div className="mt-10 border-t border-[#D9B466]/30 pt-8">
+          <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#D9B466]">Solo docente · evaluación</p>
+          <div className="mt-6"><DiagramBlock content={finalChallenge.evaluationFlow} label="Flujo de evaluación" /></div>
+          <div className="mt-6"><DiagramBlock content={finalChallenge.multiAgentFlow} label="Evaluación multiagente" /></div>
+          <div className="mt-6"><DiagramBlock content={finalChallenge.pedagogicalConcept} label="Concepto pedagógico" /></div>
           <Card variant="blue">
-            <p className="text-xs font-bold uppercase text-[#7ec8f5]">Ganan valor</p>
-            <ul className="mt-3 space-y-1">
-              {closingReflection.gainsValue.map((v) => (
-                <li key={v} className="text-sm text-white/85">+ {v}</li>
+            <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Agente evaluador</p>
+            <ul className="mt-3 grid gap-2">
+              {finalChallenge.evaluatorCapabilities.map((c) => (
+                <li key={c} className="text-sm text-white/85"><span className="text-[#D9B466]">›</span> {c}</li>
               ))}
             </ul>
           </Card>
+          <div className="mt-6">
+            <pre className="overflow-x-auto border border-white/10 bg-[#1c1d20] p-4 font-mono text-xs leading-5 text-[#7ec8f5]">
+              {finalChallenge.exampleEvidence}
+            </pre>
+          </div>
+          <div className="mt-6">
+            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Seguridad</p>
+            <ul className="grid gap-2">
+              {finalChallenge.securityNotes.map((n) => (
+                <li key={n} className="text-sm text-white/85"><span className="text-[#D9B466]">›</span> {n}</li>
+              ))}
+            </ul>
+          </div>
+          <TeacherNotesBlock title="Notas del docente · evaluación">
+            {finalChallenge.teacherNotes.map((n) => (
+              <p key={n}>› {n}</p>
+            ))}
+          </TeacherNotesBlock>
         </div>
-        <div className="mt-6"><QuoteBlock>{closingReflection.closingQuote}</QuoteBlock></div>
-      </div>
+      )}
     </>
   )
 }
@@ -1065,7 +1204,11 @@ function ChallengeSection({
 function ResourcesSection() {
   return (
     <>
-      <SectionHeader eyebrow="Referencias" title="Recursos" summary="Enlaces oficiales agrupados por categoría." />
+      <SectionHeader
+        eyebrow="Para seguir"
+        title="Recursos"
+        summary="Las marcas rotan. Estos enlaces son el mapa oficial: modelos, IDEs, agentes, MCP y Git."
+      />
       <div className="mt-8 space-y-8">
         {resourceGroups.map((group) => (
           <div key={group.title}>
@@ -1106,7 +1249,7 @@ function GlossarySection({
       <SectionHeader
         eyebrow={`${glossaryTerms.length} términos`}
         title="Glosario"
-        summary="Definiciones breves orientadas a desarrolladores."
+        summary="Si una palabra no cierra durante el desafío, buscala acá. Son definiciones de oficio, no de paper."
       />
       <input
         value={query}
