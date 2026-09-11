@@ -16,12 +16,13 @@ export const resourceGroups: ResourceGroup[] = [
   {
     title: 'Herramientas de desarrollo',
     items: [
-      { name: 'Cursor', url: 'https://cursor.com', description: 'AI IDE con agentes integrados' },
+      { name: 'Cursor', url: 'https://cursor.com', description: 'ADE de referencia del workshop: Agent, Rules, Skills, MCP' },
+      { name: 'Cursor Docs — Rules', url: 'https://cursor.com/docs/context/rules', description: 'Reglas persistentes para dar forma al agente' },
+      { name: 'Cursor Docs — Skills', url: 'https://cursor.com/docs/context/skills', description: 'Procedimientos reutilizables que el agente puede invocar' },
       { name: 'GitHub Copilot', url: 'https://github.com/features/copilot', description: 'Asistente de código en el IDE' },
       { name: 'Claude Code', url: 'https://docs.anthropic.com/en/docs/claude-code', description: 'Agente de código en terminal' },
       { name: 'OpenAI Codex', url: 'https://openai.com/codex', description: 'Agente de ingeniería de OpenAI' },
       { name: 'Google Gemini Code Assist', url: 'https://codeassist.google', description: 'Asistente de código de Google' },
-      { name: 'Orca', url: 'https://onorca.dev', description: 'Agentic Development Environment' },
       { name: 'AGENTS.md', url: 'https://agents.md', description: 'Formato abierto de instrucciones para agentes en un repo' },
     ],
   },

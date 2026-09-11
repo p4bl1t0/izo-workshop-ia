@@ -23,7 +23,7 @@ export const rubricCriteria: RubricCriterion[] = [
       },
       {
         name: 'Suficiente',
-        description: 'Las reglas principales se cumplen; 1 borde flojo (p. ej. ventana de 24 h aproximada).',
+        description: 'Las reglas principales se cumplen; 1 edge case flojo (p. ej. ventana de 24 h aproximada).',
       },
       {
         name: 'Excelente',
@@ -32,7 +32,7 @@ export const rubricCriteria: RubricCriterion[] = [
     ],
   },
   {
-    name: 'Casos borde',
+    name: 'Edge cases',
     points: 15,
     description: 'Conflicto de slot, cuarto cupo, cancelación tarde, slot pasado, reserva ajena.',
     levels: [
@@ -42,11 +42,11 @@ export const rubricCriteria: RubricCriterion[] = [
       },
       {
         name: 'Suficiente',
-        description: 'Cupo o conflicto están cubiertos; falta uno de los bordes de tiempo.',
+        description: 'Cupo o conflicto están cubiertos; falta un edge case de tiempo.',
       },
       {
         name: 'Excelente',
-        description: 'Los bordes de la spec están cubiertos y fallan ruidoso (4xx), no con 500 genérico.',
+        description: 'Los edge cases de la spec están cubiertos y fallan ruidoso (4xx), no con 500 genérico.',
       },
     ],
   },

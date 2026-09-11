@@ -38,7 +38,7 @@ demos/
 | 04 Implementar paso 1 | Si hay tiempo | `clinica-turnos` | Tras demo 3 |
 | 05 Tests y corrección | Consulta | `clinica-turnos` + estado demo-5 | Ver `estados/demo-5/README.md` |
 | 06 Dos agentes | Casa | `clinica-turnos` | Dos sesiones, mismo prompt |
-| 07 ADE multiagente | Opcional | `clinica-turnos` | Orca / worktrees |
+| 07 ADE multiagente | Opcional | `clinica-turnos` | Cursor / worktrees |
 | 08 MCP | Consulta | Repo del workshop + MCP GitHub | MCP ya configurado |
 
 ## Regla de oro

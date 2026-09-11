@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { RevealDeck } from './reveal-deck'
 
 export const metadata: Metadata = {
-  title: 'Diapositivas · Fundamentos de IA para Desarrolladores',
+  title: 'Diapositivas · Desarrollo con Agentes de IA',
   description:
-    'Presentación Reveal.js del workshop Fundamentos de IA para Desarrolladores. Del IDE al ADE.',
+    'Presentación Reveal.js del workshop Desarrollo con Agentes de IA. Del IDE al ADE.',
 }
 
 export default function SlidesPage() {

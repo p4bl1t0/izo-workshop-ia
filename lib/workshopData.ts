@@ -51,7 +51,7 @@ export type ContentBlock = {
 }
 
 export const workshopMeta = {
-  title: 'Fundamentos de IA para Desarrolladores',
+  title: 'Desarrollo con Agentes de IA',
   subtitle: 'Del IDE al ADE',
   tagline: 'Cómo utilizar IA y agentes durante el proceso de desarrollo de software.',
   duration: '2 horas',
@@ -101,7 +101,7 @@ export const studentGuide = {
   ],
   studyPathTitle: 'Camino de estudio',
   studyPath: [
-    { id: 'contenidos', label: 'Temas', detail: 'Mapa, contexto, ADE, MCP y el flujo completo.' },
+    { id: 'contenidos', label: 'Temas', detail: 'Mapa, SPEC/Rules/Skills, Cursor ADE, MCP y el flujo completo.' },
     { id: 'actividad', label: 'Actividad', detail: 'Enunciado de gastos. Sin soluciones.' },
     { id: 'desafio', label: 'Desafío', detail: 'Reservas de turnos. 4–6 h. IA obligatoria.' },
     { id: 'glosario', label: 'Glosario', detail: 'Cuando una palabra no cierra.' },
@@ -213,7 +213,7 @@ export const sections: WorkshopSection[] = [
     id: 'contenidos',
     title: 'Temas',
     eyebrow: 'Estudio',
-    summary: 'Los seis temas del workshop, escritos para volver a ellos.',
+    summary: 'Seis temas: paradigma, ecosistema, Cursor ADE, SPEC/Rules/Skills, MCP y el flujo completo.',
     audience: 'student',
   },
   {
@@ -312,28 +312,28 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 12,
     clock: '00:30 – 00:42',
     description:
-      'De editar código a orquestar agentes. Tabla comparativa y Orca como caso de estudio, no como producto a aprender.',
+      'De editar código a orquestar agentes. Tabla comparativa y Cursor como ADE de referencia, no como tutorial de atajos.',
     teacherNotes: [
       'Mostrar la tabla IDE / AI IDE / ADE. Preguntar en qué columna están hoy.',
-      'Orca: 90 segundos. “Es un ejemplo del paradigma. El curso no es un tutorial de Orca.”',
-      'Worktrees: una frase (“cada agente en su directorio, sin pisarse”). Detalle solo si preguntan.',
+      'Cursor: 90 segundos. “Es el ADE de referencia. Agent, Rules, Skills, MCP — el curso no es un tutorial de atajos.”',
+      'Worktrees / sesiones aisladas: una frase (“cada agente en su espacio, sin pisarse”). Detalle solo si preguntan.',
     ],
-    ifLate: 'Mostrar solo la tabla y el diagrama ADE. Saltar worktrees y el caso Orca extendido.',
+    ifLate: 'Mostrar solo la tabla y el diagrama ADE. Saltar worktrees y el caso Cursor extendido.',
   },
   {
     id: 4,
-    title: 'Context Engineering',
+    title: 'Context Engineering: SPEC, Rules y Skills',
     duration: '18 min',
     minutes: 18,
     clock: '00:42 – 01:00',
     description:
-      'Resultado = Modelo + Prompt + Contexto + Herramientas. Capas de contexto y demo en vivo de prompt pobre vs contextualizado.',
+      'Resultado = Modelo + Prompt + Contexto + Herramientas. SPEC.md, Rules y Skills como contexto reutilizable; demo prompt pobre vs contextualizado.',
     teacherNotes: [
       'Este bloque no se recorta. Si hay que recortar, se recorta ADE o MCP, no este.',
       'Correr Demo 1 aquí (4 min). Dejar que el aula compare las dos salidas antes de concluir.',
-      'Cerrar con “un prompt excelente con contexto pobre produce resultados mediocres”.',
+      'Cerrar con “SPEC define el producto; Rules/Skills definen cómo trabaja el agente”.',
     ],
-    ifLate: 'Saltar capas de organización. Quedarse en prompt / proyecto / repo. Igual correr la demo.',
+    ifLate: 'Saltar capas de organización. Quedarse en SPEC / Rules / repo. Igual correr la demo.',
   },
   {
     id: 5,
@@ -342,12 +342,12 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 8,
     clock: '01:00 – 01:08',
     description:
-      'De copiar y pegar a tool calling. MCP como estándar para conectar agentes con sistemas reales.',
+      'Tools locales en Cursor vs MCP para sistemas externos. Cuándo enchufar MCP y por qué después de SPEC/Rules.',
     teacherNotes: [
-      'Un diagrama y dos ejemplos (GitHub y filesystem). No implementar un server.',
+      'Un diagrama: repo ya al alcance del Agent; MCP para GitHub/Jira/etc. No implementar un server.',
       'Pregunta útil: “¿qué sistema de tu día a día copiás a mano al chat?”',
     ],
-    ifLate: 'Reducir a 4 min: problema (copy/paste) → tool calling → “MCP es el enchufe estándar”.',
+    ifLate: 'Reducir a 4 min: tools del repo → MCP como enchufe externo → seguir.',
   },
   {
     id: 6,
@@ -356,13 +356,13 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 12,
     clock: '01:08 – 01:20',
     description:
-      'Walkthrough del caso “reservar un turno”: ambigüedad, spec, contexto, plan, tests y review. Demo 3 si hay tiempo.',
+      'Walkthrough del caso “reservar un turno”: ambigüedad, SPEC.md, Rules, plan, edge cases y review. Demo 3 si hay tiempo.',
     teacherNotes: [
       'No implementar en vivo el sistema de turnos. Recorrer los 8 pasos con el requerimiento pobre en pantalla.',
       'Pedir al aula 4 preguntas antes de mostrar las vuestras. Escribirlas.',
       'Si el tiempo alcanza, Demo 3: pedir un plan y criticar juntos 2 minutos.',
     ],
-    ifLate: 'Hacer solo pasos 1–5 (ambigüedad → spec → contexto → plan). Testing y review quedan para el cierre.',
+    ifLate: 'Hacer solo pasos 1–5 (ambigüedad → SPEC → contexto → plan). Testing y review quedan para el cierre.',
   },
   {
     id: 7,
@@ -493,8 +493,8 @@ Asistente:   Pregunta → respuesta + ayuda contextual (archivo, IDE)
 Agente:      Objetivo → plan → acciones → observación → corrección → resultado`,
     examples: [
       {
-        title: 'Tres pedidos, tres niveles',
-        body: 'Chatbot: “escribime una función que sume”. Asistente: “en este archivo, completá el test que está a medias”. Agente: “implementá el límite de 3 reservas activas según SPEC.md, corré Vitest y no toques auth”. El tercero necesita repo, spec y terminal.',
+        title: 'Mismo problema, tres modos',
+        body: 'Problema: un usuario no puede tener más de 3 reservas activas. Chatbot: “¿qué significa el límite de 3 reservas activas y cómo lo testearía?”. Asistente: “en este archivo de appointments, completá el test del cuarto cupo que está a medias”. Agente: “implementá el límite de 3 reservas activas según SPEC.md, corré Vitest y no toques auth”. Mismo negocio; cambian evidencia, tools e iteración.',
       },
       {
         title: 'Alucinación típica de desarrollo',
@@ -554,8 +554,8 @@ Agente:      Objetivo → plan → acciones → observación → corrección →
       'Ubicar el entorno de trabajo en una evolución: editar, asistir, orquestar — y entender qué implica un Agentic Development Environment.',
     body: [
       'Un IDE clásico está diseñado alrededor de un cursor y un archivo. El desarrollador piensa, escribe, depura. Un AI IDE inserta un asistente en ese mismo gesto: autocompletado, chat al costado, “editá esta selección”. El desarrollador sigue siendo quien conduce cada cambio; la IA acorta el camino entre intención y tecla.',
-      'Un ADE (Agentic Development Environment) se diseña alrededor de trabajo delegable. En lugar de un hilo “yo escribo”, hay un orquestador: varios agentes con objetivos distintos, a menudo en paralelo, con aislamiento (por ejemplo Git worktrees), acceso a terminal, filesystem y a veces browser, y un flujo de revisión de diffs. El oficio se parece más a dirigir un equipo pequeño que a pelear con un buffer.',
-      'Esto no obliga a abandonar VS Code mañana. Obliga a reconocer el techo del asistente: un chat al costado del editor no orquesta QA, docs y backend al mismo tiempo, ni aísla cambios, ni te obliga a un plan. Orca (onorca.dev) sirve como caso de estudio de ese techo superado: no es el objetivo del curso aprender sus botones, es entender el paradigma para reconocerlo en cualquier herramienta que aparezca.',
+      'Un ADE (Agentic Development Environment) se diseña alrededor de trabajo delegable. En lugar de un hilo “yo escribo”, hay un orquestador: agentes con objetivos, tools (terminal, filesystem, a veces browser), reglas persistentes, y un flujo de revisión de diffs. El oficio se parece más a dirigir un equipo pequeño que a pelear con un buffer.',
+      'Esto no obliga a abandonar VS Code mañana. Obliga a reconocer el techo del asistente: un chat al costado del editor no sostiene Rules/Skills, MCP ni un Agent que itera con tests. Cursor es el ADE de referencia de este workshop: Agent mode, Rules, Skills, MCP y diffs revisables. No es el objetivo memorizar atajos; es entender el paradigma para reconocerlo en Cursor y en cualquier herramienta que aparezca.',
     ],
     table: {
       headers: ['Característica', 'IDE', 'AI IDE', 'ADE'],
@@ -572,7 +572,7 @@ Agente:      Objetivo → plan → acciones → observación → corrección →
     examples: [
       {
         title: 'Una tarde en cada paradigma',
-        body: 'IDE: implementás el endpoint, después los tests, después el README. AI IDE: el asistente te escribe el handler mientras vos armás el test. ADE: un agente arma la API en un worktree, otro escribe tests en otro, vos revisás dos diffs y rechazás el que cambió auth sin que se lo pidieran.',
+        body: 'IDE: implementás el endpoint, después los tests, después el README. AI IDE: el asistente te escribe el handler mientras vos armás el test. ADE (Cursor): un Agent implementa según SPEC.md, otro pase (o sesión) escribe tests de edge cases, vos revisás el diff y rechazás lo que tocó auth sin que se lo pidieran.',
       },
     ],
     misconceptions: [
@@ -589,7 +589,7 @@ Agente:      Objetivo → plan → acciones → observación → corrección →
     ],
     takeaways: [
       'El ADE se diseña alrededor de agentes y diffs, no solo del editor.',
-      'Orca ilustra el paradigma; el curso no es un tutorial de Orca.',
+      'Cursor es el ADE de referencia; el curso no es un tutorial de atajos.',
       'El salto profesional es coordinar y revisar, no solo aceptar autocompletado.',
     ],
     miniActivity: {
@@ -610,21 +610,21 @@ Agente:      Objetivo → plan → acciones → observación → corrección →
     },
     teacherNotes: {
       pacing: '10 min de tabla y caso + 2 min de mini-actividad. Worktrees solo si hay pregunta.',
-      say: 'No les voy a pedir que usen Orca. Les voy a pedir que reconozcan cuándo un entorno les deja de asistir y empieza a ejecutar trabajo.',
+      say: 'Vamos a mirar Cursor como ADE de referencia. Lo que importa es reconocer cuándo un entorno deja de asistir y empieza a ejecutar trabajo bajo Rules, Skills y revisión.',
       watchFor: 'Quedarse a discutir marcas (Cursor vs Copilot vs Windsurf). Cortar: “capa, no logo”.',
-      ifLate: 'Tabla + una frase de Orca. Mini-actividad en 60 s.',
+      ifLate: 'Tabla + una frase de Cursor como ADE. Mini-actividad en 60 s.',
       misconception:
         'Si preguntan si GitHub Codespaces o un IDE con muchos plugins “ya es ADE”: no, salvo que orquesten agentes aislados. Plugins ≠ orquestación.',
     },
   },
   {
     id: 4,
-    title: 'Context Engineering',
+    title: 'Context Engineering: SPEC, Rules y Skills',
     objective:
-      'Entender que la calidad del resultado depende menos de “el prompt ingenioso” y más de qué información relevante se le da al modelo o al agente, y en qué forma.',
+      'Entender que la calidad del resultado depende de qué evidencia ve el agente — y cómo SPEC, Rules y Skills le dan forma de modo reutilizable (en Cursor y en cualquier ADE).',
     body: [
       'La ecuación de este workshop es Resultado = Modelo + Prompt + Contexto + Herramientas. El prompt es la instrucción del momento. El contexto es todo lo que el sistema debería saber para no improvisar: conversación previa, archivos del proyecto, arquitectura, convenciones, requisitos, tests, historial de Git, reglas de la organización, sistemas externos. Context Engineering es la disciplina de elegir, estructurar y mantener esa información.',
-      'Un prompt brillante sobre un repo vacío produce un tutorial genérico. El mismo prompt, con SPEC.md, la estructura real de carpetas, el estilo de los tests y “no toques auth”, produce un cambio encajado. Por eso .cursorrules, AGENTS.md, README y specs no son burocracia: son contexto reutilizable. Cada sesión que empieza de cero le pide al modelo que adivine el sistema.',
+      'Un prompt brillante sobre un repo vacío produce un tutorial genérico. El mismo prompt, con SPEC.md, la estructura real de carpetas, el estilo de los tests y “no toques auth”, produce un cambio encajado. En Cursor eso se materializa en capas reutilizables: Rules (reglas siempre-on o por glob), Skills (procedimientos que el agente puede invocar) y docs de proyecto (SPEC.md, AGENTS.md, README). No son burocracia: son cómo le das forma al agente entre sesiones. Cada chat que empieza de cero sin esas capas le pide al modelo que adivine el sistema.',
       'Hay que priorizar. La ventana de contexto no es infinita, y más tokens no es más inteligencia: un dump de todo el monorepo diluye lo importante. El oficio es curar. Capas, de adentro hacia afuera: la instrucción de ahora, lo dicho en la conversación, el módulo que se toca, el repositorio, las decisiones de arquitectura, las políticas del equipo. Si una capa falta, el agente la inventa.',
     ],
     diagram: `PROMPT          ← instrucción de esta tarea
@@ -644,8 +644,12 @@ ORGANIZACIÓN    ← seguridad, compliance, estilo de PRs`,
         body: 'Pobre: “Creá un endpoint para reservar turnos.” Contextualizado: “Next.js App Router, Prisma, Zod, Vitest. Implementá POST /api/appointments según SPEC.md. No modifiques el módulo de auth. Reutilizá el patrón de /api/patients.” El primero inventa Express y JWT. El segundo encaja.',
       },
       {
+        title: 'SPEC, Rules y Skills (mismo repo de turnos)',
+        body: 'SPEC.md: “máximo 3 reservas activas; cancelar solo hasta 24 h antes”. Rule: “no toques auth; errores de negocio en 4xx con código; tests en Vitest”. Skill: “cuando agregues una regla de negocio, primero proponé el test que la rompe, después el código”. El SPEC define el producto; Rules y Skills definen cómo el agente trabaja sobre ese producto.',
+      },
+      {
         title: 'Contexto que conviene tener escrito',
-        body: 'Stack y versión. Cómo se corren los tests. Dónde viven las rutas. Qué archivos son sagrados. Errores de negocio en qué formato (HTTP 400 + código). Nombres en español o inglés. Eso cabe en un AGENTS.md de una página.',
+        body: 'Stack y versión. Cómo se corren los tests. Dónde viven las rutas. Qué archivos son sagrados. Errores de negocio en qué formato (HTTP 400 + código). Nombres en español o inglés. Eso cabe en AGENTS.md / Rules de una página.',
       },
     ],
     misconceptions: [
@@ -662,7 +666,7 @@ ORGANIZACIÓN    ← seguridad, compliance, estilo de PRs`,
     ],
     takeaways: [
       'Un prompt excelente con contexto pobre produce resultados mediocres.',
-      'Reglas de proyecto (.cursorrules, AGENTS.md, SPEC.md) son contexto estructurado, no adorno.',
+      'SPEC.md define el producto; Rules y Skills (y AGENTS.md) definen cómo el agente trabaja. Son contexto estructurado, no adorno.',
       'Context Engineering es tan importante como Prompt Engineering — en el día a día, más.',
     ],
     miniActivity: {
@@ -695,11 +699,11 @@ ORGANIZACIÓN    ← seguridad, compliance, estilo de PRs`,
     id: 5,
     title: 'MCP y herramientas',
     objective:
-      'Comprender cómo un agente deja de ser un chat y pasa a actuar sobre sistemas reales, y qué problema resuelve MCP.',
+      'Comprender cuándo y por qué MCP importa en el flujo con Cursor: el agente ya tiene manos locales; MCP conecta sistemas externos sin que vos seas el cable.',
     body: [
-      'Sin herramientas, el agente solo emite texto. Con tool calling puede leer un archivo, correr `npm test`, consultar una API, abrir un issue. Ese salto —de hablar a actuar— es el que justifica la palabra agente en desarrollo. El ciclo se vuelve: planificar, invocar una herramienta, observar el resultado, corregir.',
-      'El problema histórico es que cada integración era artesanal: un plugin para GitHub, otro para la base, copy/paste desde Jira. MCP (Model Context Protocol) es un estándar abierto: el agente habla con un cliente MCP, que se conecta a servidores que exponen herramientas y recursos (filesystem, GitHub, PostgreSQL, Figma, etc.). No hace falta implementar el protocolo en este workshop; hace falta saber que existe un enchufe común.',
-      'Para el oficio, la pregunta útil no es “¿cómo escribo un MCP server?”. Es “¿qué sistemas de mi flujo siguen viviendo en copy/paste?”. Cada uno de esos es una herramienta que el agente todavía no tiene — y una fuente de errores humanos.',
+      'Sin herramientas, el agente solo emite texto. En Cursor, Agent mode ya puede leer el repo, editar archivos y correr `npm test`: eso es tool calling sobre el entorno local. El ciclo se vuelve: planificar, invocar una herramienta, observar el resultado, corregir. Rules y Skills le dicen cómo hacerlo; las tools le permiten hacerlo.',
+      'MCP (Model Context Protocol) entra cuando el trabajo vive fuera del repo: GitHub issues/PRs, una base, Figma, un tracker. Es un estándar abierto: el cliente (p. ej. Cursor) habla con servidores MCP que exponen herramientas y recursos. No hace falta implementar el protocolo en este workshop; hace falta saber cuándo enchufarlo.',
+      'Para el oficio: primero SPEC + Rules/Skills + tools del repo. Después MCP, cuando el copy/paste a sistemas externos se vuelve el cuello de botella. Un agente con MCP y sin SPEC rompe más rápido — y con más sistemas.',
     ],
     keyConcept: `ANTES
 Agente ↔ copiar/pegar ↔ Jira / DB / GitHub
@@ -708,8 +712,8 @@ AHORA
 AGENTE → MCP CLIENT → MCP SERVER → HERRAMIENTA → SISTEMA`,
     examples: [
       {
-        title: 'Sin MCP vs con MCP',
-        body: 'Sin: copiás el issue #412 al chat, después copiás el branch name a la terminal, después pegás el resumen en el PR. Con: “tomá el issue #412, creá branch, implementá según la spec del issue, abrí el PR”. El agente lee GitHub de verdad.',
+        title: 'Cuándo MCP importa (y cuándo no)',
+        body: 'No hace falta MCP para el desafío de turnos si todo vive en el repo: SPEC.md, código, Vitest. Sí importa cuando el ticket vive en GitHub/Jira o hay que abrir el PR desde el agente: “tomá el issue #412, implementá según SPEC.md, abrí el PR”. Ahí Cursor + MCP deja de pedirte que copies y pegues.',
       },
     ],
     misconceptions: [
@@ -720,12 +724,12 @@ AGENTE → MCP CLIENT → MCP SERVER → HERRAMIENTA → SISTEMA`,
     ],
     takeaways: [
       'Tool calling es lo que convierte texto en acción.',
-      'MCP estandariza la conexión agente–mundo real; no hace falta implementarlo para usarlo conceptualmente.',
+      'MCP estandariza la conexión agente–sistemas externos (p. ej. en Cursor); no hace falta implementarlo para usarlo conceptualmente.',
       'Cada sistema que hoy copiás a mano es una herramienta que el agente todavía no tiene.',
     ],
     teacherNotes: {
       pacing: '8 min. Un diagrama, dos ejemplos, una pregunta al aula. Cero live-coding de servers.',
-      say: 'Si el agente no puede tocar el sistema, ustedes son el protocolo: copian y pegan. MCP existe para que dejen de ser el cable.',
+      say: 'En Cursor, el repo ya está al alcance del Agent. MCP es para lo que sigue viviendo afuera. Si ustedes copian y pegan issues, son el cable.',
       watchFor: 'Preguntas de implementación (JSON-RPC, transports). Aparcar: “está en Recursos; hoy alcanza el mapa”.',
       ifLate: '4 min: copy/paste → tools → MCP como enchufe. Seguir a la metodología.',
       misconception:
@@ -739,7 +743,7 @@ AGENTE → MCP CLIENT → MCP SERVER → HERRAMIENTA → SISTEMA`,
       'Practicar el flujo completo sobre un requerimiento realista, y ver por qué un enunciado vago produce software incorrecto aunque el modelo sea bueno.',
     body: [
       'El enunciado “el sistema debe permitir que un usuario reserve un turno” parece trabajo. Para un agente es una invitación a inventar el producto: una reserva por usuario o cien, con o sin overlap, con o sin cancelación, autenticado o anónimo, agenda infinita o slots. Si no se decide, se decide igual — en el código, sin que nadie lo haya aprobado.',
-      'El flujo de este workshop fuerza las decisiones antes del diff. (1) Leer el requerimiento como sospechoso. (2) Listar ambigüedades en forma de preguntas. (3) Convertir las respuestas en reglas verificables (especificación). (4) Adjuntar contexto: stack, carpetas, “qué no tocar”, cómo se testea. (5) Pedir un plan sin modificar código. (6) Implementar el plan aprobado, revisando diffs. (7) Tests de caso feliz y de borde; intentar romper. (8) Review con otra sesión o agente (quien implementó no se autoaprueba) y un humano al final.',
+      'El flujo de este workshop fuerza las decisiones antes del diff. (1) Leer el requerimiento como sospechoso. (2) Listar ambigüedades en forma de preguntas. (3) Convertir las respuestas en SPEC verificable (reglas + CA — lo mismo que exigirá el desafío en SPEC.md). (4) Adjuntar contexto: stack, Rules/Skills o AGENTS.md, “qué no tocar”, cómo se testea. (5) Pedir un plan sin modificar código. (6) Implementar el plan aprobado en Cursor Agent, revisando diffs. (7) Tests de caso feliz y edge cases; intentar romper. (8) Review con otra sesión o agente (quien implementó no se autoaprueba) y un humano al final.',
       'Separar plan de implementación no es ceremonia. Un plan malo se corrige en un párrafo. Un módulo malo se corrige en una hora y deja tests que testean el error. Usar un agente distinto para QA no es moda multiagente: es el mismo principio que no dejar que el autor de un PR se haga el unique reviewer.',
     ],
     diagram: `REQUERIMIENTO (vago)
@@ -751,7 +755,7 @@ CONTEXTO
 PLAN (archivos, orden, riesgos)
       ↓  diffs supervisados
 IMPLEMENTACIÓN
-      ↓  casos borde
+      ↓  edge cases
 TESTING
       ↓  otro agente + humano
 REVIEW → SOFTWARE`,
@@ -761,8 +765,12 @@ REVIEW → SOFTWARE`,
         body: 'Preguntas: ¿quién reserva? ¿un usuario autenticado? ¿cuántas reservas activas? ¿qué pasa si dos POST llegan al mismo slot? ¿se puede cancelar? ¿hasta cuándo? ¿turnos en el pasado? Decisiones de ejemplo: usuario autenticado; máximo 3 reservas futuras; slot único; cancelación hasta 24 h antes; 400 si el slot está ocupado o es pasado. Eso ya se puede testear.',
       },
       {
+        title: 'SPEC del desafío (lo que manda)',
+        body: 'La spec dada del desafío fija cupo 3, slot único, no pasado y cancelación 24 h. Tu SPEC.md reescribe esas reglas, decide auth/HTTP y no puede borrar el cupo. Sin ese contrato, Cursor Agent improvisa el producto — y el evaluador lo rompe con el cuarto turno.',
+      },
+      {
         title: 'El prompt del plan (copiar)',
-        body: '“Leé SPEC.md y AGENTS.md. Listá archivos a crear o modificar, orden de implementación, riesgos (concurrencia, auth) y tests que vas a agregar. No escribas código todavía. Si una regla de la spec es ambigua, preguntá; no asumas.”',
+        body: '“Leé SPEC.md y las Rules del proyecto. Listá archivos a crear o modificar, orden de implementación, riesgos (concurrencia, auth) y tests (incluidos edge cases de cupo y 24 h). No escribas código todavía. Si una regla es ambigua, preguntá; no asumas.”',
       },
     ],
     misconceptions: [
@@ -810,13 +818,13 @@ REVIEW → SOFTWARE`,
   },
 ]
 
-export const orcaCaseStudy = {
-  title: 'Caso de estudio: Orca',
+export const cursorCaseStudy = {
+  title: 'Caso de estudio: Cursor',
   body: [
-    'Orca (onorca.dev) parte de una limitación del IDE clásico: un desarrollador, un hilo, una tarea. Propone un ADE donde varios agentes trabajan en paralelo con aislamiento vía Git worktrees. El desarrollador orquesta, revisa diffs y valida; no escribe cada línea.',
-    'En este workshop Orca no se enseña botón por botón. Se usa para responder: ¿qué tiene un entorno cuando deja de ser un editor con chat y pasa a ser un lugar donde se coordina trabajo de agentes?',
+    'Cursor parte de la misma limitación del IDE clásico — un desarrollador, un hilo, una tarea — y la supera como ADE: Agent mode con tools, Rules y Skills para dar forma al comportamiento, MCP para sistemas externos, y diffs para revisar. El desarrollador orquesta, rechaza y valida; no escribe cada línea.',
+    'En este workshop Cursor es el ADE de referencia, no un manual de atajos. Sirve para responder: ¿qué tiene un entorno cuando deja de ser un editor con chat y pasa a ser un lugar donde se dirige trabajo de agentes con SPEC, Rules y evidencia?',
   ],
-  url: 'https://onorca.dev',
+  url: 'https://cursor.com',
 }
 
 export const closingReflection = {

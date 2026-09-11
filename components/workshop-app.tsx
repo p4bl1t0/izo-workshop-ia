@@ -24,7 +24,7 @@ import {
   contentBlocks,
   facilitationGuide,
   finalChallenge,
-  orcaCaseStudy,
+  cursorCaseStudy,
   pedagogicalIdeas,
   practicalActivity,
   programBlocks,
@@ -56,6 +56,7 @@ export function WorkshopApp() {
   const [navCollapsed, setNavCollapsed] = useState(false)
   const [navHovered, setNavHovered] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [topicId, setTopicId] = useState(1)
 
   const navExpanded = !navCollapsed || navHovered
 
@@ -73,6 +74,7 @@ export function WorkshopApp() {
       setActivityChecks(state.activityChecks || new Array(practicalActivity.steps.length).fill(false))
       setDeliveryChecks(state.deliveryChecks || new Array(finalChallenge.deliveryChecklist.length).fill(false))
       setNavCollapsed(Boolean(state.navCollapsed))
+      if (typeof state.topicId === 'number' && state.topicId >= 1) setTopicId(state.topicId)
     } catch {
       /* ignore */
     }
@@ -106,9 +108,10 @@ export function WorkshopApp() {
         activityChecks,
         deliveryChecks,
         navCollapsed,
+        topicId,
       }),
     )
-  }, [active, completed, teacherMode, teacherToken, slideIndex, activityChecks, deliveryChecks, navCollapsed])
+  }, [active, completed, teacherMode, teacherToken, slideIndex, activityChecks, deliveryChecks, navCollapsed, topicId])
 
   const handleTeacherModeToggle = async () => {
     if (teacherMode) {
@@ -163,6 +166,11 @@ export function WorkshopApp() {
     )
   }, [glossaryQuery])
 
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [active, topicId])
+
   const finishSection = () => {
     setCompleted((old) => (old.includes(active) ? old : [...old, active]))
     const idx = navItems.findIndex((s) => s.id === active)
@@ -189,7 +197,7 @@ export function WorkshopApp() {
             <Image src="/logo-izo.webp" alt="Instituto Zona Oeste" width={44} height={50} className="h-11 w-auto" priority />
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#D9B466]">Instituto Zona Oeste</p>
-              <p className="text-sm font-semibold leading-tight md:text-base">Fundamentos de IA para Desarrolladores</p>
+              <p className="text-sm font-semibold leading-tight md:text-base">Desarrollo con Agentes de IA</p>
             </div>
           </button>
           <div className="flex flex-wrap items-center gap-2">
@@ -305,6 +313,30 @@ export function WorkshopApp() {
                   </span>
                   {navExpanded && <span className="truncate">{item.title}</span>}
                 </button>
+                {item.id === 'contenidos' && active === 'contenidos' && navExpanded && (
+                  <div className="mb-1 ml-4 flex flex-col gap-0.5 border-l border-white/10 pl-2" aria-label="Temas">
+                    {contentBlocks.map((block) => (
+                      <button
+                        key={`nav-topic-${block.id}`}
+                        type="button"
+                        onClick={() => {
+                          setActive('contenidos')
+                          setTopicId(block.id)
+                          setMobileNavOpen(false)
+                        }}
+                        className={`rounded px-2 py-1 text-left text-[11px] leading-snug transition ${
+                          topicId === block.id
+                            ? 'bg-[#0077C8]/20 font-semibold text-white'
+                            : 'text-white/55 hover:bg-white/5 hover:text-white/85'
+                        }`}
+                        title={block.title}
+                      >
+                        <span className="font-mono text-[9px] text-[#D9B466]">{String(block.id).padStart(2, '0')}</span>{' '}
+                        <span className="line-clamp-2">{block.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </nav>
@@ -316,7 +348,14 @@ export function WorkshopApp() {
             {active === 'inicio' && <HomeSection teacherMode={teacherMode} onNavigate={setActive} />}
             {active === 'sobre' && <AboutSection teacherMode={teacherMode} />}
             {active === 'programa' && <ProgramSection totalMinutes={totalMinutes} teacherMode={teacherMode} />}
-            {active === 'contenidos' && <ContentsSection teacherMode={teacherMode} />}
+            {active === 'contenidos' && (
+              <ContentsSection
+                teacherMode={teacherMode}
+                topicId={topicId}
+                setTopicId={setTopicId}
+                onGoNextSection={() => setActive('actividad')}
+              />
+            )}
             {active === 'diapositivas' && (
               <SlidesSection
                 slideIndex={slideIndex}
@@ -606,8 +645,26 @@ function ProgramSection({ totalMinutes, teacherMode }: { totalMinutes: number; t
   )
 }
 
-function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
-  const [expandedBlock, setExpandedBlock] = useState(1)
+function ContentsSection({
+  teacherMode,
+  topicId,
+  setTopicId,
+  onGoNextSection,
+}: {
+  teacherMode: boolean
+  topicId: number
+  setTopicId: (id: number) => void
+  onGoNextSection: () => void
+}) {
+  const goToTopic = (id: number) => {
+    setTopicId(id)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const currentIndex = contentBlocks.findIndex((b) => b.id === topicId)
+  const nextTopic = currentIndex >= 0 && currentIndex < contentBlocks.length - 1 ? contentBlocks[currentIndex + 1] : null
+  const isLastTopic = currentIndex === contentBlocks.length - 1
+
   return (
     <>
       <SectionHeader
@@ -620,9 +677,9 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
           <button
             key={`index-${block.id}`}
             type="button"
-            onClick={() => setExpandedBlock(block.id)}
+            onClick={() => goToTopic(block.id)}
             className={`flex gap-3 border px-4 py-3 text-left text-sm transition ${
-              expandedBlock === block.id
+              topicId === block.id
                 ? 'border-[#0077C8]/50 bg-[#0077C8]/15 text-white'
                 : 'border-white/10 bg-white/[0.03] text-white/80 hover:border-white/20'
             }`}
@@ -636,7 +693,7 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
         ))}
       </div>
       {contentBlocks
-        .filter((b) => b.id === expandedBlock)
+        .filter((b) => b.id === topicId)
         .map((block) => (
           <div key={block.id} className="mt-8">
             <h2 className="text-2xl font-bold">{block.title}</h2>
@@ -697,12 +754,12 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
             )}
             {block.id === 3 && (
               <Card variant="blue">
-                <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">{orcaCaseStudy.title}</p>
-                {orcaCaseStudy.body.map((p) => (
-                  <p key={p} className="mt-3 text-sm leading-6 text-white/85">{p}</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">{cursorCaseStudy.title}</p>
+                {cursorCaseStudy.body.map((paragraph) => (
+                  <p key={paragraph} className="mt-3 text-sm leading-6 text-white/85">{paragraph}</p>
                 ))}
-                <a href={orcaCaseStudy.url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm text-[#7ec8f5] underline">
-                  {orcaCaseStudy.url}
+                <a href={cursorCaseStudy.url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm text-[#7ec8f5] underline">
+                  {cursorCaseStudy.url}
                 </a>
               </Card>
             )}
@@ -745,11 +802,37 @@ function ContentsSection({ teacherMode }: { teacherMode: boolean }) {
                 </TeacherNotesBlock>
               </div>
             )}
+            <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6">
+              {nextTopic ? (
+                <button
+                  type="button"
+                  onClick={() => goToTopic(nextTopic.id)}
+                  className="rounded-md bg-[#0077C8] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0077C8]/85"
+                >
+                  Siguiente tema · {nextTopic.title}
+                </button>
+              ) : isLastTopic ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                    onGoNextSection()
+                  }}
+                  className="rounded-md bg-[#0077C8] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0077C8]/85"
+                >
+                  Fin de temas · Ir a Actividad
+                </button>
+              ) : null}
+              <p className="text-xs text-white/45">
+                Tema {currentIndex + 1} de {contentBlocks.length}
+              </p>
+            </div>
           </div>
         ))}
     </>
   )
 }
+
 
 function SlidesSection({
   slideIndex,
