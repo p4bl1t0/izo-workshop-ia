@@ -111,7 +111,22 @@ export const glossaryTerms: GlossaryTerm[] = [
   {
     term: 'Especificación (SPEC)',
     definition:
-      'Reglas de negocio y criterios de aceptación escritos de forma verificable. En este workshop, el contrato entre el alumno, el agente y el evaluador.',
+      'Reglas de negocio y criterios de aceptación escritos de forma verificable. En este workshop, el contrato entre el alumno, el agente y el evaluador (SPEC.md del desafío).',
+  },
+  {
+    term: 'Rules',
+    definition:
+      'Reglas persistentes del proyecto (p. ej. en Cursor) que condicionan al agente: convenciones, “qué no tocar”, formato de errores. Contexto siempre-on o por glob.',
+  },
+  {
+    term: 'Skills',
+    definition:
+      'Procedimientos reutilizables que un agente puede invocar (p. ej. “agregar regla de negocio → primero el test”). Dan forma al cómo, no al qué del producto.',
+  },
+  {
+    term: 'Edge cases',
+    definition:
+      'Casos límite del negocio que el happy path no cubre (cuarto cupo, doble booking, cancelación tarde, slot pasado). Se enseñan y se testean con ese nombre.',
   },
   {
     term: 'Criterio de aceptación',

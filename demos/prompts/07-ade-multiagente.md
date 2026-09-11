@@ -1,6 +1,6 @@
 # Demo 7 — ADE / varios agentes en paralelo
 
-**Cuándo:** Opcional, con Orca u otro ADE. **Duración:** 5 min.  
+**Cuándo:** Opcional, con Cursor (Agent / varios agentes) u otro ADE. **Duración:** 5 min.  
 **Proyecto:** `demos/clinica-turnos` (idealmente con worktrees)
 
 ---

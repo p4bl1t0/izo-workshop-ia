@@ -1,6 +1,6 @@
 # Clínica Turnos — proyecto base para demos
 
-API mínima de reservas para el workshop **Fundamentos de IA para Desarrolladores**.
+API mínima de reservas para el workshop **Desarrollo con Agentes de IA**.
 
 ## Uso en clase
 

@@ -11,7 +11,7 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Fundamentos de IA para Desarrolladores | Instituto Zona Oeste',
+  title: 'Desarrollo con Agentes de IA | Instituto Zona Oeste',
   description:
     'Workshop práctico de 2 horas: Del IDE al ADE — cómo utilizar IA y agentes durante el proceso de desarrollo de software. Instituto Zona Oeste.',
   icons: {
