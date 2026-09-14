@@ -38,3 +38,11 @@ Copiar estilo de `src/app/api/patients/route.ts` para nuevos endpoints.
 ## Fuera de alcance
 
 - Pagos, emails, UI, multi-consultorio, Prisma, Docker
+
+## Verificación (antes de declarar listo)
+
+```bash
+npm test
+```
+
+No dar por terminado un cambio sin suite en verde. Si falla un test de cupo/slot, corregir el código — no borrar el test.

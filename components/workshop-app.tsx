@@ -1141,7 +1141,7 @@ function ChallengeSection({
       <SectionHeader
         eyebrow="Entrega · asincrónico"
         title={finalChallenge.title}
-        summary="Enunciado, spec que manda, plantillas y rúbrica. Usá IA. Documentá el proceso. El código sin AI.md no cumple."
+        summary="Enunciado, spec que manda, plantillas y rúbrica. Usá IA. Documentá el proceso. Sin evidencia de tests, no está listo."
       />
       <p className="mt-2 text-xl font-bold text-[#7ec8f5]">{finalChallenge.subtitle}</p>
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -1292,7 +1292,7 @@ function ResourcesSection() {
       <SectionHeader
         eyebrow="Para seguir"
         title="Recursos"
-        summary="Las marcas rotan. Estos enlaces son el mapa oficial: modelos, IDEs, agentes, MCP y Git."
+        summary="Las marcas rotan. Mapa oficial del workshop + lectura avanzada opcional (no es syllabus de la clase)."
       />
       <div className="mt-8 space-y-8">
         {resourceGroups.map((group) => (

@@ -40,4 +40,15 @@ export const resourceGroups: ResourceGroup[] = [
       { name: 'Pro Git — Worktrees', url: 'https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging', description: 'Capítulo de herramientas avanzadas' },
     ],
   },
+  {
+    title: 'Lectura avanzada (opcional · nivel siguiente)',
+    items: [
+      {
+        name: 'Learn Harness Engineering',
+        url: 'https://walkinglabs.github.io/learn-harness-engineering/es/',
+        description:
+          'No es parte del syllabus de 2–3 h. Profundiza harnesses para agentes de código (reglas, verificación, entornos). En este workshop alcanza SPEC → Rules/Skills → plan → validar con Cursor como ADE.',
+      },
+    ],
+  },
 ]

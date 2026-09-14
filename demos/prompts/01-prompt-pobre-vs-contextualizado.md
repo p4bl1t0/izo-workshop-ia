@@ -4,6 +4,8 @@
 **Proyecto:** `demos/clinica-turnos` abierto en Cursor.  
 **Importante:** dos **sesiones nuevas** (no el mismo chat).
 
+**Línea de enseñanza:** el contraste es *solo prompt* vs *rules-first* (AGENTS.md / Rules + SPEC del repo ya cargados). Mismo pedido de turnos; lo que cambia es el harness de contexto, no el “mejor prompt”.
+
 ---
 
 ## Prompt A — pobre (sesión 1)
@@ -60,7 +62,7 @@ Antes de codear: listá en 3 bullets qué archivos vas a tocar. Después impleme
 
 ### Cierre (30 s)
 
-> Mismo pedido de negocio. Distinto contexto. Distinto código.
+> Mismo pedido de negocio. Solo prompt vs rules-first. Distinto código.
 
 ---
 

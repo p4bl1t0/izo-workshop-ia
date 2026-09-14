@@ -133,4 +133,9 @@ export const glossaryTerms: GlossaryTerm[] = [
     definition:
       'Comportamiento observable que se puede hacer fallar con un test (por ejemplo: el cuarto turno activo debe ser 4xx). No es un deseo (“que sea intuitivo”).',
   },
+  {
+    term: 'Harness',
+    definition:
+      'El sistema de trabajo alrededor del modelo: instrucciones (SPEC, Rules, Skills, AGENTS.md) + tools + entorno + estado + feedback (tests, diffs, review). No “vuelve más inteligente” al LLM; cierra el loop para que el agente no improvise ni declare listo sin evidencia. En este workshop: dirigir con SPEC → contexto → plan → validar.',
+  },
 ]

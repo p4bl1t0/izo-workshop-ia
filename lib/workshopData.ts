@@ -180,7 +180,7 @@ export const facilitationGuide = {
     'Proyector y esta plataforma (modo presentación + modo docente).',
     'Una herramienta de IA lista: Cursor, Claude, ChatGPT o similar, con un repo de ejemplo abierto.',
     'Proyecto base: demos/clinica-turnos (npm install && npm test). Prompts en demos/prompts/.',
-    'Demo 1 (prompt pobre vs contextualizado) y Demo 3 (plan antes de código) ensayadas.',
+    'Demo 1 (prompt pobre vs contextualizado · solo prompt vs rules-first) y Demo 3 (plan antes de código) ensayadas.',
     'Plan semilla impreso o en pantalla para grupos sin laptop.',
   ],
   pacing: [
@@ -190,7 +190,7 @@ export const facilitationGuide = {
     'Últimos 15 minutos: no improvisar el desafío. Mostrar spec, plantillas y rúbrica en pantalla.',
   ],
   liveDemos: [
-    'Prioridad 1 — Demo 1 (prompt pobre vs contextualizado): 4 min, durante Context Engineering.',
+    'Prioridad 1 — Demo 1 (prompt pobre vs contextualizado · solo prompt vs rules-first): 4 min, durante Context Engineering.',
     'Prioridad 2 — Demo 3 (plan antes de código): 4 min, durante el walkthrough.',
     'Si hay tiempo — Demo 4 (implementar) o Demo 5 (tests). Nunca más de 3 demos en vivo.',
   ],
@@ -327,10 +327,10 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 18,
     clock: '00:42 – 01:00',
     description:
-      'Resultado = Modelo + Prompt + Contexto + Herramientas. SPEC.md, Rules y Skills como contexto reutilizable; demo prompt pobre vs contextualizado.',
+      'Resultado = Modelo + Prompt + Contexto + Herramientas. SPEC.md, Rules y Skills como contexto reutilizable; Demo 1: solo prompt vs rules-first (mismo pedido de turnos).',
     teacherNotes: [
       'Este bloque no se recorta. Si hay que recortar, se recorta ADE o MCP, no este.',
-      'Correr Demo 1 aquí (4 min). Dejar que el aula compare las dos salidas antes de concluir.',
+      'Correr Demo 1 aquí (4 min). Enmarcar: solo prompt vs rules-first. Dejar que el aula compare las dos salidas antes de concluir.',
       'Cerrar con “SPEC define el producto; Rules/Skills definen cómo trabaja el agente”.',
     ],
     ifLate: 'Saltar capas de organización. Quedarse en SPEC / Rules / repo. Igual correr la demo.',
@@ -640,8 +640,8 @@ ARQUITECTURA    ← límites, módulos, “qué no tocar”
 ORGANIZACIÓN    ← seguridad, compliance, estilo de PRs`,
     examples: [
       {
-        title: 'Mismo pedido, distinto contexto',
-        body: 'Pobre: “Creá un endpoint para reservar turnos.” Contextualizado: “Next.js App Router, Prisma, Zod, Vitest. Implementá POST /api/appointments según SPEC.md. No modifiques el módulo de auth. Reutilizá el patrón de /api/patients.” El primero inventa Express y JWT. El segundo encaja.',
+        title: 'Mismo pedido, distinto contexto (solo prompt vs rules-first)',
+        body: 'Pobre: “Creá un endpoint para reservar turnos.” Contextualizado / rules-first: “Next.js App Router, Prisma, Zod, Vitest. Implementá POST /api/appointments según SPEC.md. No modifiques el módulo de auth. Reutilizá el patrón de /api/patients.” El primero inventa Express y JWT. El segundo encaja — no porque el prompt sea más “creativo”, sino porque Rules/SPEC ya acotan el harness.',
       },
       {
         title: 'SPEC, Rules y Skills (mismo repo de turnos)',
@@ -989,7 +989,7 @@ export const finalChallenge = {
   description:
     'Actividad asincrónica (unas 4–6 horas de trabajo a lo largo de una semana). El alumno usa libremente herramientas de IA y agentes para transformar la especificación dada en software ejecutable, testeado y documentado.',
   objective:
-    'Evaluar si puede dirigir un proceso con IA — especificar, contextualizar, planificar, implementar, testear y registrar decisiones — no si programa sin IA. Usar IA es obligatorio y se documenta en AI.md.',
+    'Evaluar si puede dirigir un proceso con IA — especificar, contextualizar, planificar, implementar, testear y registrar decisiones — no si programa sin IA. Usar IA es obligatorio y se documenta en AI.md. No declarar “listo” sin evidencia de verificación (comando de test en verde + CA cubiertos).',
   estimatedEffort: '4–6 horas',
   suggestedDeadline: '7 días corridos después de la clase',
   tools: ['ChatGPT', 'Claude', 'Cursor', 'GitHub Copilot', 'Claude Code', 'Codex', 'Gemini', 'Otros agentes'],
@@ -1042,6 +1042,7 @@ Los ítems 6 y 7 son status codes HTTP de la API (no mensajes sueltos). La consi
 - Sin secretos reales. Sin llamar APIs pagas en los tests.`,
   constraints: [
     'Usar al menos una herramienta de IA o agente en el proceso y documentarlo. Entregar código “como si no hubiera IA” con AI.md incompleto no cumple el objetivo.',
+    'No declarar “listo” sin evidencia: comando de test en verde + CA1–CA6 ejercitados. El agente puede decir que terminó; vos necesitás la salida del comando en AI.md.',
     'No se evalúa originalidad del stack. Se evalúa cumplimiento de reglas, tests y honestidad del proceso.',
     'El alumno puede partir de un repo vacío. No se entrega un starter obligatorio.',
     'Si usan header `X-User-Id` en lugar de auth real, debe decirse en README y SPEC.md. Inventar un JWT a medias sin tests de auth no suma.',
@@ -1055,10 +1056,10 @@ Los ítems 6 y 7 son status codes HTTP de la API (no mensajes sueltos). La consi
 
 ## AI.md — bitácora del proceso con IA
 - Para qué: demostrar que dirigiste el proceso (herramientas, delegación, rechazos, verificación).
-- Qué va: herramientas por etapa; preguntas; plan; qué delegaste; diffs/ideas cortadas; tests agregados; incidentes; comandos finales en verde.
+- Qué va: herramientas por etapa; preguntas; plan; qué delegaste; diffs/ideas cortadas; tests agregados; incidentes; comandos finales en verde (pegar o citar la salida breve).
 - Qué no va: reescritura de reglas de negocio ni contratos HTTP (eso es SPEC.md).
 - Cuándo: durante el trabajo (no una línea el día de la entrega).
-- “Listo”: se puede reconstruir el trabajo con IA; hay al menos un rechazo o incidente; figura el comando de verificación final.`,
+- “Listo”: se puede reconstruir el trabajo con IA; hay al menos un rechazo o incidente; figura el comando de verificación final con evidencia. Sin evidencia de tests, no está listo.`,
   whatIsDeliverable: `El entregable es un Pull Request al repo de entregas (sin fork) con la carpeta completa. No alcanza con “el código en algún lado”.
 
 Obligatorio:
@@ -1066,7 +1067,7 @@ Obligatorio:
 - tests/: suite automatizada que cubre CA1–CA6 (CA7).
 - README.md: install + test (+ server o URL) en menos de 10 min; auth/X-User-Id explicado.
 - SPEC.md: decisiones + reglas reescritas.
-- AI.md: proceso con IA reconstruible.
+- AI.md: proceso con IA reconstruible + evidencia de verificación.
 
 Opcional pero útil: URL de demo si está hospedada (Vercel/Render/etc.).
 
@@ -1080,7 +1081,7 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
   specMd:
     'Interpretación operativa: auth y códigos HTTP decididos, reglas 1–7 reescritas, fuera de alcance y mapa de tests. Completar antes/durante la impl. “Listo” = coincide con tests y no contradice la spec dada. No es copy-paste ni bitácora de IA.',
   aiMd:
-    'Bitácora del proceso con IA (durante el trabajo): herramientas, plan, delegación, rechazos, incidentes, comando final en verde. “Listo” = se puede reconstruir el oficio. No pongas acá las reglas HTTP (van en SPEC.md).',
+    'Bitácora del proceso con IA (durante el trabajo): herramientas, plan, delegación, rechazos, incidentes, comando final en verde con evidencia. “Listo” = se puede reconstruir el oficio y no se declaró terminado sin verificación. No pongas acá las reglas HTTP (van en SPEC.md).',
   specMdTemplate: `# SPEC.md — Reservas de turnos
 
 > Completá todas las secciones. Decisiones + reglas verificables (no copy-paste).
@@ -1116,7 +1117,8 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
   aiMdTemplate: `# AI.md
 
 > Bitácora del proceso con IA. Completala durante el trabajo.
-> “Listo” = se puede reconstruir el trabajo, con rechazo/incidente y comando final en verde.
+> “Listo” = se puede reconstruir el trabajo, con rechazo/incidente y comando final en verde (evidencia).
+> No declares terminado sin pegar o citar la salida del comando de test.
 > Reglas de negocio y códigos HTTP van en SPEC.md, no acá.
 
 ## Herramientas
@@ -1133,8 +1135,10 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
 - Alucinación o error grave:
 - Cómo lo detecté (test, review, ejecución):
 
-## Verificación final
-- Comandos corridos:
+## Verificación final (evidencia)
+- Comandos corridos (ej. \`npm test\` / \`pytest\`):
+- Resultado (verde / fallos y qué hiciste):
+- CA1–CA6: ¿ejercitados? (sí/no breve)
 - Qué queda sin cubrir:`,
   goodVsBad: [
     {
@@ -1147,11 +1151,11 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
     },
     {
       title: 'AI.md débil',
-      body: '“Usé ChatGPT.” Sin prompts, sin rechazos, sin fallos. No se puede evaluar el oficio, solo el repo.',
+      body: '“Usé ChatGPT.” Sin prompts, sin rechazos, sin fallos, sin comando en verde. El agente dijo “listo” y se entregó sin evidencia.',
     },
     {
       title: 'AI.md sólida',
-      body: 'Tres herramientas, el prompt del plan, “el agente quiso agregar pagos y lo corté”, el test de ventana de 24 h que falló dos veces, comando de test en verde al final.',
+      body: 'Tres herramientas, el prompt del plan, “el agente quiso agregar pagos y lo corté”, el test de ventana de 24 h que falló dos veces, comando de test en verde al final (salida citada).',
     },
   ],
   evaluationFlow: `ENTREGA DEL ALUMNO
@@ -1217,8 +1221,8 @@ Puntos en cumplimiento funcional: recorte proporcional.`,
     'SPEC.md con decisiones (auth, códigos HTTP 403/404 y 409/400) y reglas reescritas',
     'AI.md con herramientas, rechazos y verificación — no una línea',
     'Tests que cubren los comportamientos CA1–CA6',
+    'Salida limpia: comando de test en verde en checkout limpio (evidencia en AI.md; no “el agente dijo listo”)',
     'README con instalar, testear y (server local o URL) en menos de 10 minutos',
-    'Comando de test en verde en un checkout limpio',
     'Sin secretos ni features de fuera de alcance que rompan el MVP',
   ],
   teacherNotes: [
