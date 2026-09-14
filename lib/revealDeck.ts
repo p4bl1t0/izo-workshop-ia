@@ -267,7 +267,7 @@ export const deckSlides: DeckSlide[] = [
     type: 'hook',
     sourceId: 12,
     kicker: 'Demo 1 · obligatoria · 4 min',
-    question: 'Mismo pedido. Distinto contexto. ¿Qué va a inventar el prompt pobre?',
+    question: 'Mismo pedido de turnos. Solo prompt vs rules-first. ¿Qué va a inventar el prompt pobre?',
     hint: 'Si no hay red: leer las dos salidas en Demostraciones y discutir.',
     background: 'linear-gradient(180deg, #0d1a28 0%, #121318 100%)',
   },
@@ -422,6 +422,7 @@ export const deckSlides: DeckSlide[] = [
     bullets: [
       'IA obligatoria y documentada en AI.md',
       'Cupo 3 · slot único · 24 h · no pasado',
+      'Sin evidencia de tests, no está listo',
       'Entrega: src, tests, README, SPEC.md, AI.md',
     ],
     cards: [

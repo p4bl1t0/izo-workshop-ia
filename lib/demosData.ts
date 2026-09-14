@@ -31,7 +31,8 @@ export const demos: Demo[] = [
     duration: '4 min',
     when: 'Bloque 4 — Context Engineering (minuto ~00:45). Obligatorio.',
     promptPath: 'demos/prompts/01-prompt-pobre-vs-contextualizado.md',
-    objective: 'Mostrar cómo el contexto transforma la calidad de la respuesta, con el mismo pedido de negocio.',
+    objective:
+      'Mostrar cómo el contexto transforma la calidad de la respuesta: mismo pedido de turnos, solo prompt vs rules-first (AGENTS.md / Rules + SPEC).',
     context: 'Tener un proyecto Next.js (App Router) o, si no hay repo, simularlo nombrando Prisma, Zod y Vitest en el segundo prompt.',
     prompt: `Pobre: "Creá un endpoint para reservar turnos."
 
@@ -39,8 +40,10 @@ Contextualizado: "En este proyecto Next.js con App Router, Prisma y PostgreSQL, 
     expectedResult:
       'El pobre inventa stack (Express, JWT, nombres genéricos). El contextualizado encaja: rutas App Router, Zod, límites de negocio, no toca auth.',
     observe: '¿Respeta “no toques auth”? ¿Nombra tests? ¿Inventa carpetas que no existen?',
-    conclusion: 'Context Engineering no es opcional: es la diferencia entre código usable y código descartable.',
+    conclusion:
+      'Solo prompt vs rules-first: Context Engineering no es opcional; es la diferencia entre código usable y código descartable.',
     teacherNotes: [
+      'Enmarcar en una frase: “solo prompt vs rules-first” — sin renombrar el resto de la pedagogía.',
       'Correr los dos prompts en sesiones nuevas, no en el mismo hilo.',
       'Pedir al aula que prediga el stack del primero antes de pegarlo.',
       'Si no hay red: leer en voz alta dos salidas preparadas. El punto se enseña igual.',
