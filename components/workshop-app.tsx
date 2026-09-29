@@ -28,6 +28,7 @@ import {
   pedagogicalIdeas,
   practicalActivity,
   programBlocks,
+  requirementPartsChecklist,
   sections,
   studentGuide,
   visibleSections,
@@ -1014,12 +1015,13 @@ function ActivitySection({
   setChecks: (c: boolean[]) => void
   teacherMode: boolean
 }) {
+  const offline = practicalActivity.offlineDynamic
   return (
     <>
       <SectionHeader
         eyebrow={`Práctica · ${practicalActivity.duration}`}
         title={practicalActivity.title}
-        summary="Enunciado. Completá vos la spec, el contexto, el prompt y el plan. No hay código. No hay solución publicada."
+        summary="Primero en papel (sin PC): las 8 partes del requerimiento. Después contexto, prompt y plan. No hay código. No hay solución publicada."
       />
       <Card variant="blue">
         <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Enunciado</p>
@@ -1030,14 +1032,92 @@ function ActivitySection({
         </p>
       </Card>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <MetaBadge label="Formato" value={teacherMode ? practicalActivity.grouping : 'Individual o en dupla'} />
-        <MetaBadge label="Entregable" value="Spec + contexto + prompt + plan" />
+        <MetaBadge label="Formato" value={teacherMode ? practicalActivity.grouping : 'Dupla · papel primero'} />
+        <MetaBadge label="Entregable" value="8 partes + contexto + plan" />
       </div>
       <Card>
         <p className="text-xs font-bold uppercase tracking-widest text-[#7ec8f5]">Qué tenés que producir</p>
         <p className="mt-2 text-sm leading-6 text-white/85">{practicalActivity.goal}</p>
+        <p className="mt-2 text-sm leading-6 text-white/70">{practicalActivity.whyThis}</p>
       </Card>
-      <div className="mt-6"><DiagramBlock content={practicalActivity.methodology} label="Método a aplicar" /></div>
+
+      <Card variant="gold">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">
+          Dinámica sin PC · {offline.duration}
+        </p>
+        <p className="mt-2 text-base font-semibold leading-7">{offline.title}</p>
+        <p className="mt-2 text-sm leading-6 text-white/85">{offline.framing}</p>
+        <p className="mt-3 text-sm leading-6 text-white/75">
+          <strong>Materiales:</strong> {offline.materials}
+        </p>
+        <p className="mt-2 text-sm leading-6 text-white/75">
+          <strong>Roles:</strong> {offline.roles}
+        </p>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-white/85">
+          {offline.steps.map((s) => (
+            <li key={s.minutes}>
+              <span className="font-mono text-[#D9B466]">{s.minutes}</span> — {s.label}
+            </li>
+          ))}
+        </ol>
+        <div className="mt-4 border-t border-[#D9B466]/25 pt-3">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">Listo cuando</p>
+          <ul className="mt-2 grid gap-1">
+            {offline.doneWhen.map((d) => (
+              <li key={d} className="text-sm text-white/85">
+                › {d}
+              </li>
+            ))}
+          </ul>
+        </div>
+        {teacherMode && (
+          <div className="mt-4 border-t border-[#D9B466]/25 pt-3 text-sm text-white/85">
+            <p>
+              <strong>Decir:</strong> {offline.say}
+            </p>
+            <p className="mt-2">
+              <strong>Cierre:</strong> {offline.debrief}
+            </p>
+            <p className="mt-2 font-semibold text-[#D9B466]">Atender</p>
+            {offline.watchFor.map((w) => (
+              <p key={w} className="mt-1">
+                › {w}
+              </p>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <div className="mt-8">
+        <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">
+          Checklist · 8 partes del requerimiento
+        </p>
+        <p className="mb-4 text-sm leading-6 text-white/75">{requirementPartsChecklist.thesis}</p>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr>
+                <th className="border border-white/15 bg-[#0077C8]/15 px-3 py-2 text-left font-bold">Parte</th>
+                <th className="border border-white/15 bg-[#0077C8]/15 px-3 py-2 text-left font-bold">Pregunta guía</th>
+                <th className="border border-white/15 bg-[#0077C8]/15 px-3 py-2 text-left font-bold">Truco</th>
+              </tr>
+            </thead>
+            <tbody>
+              {requirementPartsChecklist.parts.map((p) => (
+                <tr key={p.id}>
+                  <td className="border border-white/10 px-3 py-2 font-semibold text-white/90">{p.name}</td>
+                  <td className="border border-white/10 px-3 py-2 text-white/85">{p.ask}</td>
+                  <td className="border border-white/10 px-3 py-2 text-white/70">{p.tip}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <DiagramBlock content={practicalActivity.methodology} label="Método a aplicar" />
+      </div>
       <div className="mt-8">
         <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Preguntas que no podés saltear</p>
         <div className="space-y-3">
@@ -1055,7 +1135,7 @@ function ActivitySection({
         </div>
       </div>
       <div className="mt-8">
-        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Checklist</p>
+        <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Pasos (marcar)</p>
         {practicalActivity.steps.map((step, i) => (
           <label key={step} className="mb-2 flex cursor-pointer items-start gap-3 border border-white/10 bg-white/[0.03] px-4 py-3">
             <input
@@ -1075,7 +1155,7 @@ function ActivitySection({
         ))}
       </div>
       <div className="mt-8">
-        <DiagramBlock content={activityStudentTemplates.spec} label="Plantilla vacía · mini-spec" />
+        <DiagramBlock content={activityStudentTemplates.spec} label="Plantilla vacía · mini-spec (8 partes)" />
       </div>
       <div className="mt-6">
         <DiagramBlock content={activityStudentTemplates.context} label="Plantilla vacía · contexto" />
@@ -1083,10 +1163,11 @@ function ActivitySection({
       <div className="mt-6">
         <DiagramBlock content={activityStudentTemplates.prompt} label="Plantilla · prompt del plan" />
       </div>
+      <p className="mt-4 text-sm leading-6 text-white/65">{practicalActivity.note}</p>
       {teacherMode && (
         <>
           <div className="mt-10 border-t border-[#D9B466]/30 pt-8">
-            <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#D9B466]">Solo docente</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#D9B466]">Solo docente · timing</p>
             <ul className="grid gap-2">
               {practicalActivity.timing.map((t) => (
                 <li key={t.minutes} className="flex gap-3 border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/85">
@@ -1096,15 +1177,25 @@ function ActivitySection({
               ))}
             </ul>
           </div>
-          <div className="mt-6"><DiagramBlock content={practicalActivity.specTemplate} label="Spec resuelta (ejemplo)" /></div>
-          <div className="mt-6"><DiagramBlock content={practicalActivity.contextTemplate} label="Contexto resuelto (ejemplo)" /></div>
-          <div className="mt-6"><DiagramBlock content={practicalActivity.promptTemplate} label="Prompt resuelto (ejemplo)" /></div>
-          <div className="mt-6"><DiagramBlock content={practicalActivity.seedPlan} label="Plan semilla (para criticar)" /></div>
+          <div className="mt-6">
+            <DiagramBlock content={practicalActivity.specTemplate} label="Spec resuelta (ejemplo)" />
+          </div>
+          <div className="mt-6">
+            <DiagramBlock content={practicalActivity.contextTemplate} label="Contexto resuelto (ejemplo)" />
+          </div>
+          <div className="mt-6">
+            <DiagramBlock content={practicalActivity.promptTemplate} label="Prompt resuelto (ejemplo)" />
+          </div>
+          <div className="mt-6">
+            <DiagramBlock content={practicalActivity.seedPlan} label="Plan semilla (para criticar)" />
+          </div>
           <div className="mt-8">
             <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#bfbfbf]">Un plan o spec “alcanza” si</p>
             <ul className="grid gap-2">
               {practicalActivity.qualityCriteria.map((c) => (
-                <li key={c} className="text-sm text-white/85"><span className="text-[#D9B466]">›</span> {c}</li>
+                <li key={c} className="text-sm text-white/85">
+                  <span className="text-[#D9B466]">›</span> {c}
+                </li>
               ))}
             </ul>
           </div>
@@ -1112,7 +1203,9 @@ function ActivitySection({
             <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">Plenario (3 min)</p>
             <ul className="mt-3 grid gap-2">
               {practicalActivity.debriefQuestions.map((q) => (
-                <li key={q} className="text-sm leading-6 text-white/85">› {q}</li>
+                <li key={q} className="text-sm leading-6 text-white/85">
+                  › {q}
+                </li>
               ))}
             </ul>
           </Card>
