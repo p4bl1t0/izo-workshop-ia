@@ -95,8 +95,8 @@ export const deckSlides: DeckSlide[] = [
     kicker: 'Introducción',
     title: 'El problema no es el modelo',
     bullets: [
-      'La IA ya está en el flujo. Eso no se discute.',
-      'Muchos la usan como oráculo de código.',
+      'La IA ya está en el flujo. Eso no está en discusión.',
+      'Muchos la usan como productora de código.',
       'Falta el oficio: spec, contexto, validación.',
     ],
   },
@@ -112,7 +112,7 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'hook',
     sourceId: 4,
-    kicker: 'La pregunta de estas 2 horas',
+    kicker: 'El disparador de este workshop',
     question: '¿Cómo pasamos de pedirle código a dirigir un proceso con agentes?',
     hint: 'Especificar · Contextualizar · Validar',
     background: 'linear-gradient(180deg, #121318 0%, #0c2236 100%)',
@@ -120,7 +120,7 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'flow',
     sourceId: 4,
-    kicker: 'El estribillo del workshop',
+    kicker: 'El desarrollo de software mantiene su ciclo',
     title: 'Del requerimiento al software',
     steps: ['Requerimiento', 'Spec', 'Contexto', 'Plan', 'Agente', 'Test', 'Review', 'Software'],
     subtitle: 'Hoy practicamos hasta el plan. Implementar es el desafío de la casa.',
