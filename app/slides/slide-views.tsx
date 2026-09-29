@@ -80,11 +80,11 @@ function FlowSlide({ slide, notes }: { slide: DeckSlide; notes: string }) {
     <div className="izo-slide">
       <Kicker>{slide.kicker}</Kicker>
       <h2 className="izo-title">{slide.title}</h2>
-      <div className="izo-flow">
+      <div className="izo-flow fragment fade-up">
         {steps.map((step, index) => (
           <Fragment key={step}>
-            <span className="izo-chip fragment fade-up">{step}</span>
-            {index < steps.length - 1 && <span className="izo-arrow fragment fade-up">→</span>}
+            <span className="izo-chip">{step}</span>
+            {index < steps.length - 1 && <span className="izo-arrow">→</span>}
           </Fragment>
         ))}
       </div>
@@ -100,15 +100,15 @@ function FormulaSlide({ slide, notes }: { slide: DeckSlide; notes: string }) {
     <div className="izo-slide">
       <Kicker>{slide.kicker}</Kicker>
       <h2 className="izo-title">{slide.title}</h2>
-      <div className="izo-formula">
+      <div className="izo-formula fragment fade-up">
         {parts.map((part, index) => (
           <Fragment key={part}>
-            <span className="izo-part fragment fade-up">{part}</span>
-            {index < parts.length - 1 && <span className="izo-plus fragment fade-up">+</span>}
+            <span className="izo-part">{part}</span>
+            {index < parts.length - 1 && <span className="izo-plus">+</span>}
           </Fragment>
         ))}
-        <span className="izo-eq fragment fade-up">=</span>
-        <span className="izo-result fragment fade-up">{slide.result}</span>
+        <span className="izo-eq">=</span>
+        <span className="izo-result">{slide.result}</span>
       </div>
       <Notes text={notes} />
     </div>
