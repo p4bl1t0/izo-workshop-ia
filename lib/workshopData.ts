@@ -91,6 +91,7 @@ export const studentGuide = {
     'Hacé la actividad de gastos: primero en papel (8 partes del requerimiento), después contexto y plan. Sin mirar soluciones.',
     'El desafío de turnos es la entrega. La spec dada manda; documentá el proceso en AI.md.',
     'Cuando trabes, pasá por Glosario y Recursos. Las marcas cambian; los conceptos no.',
+    'Las diapositivas están abiertas para repasar el recorrido de la clase (Reveal.js).',
   ],
   outcomesTitle: 'Al terminar, tenés que poder',
   outcomes: [
@@ -105,6 +106,7 @@ export const studentGuide = {
     { id: 'contenidos', label: 'Temas', detail: 'Mapa, SPEC/Rules/Skills, Cursor ADE, MCP y el flujo completo.' },
     { id: 'actividad', label: 'Actividad', detail: 'Gastos: dinámica sin PC + spec/contexto/plan. Sin soluciones.' },
     { id: 'desafio', label: 'Desafío', detail: 'Reservas de turnos. 4–6 h. IA obligatoria.' },
+    { id: 'diapositivas', label: 'Diapositivas', detail: 'Deck Reveal.js para repasar la clase.' },
     { id: 'glosario', label: 'Glosario', detail: 'Cuando una palabra no cierra.' },
   ],
 }
@@ -312,6 +314,13 @@ export const sections: WorkshopSection[] = [
     audience: 'student',
   },
   {
+    id: 'diapositivas',
+    title: 'Diapositivas',
+    eyebrow: 'Presentación',
+    summary: 'Deck Reveal.js del workshop: repaso visual de los temas de clase.',
+    audience: 'student',
+  },
+  {
     id: 'sobre',
     title: 'Facilitación',
     eyebrow: 'Docente',
@@ -323,13 +332,6 @@ export const sections: WorkshopSection[] = [
     title: 'Programa',
     eyebrow: 'Docente',
     summary: 'Timeline de 2 horas con reloj, cortes y notas de ritmo.',
-    audience: 'teacher',
-  },
-  {
-    id: 'diapositivas',
-    title: 'Diapositivas',
-    eyebrow: 'Docente',
-    summary: 'Deck Reveal.js y guion de cada slide.',
     audience: 'teacher',
   },
   {

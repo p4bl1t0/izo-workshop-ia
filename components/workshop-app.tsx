@@ -218,14 +218,12 @@ export function WorkshopApp() {
             >
               Modo docente
             </button>
-            {teacherMode && (
-              <Link
-                href="/slides"
-                className="rounded-md border border-white/20 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80 transition hover:bg-white/5"
-              >
-                Presentar
-              </Link>
-            )}
+            <Link
+              href="/slides"
+              className="rounded-md border border-white/20 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80 transition hover:bg-white/5"
+            >
+              Presentar
+            </Link>
             <div className="hidden items-center gap-3 sm:flex">
               <div className="text-right">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#bfbfbf]">Progreso</p>
@@ -361,6 +359,7 @@ export function WorkshopApp() {
               <SlidesSection
                 slideIndex={slideIndex}
                 setSlideIndex={setSlideIndex}
+                teacherMode={teacherMode}
               />
             )}
             {active === 'demos' && (
@@ -838,28 +837,36 @@ function ContentsSection({
 function SlidesSection({
   slideIndex,
   setSlideIndex,
+  teacherMode,
 }: {
   slideIndex: number
   setSlideIndex: (i: number) => void
+  teacherMode: boolean
 }) {
   const slide = slides[slideIndex]
   return (
     <>
       <SectionHeader
-        eyebrow={`Presentación · Reveal.js`}
+        eyebrow="Presentación · Reveal.js"
         title="Diapositivas"
-        summary="Deck visual para proyectar en clase. Acá podés ensayar el guion; el modo presentación abre Reveal.js."
+        summary={
+          teacherMode
+            ? 'Deck visual para proyectar en clase. Acá podés ensayar el guion; Presentar abre Reveal.js.'
+            : 'Deck visual del workshop para repasar los temas. Abrí Presentar para verlo en pantalla completa con Reveal.js.'
+        }
       />
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Link href="/slides" className="rounded-md bg-[#0077C8] px-4 py-2 text-sm font-bold text-white hover:bg-[#0099ff]">
-          Presentar con Reveal.js
+          Abrir con Reveal.js
         </Link>
         <span className="font-mono text-sm text-[#bfbfbf]">
-          Guion {String(slideIndex + 1).padStart(2, '0')} / {slides.length}
+          Slide {String(slideIndex + 1).padStart(2, '0')} / {slides.length}
         </span>
       </div>
       <p className="mt-3 text-xs text-white/50">
-        En el deck: flechas para avanzar · F pantalla completa · S notas del docente · O mapa de diapositivas
+        {teacherMode
+          ? 'En el deck: flechas para avanzar · F pantalla completa · S notas del docente · O mapa de diapositivas'
+          : 'En el deck: flechas para avanzar · F pantalla completa · O mapa de diapositivas'}
       </p>
       <div className="mt-8 border border-white/15 bg-[#1c1d20] p-8">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9B466]">{slide.section}</p>
@@ -873,7 +880,8 @@ function SlidesSection({
         </ul>
         {slide.diagram && <pre className="mt-6 font-mono text-sm text-[#7ec8f5]">{slide.diagram}</pre>}
       </div>
-      <Card variant="gold">
+      {teacherMode && (
+        <Card variant="gold">
           <p className="text-xs font-bold uppercase tracking-widest text-[#D9B466]">Notas del docente</p>
           <div className="mt-4 grid gap-3 text-sm text-white/85">
             <p><strong>Tiempo:</strong> {slide.teacherNotes.time}</p>
@@ -885,6 +893,7 @@ function SlidesSection({
             {slide.teacherNotes.note && <p><strong>Nota:</strong> {slide.teacherNotes.note}</p>}
           </div>
         </Card>
+      )}
       <div className="mt-6 flex justify-between">
         <button
           disabled={slideIndex === 0}
