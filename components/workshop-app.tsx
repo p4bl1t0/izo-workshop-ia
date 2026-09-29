@@ -222,7 +222,7 @@ export function WorkshopApp() {
               href="/slides"
               className="rounded-md border border-white/20 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80 transition hover:bg-white/5"
             >
-              Presentar
+              Diapositivas
             </Link>
             <div className="hidden items-center gap-3 sm:flex">
               <div className="text-right">
