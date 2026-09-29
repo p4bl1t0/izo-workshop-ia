@@ -316,14 +316,25 @@ export const deckSlides: DeckSlide[] = [
   },
   {
     type: 'cards',
-    sourceId: 16,
-    kicker: 'Mini-actividad · 3 min · 5 preguntas',
-    title: 'Antes de mostrar las nuestras',
+    sourceId: 24,
+    kicker: 'Checklist · sin laptop · 3 min',
+    title: '8 partes. El ingeniero decide; el agente ejecuta.',
     cards: [
-      { title: '¿Quién reserva?', body: '¿Paciente autenticado o cualquiera con la URL?' },
-      { title: '¿Cuántas a la vez?', body: '¿Una, tres, cien? El agente va a elegir por ustedes.' },
-      { title: '¿Dos POST al mismo slot?', body: 'Si no lo escriben, el overlap se decide en el código.' },
-      { title: '¿Cancelar hasta cuándo?', body: '¿Y turnos en el pasado? ¿Y reservas ajenas?' },
+      {
+        kicker: 'Qué',
+        title: 'Objetivo · Actores · Alcance',
+        body: 'Problema en una frase. Quién usa. Qué entra y qué queda fuera.',
+      },
+      {
+        kicker: 'Reglas',
+        title: 'Verificables · Edge cases · CA',
+        body: 'No adjetivos. Casos límite escritos. CA que un test pueda romper.',
+      },
+      {
+        kicker: 'Límites',
+        title: 'Restricciones',
+        body: 'Stack, auth, HTTP, seguridad. Mini-actividad: tachá qué falta en el ticket.',
+      },
     ],
   },
   {
@@ -351,12 +362,12 @@ export const deckSlides: DeckSlide[] = [
     sourceId: 19,
     kicker: 'El corazón de la clase · proteger este bloque',
     title: 'Registrar gastos personales',
-    subtitle: 'Enunciado pobre a propósito. El entregable es el oficio, no la app.',
-    meta: ['25 min', 'Duplas', 'Sin programar'],
+    subtitle: '0–12 min sin PC: 8 partes del requerimiento. Después contexto y plan.',
+    meta: ['25 min', 'Duplas', 'Sin PC al inicio'],
     bullets: [
-      'Preguntas → reglas → spec → contexto → prompt → plan',
-      'Decidir mal y explícito gana a no decidir',
-      'Al minuto 18: plan semilla en pantalla',
+      'Laptops abajo: redactor + abogado del diablo',
+      'Completar las 8 partes en papel; atacar un CA',
+      'Min 17: plan semilla en pantalla (válido sin IA)',
     ],
     ticket: {
       label: 'Requerimiento',
