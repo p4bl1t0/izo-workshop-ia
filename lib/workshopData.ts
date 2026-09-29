@@ -88,13 +88,14 @@ export const studentGuide = {
   howToUseTitle: 'Cómo usar este sitio',
   howToUse: [
     'Leé los seis temas en orden. Cada uno cierra con ideas para recordar y un ejercicio corto.',
-    'Hacé la actividad de gastos sin mirar soluciones: el entregable es spec + contexto + prompt + plan.',
+    'Hacé la actividad de gastos: primero en papel (8 partes del requerimiento), después contexto y plan. Sin mirar soluciones.',
     'El desafío de turnos es la entrega. La spec dada manda; documentá el proceso en AI.md.',
     'Cuando trabes, pasá por Glosario y Recursos. Las marcas cambian; los conceptos no.',
   ],
   outcomesTitle: 'Al terminar, tenés que poder',
   outcomes: [
     'Distinguir modelo, asistente y agente, y ubicar la herramienta que usás todos los días.',
+    'Redactar un requerimiento con sus partes (objetivo, actores, alcance, reglas, CA…) y explicar por qué eso manda sobre el agente.',
     'Explicar por qué el contexto y la spec determinan la calidad del software generado.',
     'Aplicar el flujo requerimiento → spec → contexto → plan → validación a un ticket real.',
     'Entregar un MVP testeado, con SPEC.md y AI.md honestos, no “usé ChatGPT”.',
@@ -102,15 +103,74 @@ export const studentGuide = {
   studyPathTitle: 'Camino de estudio',
   studyPath: [
     { id: 'contenidos', label: 'Temas', detail: 'Mapa, SPEC/Rules/Skills, Cursor ADE, MCP y el flujo completo.' },
-    { id: 'actividad', label: 'Actividad', detail: 'Enunciado de gastos. Sin soluciones.' },
+    { id: 'actividad', label: 'Actividad', detail: 'Gastos: dinámica sin PC + spec/contexto/plan. Sin soluciones.' },
     { id: 'desafio', label: 'Desafío', detail: 'Reservas de turnos. 4–6 h. IA obligatoria.' },
     { id: 'glosario', label: 'Glosario', detail: 'Cuando una palabra no cierra.' },
+  ],
+}
+
+/** Partes de un buen requerimiento / mini-spec. El ingeniero las decide; el agente ejecuta bajo eso. */
+export const requirementPartsChecklist = {
+  thesis:
+    'El ingeniero decide y redacta; el agente ejecuta bajo esa spec. Sin estas partes, el modelo inventa el producto.',
+  parts: [
+    {
+      id: 'objetivo',
+      name: 'Objetivo / problema',
+      ask: '¿Qué problema resuelve el MVP, en una frase?',
+      tip: 'Una frase. Si no cabe, el alcance está inflado.',
+    },
+    {
+      id: 'actores',
+      name: 'Actores',
+      ask: '¿Quién usa el sistema? ¿Hay roles distintos?',
+      tip: '“Usuario” sin más es una trampa. Paciente ≠ admin; dueño de gastos ≠ multi-usuario.',
+    },
+    {
+      id: 'en-alcance',
+      name: 'Alcance (entra)',
+      ask: '¿Qué operaciones o pantallas entran en el MVP?',
+      tip: 'Lista corta y concreta (alta, listado, borrado…).',
+    },
+    {
+      id: 'fuera',
+      name: 'Fuera de alcance',
+      ask: '¿Qué queda explícitamente afuera?',
+      tip: 'Si no lo escribís, el agente arma pagos, charts o JWT “por las dudas”.',
+    },
+    {
+      id: 'reglas',
+      name: 'Reglas verificables',
+      ask: '¿Qué comportamientos se pueden testear (no adjetivos)?',
+      tip: 'Mal: “intuitivo”. Bien: “monto > 0”; “máximo 3 reservas activas”.',
+    },
+    {
+      id: 'edges',
+      name: 'Casos límite',
+      ask: '¿Qué pasa en los bordes (cuarto cupo, monto 0, slot pasado…)?',
+      tip: 'Si no listás edge cases, el happy path se aprueba solo.',
+    },
+    {
+      id: 'ca',
+      name: 'Criterios de aceptación',
+      ask: '¿Qué comportamientos observables puede intentar romper un evaluador?',
+      tip: 'Cada CA debería poder fallar con un test o un POST concreto.',
+    },
+    {
+      id: 'restricciones',
+      name: 'Restricciones',
+      ask: '¿Stack, auth, códigos HTTP, tiempo, seguridad?',
+      tip: 'Decisiones abiertas (403 vs 404, X-User-Id, comando de test) van acá o en SPEC.md.',
+    },
   ],
 }
 
 export const activityStudentTemplates = {
   spec: `## Objetivo
 (¿Qué problema resuelve el MVP, en una frase?)
+
+## Actores
+-
 
 ## En alcance
 -
@@ -121,12 +181,18 @@ export const activityStudentTemplates = {
 ## Reglas
 - (tienen que poder testearse)
 
+## Casos límite
+-
+
 ## Criterios de aceptación
 1.
 2.
 3.
 4.
-5.`,
+5.
+
+## Restricciones
+-`,
   context: `## Stack
 -
 
@@ -159,7 +225,7 @@ export const pedagogicalIdeas = [
   'La IA no es solamente un chatbot.',
   'Un modelo no es un agente.',
   'Un agente necesita contexto y herramientas para realizar trabajo útil.',
-  'El desarrollador debe aprender a proporcionar contexto y especificaciones de calidad.',
+  'El desarrollador decide y redacta el requerimiento; el agente ejecuta bajo esa spec.',
   'La calidad del software generado depende en gran medida de la calidad de los requisitos, la especificación, el contexto y la validación.',
   'Los agentes pueden participar en distintas etapas del ciclo de desarrollo.',
   'El futuro inmediato no es solamente AI Coding, sino Agentic Development.',
@@ -172,6 +238,7 @@ export const facilitationGuide = {
     'Grupo de 12–30 estudiantes o desarrolladores. Asumir que algunos ya usan Copilot o ChatGPT y otros no tocaron un agente. No asumir laptop para todos: la actividad en clase funciona en papel.',
   outcomes: [
     'Distinguir modelo, asistente y agente, y ubicar las herramientas que ya usan.',
+    'Redactar las partes de un buen requerimiento (sin laptop) y explicar por qué el ingeniero manda sobre el agente.',
     'Explicar por qué el contexto y la especificación determinan la calidad del software generado.',
     'Aplicar el flujo requerimiento → spec → contexto → plan → validación sobre un caso real.',
     'Salir con un desafío asincrónico concreto, plantillas y criterios de evaluación.',
@@ -181,12 +248,12 @@ export const facilitationGuide = {
     'Una herramienta de IA lista: Cursor, Claude, ChatGPT o similar, con un repo de ejemplo abierto.',
     'Proyecto base: demos/clinica-turnos (npm install && npm test). Prompts en demos/prompts/.',
     'Demo 1 (prompt pobre vs contextualizado) y Demo 3 (plan antes de código) ensayadas.',
-    'Plan semilla impreso o en pantalla para grupos sin laptop.',
+    'Papel o pizarra para la dinámica sin PC (checklist de 8 partes). Plan semilla impreso o en pantalla.',
   ],
   pacing: [
     'Minuto 0: abrir con la pregunta central, no con definiciones.',
     'Minutos 15–50: teoría densa. Cortar ADE o MCP si el grupo se atrasa; no recortar Context Engineering.',
-    'Minutos 68–105: walkthrough + actividad. Proteger estos 37 minutos: es el corazón del workshop.',
+    'Minutos 68–105: walkthrough (checklist de requerimiento) + actividad. Los primeros 12 min de la actividad son sin laptop.',
     'Últimos 15 minutos: no improvisar el desafío. Mostrar spec, plantillas y rúbrica en pantalla.',
   ],
   liveDemos: [
@@ -220,7 +287,7 @@ export const sections: WorkshopSection[] = [
     id: 'actividad',
     title: 'Actividad',
     eyebrow: 'Práctica',
-    summary: 'Enunciado de la práctica de gastos: spec, contexto y plan. Sin código.',
+    summary: 'Enunciado de gastos: dinámica sin PC + spec, contexto y plan. Sin código.',
     audience: 'student',
   },
   {
@@ -356,13 +423,13 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 12,
     clock: '01:08 – 01:20',
     description:
-      'Walkthrough del caso “reservar un turno”: ambigüedad, SPEC.md, Rules, plan, edge cases y review. Demo 3 si hay tiempo.',
+      'Walkthrough “reservar un turno”: ambigüedad, checklist de 8 partes del requerimiento, SPEC.md, plan. Demo 3 si hay tiempo.',
     teacherNotes: [
-      'No implementar en vivo el sistema de turnos. Recorrer los 8 pasos con el requerimiento pobre en pantalla.',
-      'Pedir al aula 4 preguntas antes de mostrar las vuestras. Escribirlas.',
+      'No implementar turnos en vivo. Anclar: el ingeniero redacta; el agente ejecuta bajo esa spec.',
+      'Mostrar la checklist de 8 partes antes de pedir preguntas. Mini-actividad: tachar qué falta en el ticket pobre.',
       'Si el tiempo alcanza, Demo 3: pedir un plan y criticar juntos 2 minutos.',
     ],
-    ifLate: 'Hacer solo pasos 1–5 (ambigüedad → SPEC → contexto → plan). Testing y review quedan para el cierre.',
+    ifLate: 'Checklist (2 min) + 5 preguntas del aula + pasos 1–5. Testing/review en dos frases.',
   },
   {
     id: 7,
@@ -371,13 +438,13 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 25,
     clock: '01:20 – 01:45',
     description:
-      'En duplas: convertir “registrar gastos” en especificación, contexto, prompt y plan. No hace falta programar.',
+      'Duplas: dinámica sin PC (12 min) redactando el requerimiento de gastos; luego contexto/prompt/plan (semilla si no hay laptop).',
     teacherNotes: [
-      'Proteger este bloque. Si llegás 10 minutos tarde, recortá MCP y ADE, no la actividad.',
-      'Circular: a los 8 min deberían tener reglas, no seguir discutiéndolas. A los 18 min, un prompt escrito.',
-      'Debrief de 3 minutos: 2 duplas leen su regla más importante y el peor supuesto que evitaron.',
+      'Proteger este bloque. Si llegás tarde, recortá MCP y ADE, no la dinámica sin PC.',
+      '0–12 min: papel/pizarra, laptops cerradas. Roles: redactor / abogado del diablo.',
+      'Debrief de 3 min: 2 duplas leen un CA y el peor supuesto que evitaron.',
     ],
-    ifLate: 'Hacer solo pasos 1–4 (ambigüedades, spec, contexto, prompt). El plan se discute en plenario con el plan semilla.',
+    ifLate: 'Solo la dinámica sin PC (0–12) + plenario con plan semilla. Contexto/prompt quedan de tarea.',
   },
   {
     id: 8,
@@ -740,15 +807,16 @@ AGENTE → MCP CLIENT → MCP SERVER → HERRAMIENTA → SISTEMA`,
     id: 6,
     title: 'Del requerimiento al software',
     objective:
-      'Practicar el flujo completo sobre un requerimiento realista, y ver por qué un enunciado vago produce software incorrecto aunque el modelo sea bueno.',
+      'Practicar el flujo completo sobre un requerimiento realista, aprender qué partes debe tener una buena redacción, y ver por qué un enunciado vago produce software incorrecto aunque el modelo sea bueno.',
     body: [
       'El enunciado “el sistema debe permitir que un usuario reserve un turno” parece trabajo. Para un agente es una invitación a inventar el producto: una reserva por usuario o cien, con o sin overlap, con o sin cancelación, autenticado o anónimo, agenda infinita o slots. Si no se decide, se decide igual — en el código, sin que nadie lo haya aprobado.',
-      'El flujo de este workshop fuerza las decisiones antes del diff. (1) Leer el requerimiento como sospechoso. (2) Listar ambigüedades en forma de preguntas. (3) Convertir las respuestas en SPEC verificable (reglas + CA — lo mismo que exigirá el desafío en SPEC.md). (4) Adjuntar contexto: stack, Rules/Skills o AGENTS.md, “qué no tocar”, cómo se testea. (5) Pedir un plan sin modificar código. (6) Implementar el plan aprobado en Cursor Agent, revisando diffs. (7) Tests de caso feliz y edge cases; intentar romper. (8) Review con otra sesión o agente (quien implementó no se autoaprueba) y un humano al final.',
+      'Antes del diff, el oficio es redactar. Un buen requerimiento (o la mini-spec que le sigue) no es prosa larga: son partes concretas — objetivo, actores, alcance in/out, reglas verificables, casos límite, criterios de aceptación y restricciones. El ingeniero las decide y las escribe; el agente ejecuta bajo esa spec. Sin esas partes, “usar Cursor” es operar un generador, no dirigir un proceso.',
+      'El flujo de este workshop fuerza esas decisiones. (1) Leer el requerimiento como sospechoso. (2) Listar ambigüedades en forma de preguntas. (3) Completar las partes del requerimiento y convertirlas en SPEC verificable (lo mismo que exigirá el desafío en SPEC.md). (4) Adjuntar contexto: stack, Rules/Skills o AGENTS.md, “qué no tocar”, cómo se testea. (5) Pedir un plan sin modificar código. (6) Implementar el plan aprobado en Cursor Agent, revisando diffs. (7) Tests de caso feliz y edge cases; intentar romper. (8) Review con otra sesión o agente (quien implementó no se autoaprueba) y un humano al final.',
       'Separar plan de implementación no es ceremonia. Un plan malo se corrige en un párrafo. Un módulo malo se corrige en una hora y deja tests que testean el error. Usar un agente distinto para QA no es moda multiagente: es el mismo principio que no dejar que el autor de un PR se haga el unique reviewer.',
     ],
     diagram: `REQUERIMIENTO (vago)
       ↓  preguntas
-ESPECIFICACIÓN (reglas + criterios de aceptación)
+ESPECIFICACIÓN (8 partes → reglas + CA)
       ↓  stack, repo, “no tocar”
 CONTEXTO
       ↓  “no modifiques código”
@@ -759,6 +827,11 @@ IMPLEMENTACIÓN
 TESTING
       ↓  otro agente + humano
 REVIEW → SOFTWARE`,
+    table: {
+      headers: ['Parte', 'Pregunta guía', 'Truco'],
+      rows: requirementPartsChecklist.parts.map((p) => [p.name, p.ask, p.tip]),
+    },
+    keyConcept: requirementPartsChecklist.thesis,
     examples: [
       {
         title: 'Del enunciado pobre a reglas',
@@ -780,40 +853,48 @@ REVIEW → SOFTWARE`,
           'Una spec corta desplaza las decisiones al modelo. Vas a pasar el rato corrigiendo producto, no bugs.',
       },
       {
+        wrong: '“Redactar requerimientos es trabajo de analista; yo solo opero el agente.”',
+        right:
+          'Decidir alcance, CA y restricciones es ingeniería. Operar el agente sin eso es delegar la profesión.',
+      },
+      {
         wrong: '“Los tests los genera el mismo agente al final y alcanza.”',
         right:
           'El implementador tiende a testear lo que ya hizo. Un segundo pase (o un humano) tiene que intentar romper las reglas de negocio.',
       },
     ],
     takeaways: [
+      'El ingeniero decide y redacta las partes del requerimiento; el agente ejecuta bajo esa spec.',
       'La calidad del software generado sigue a la calidad de la especificación y del contexto.',
-      'Separar planificación de implementación reduce retrabajo y alucinaciones de diseño.',
-      'Implementador ≠ revisor. Tests y un humano cierran el loop.',
+      'Separar planificación de implementación reduce retrabajo. Implementador ≠ revisor.',
     ],
     miniActivity: {
-      title: 'Cinco preguntas antes de implementar',
+      title: '¿Qué partes faltan? (sin laptop)',
       duration: '3 min',
-      grouping: 'Individual, después se usan en la actividad larga',
+      grouping: 'Individual o dupla, papel o mental',
       prompt:
-        'Sin mirar las de la pizarra, escribí 5 preguntas que harías antes de implementar “reservar un turno”.',
+        'Ticket: “el sistema debe permitir que un usuario reserve un turno.” Con la checklist de 8 partes, tachá las que YA están cubiertas y rodeá las que faltan. Escribí 1 pregunta por parte faltante.',
       steps: [
-        '2 min de escritura.',
-        '1 min: recolectar 6–8 preguntas distintas. Completar las que falten (concurrencia, cancelación, identidad).',
+        '60 s: leer la tabla de 8 partes (está arriba en este tema).',
+        '90 s: tachar / rodear; anotar preguntas (papel o chat del IDE cerrado).',
+        '30 s: dos voluntarios dicen la parte que más duele (casi siempre actores, CA o edge cases).',
       ],
       expectedOutput: [
-        'Identidad del usuario, cupo, overlap, cancelación, pasado, timezone, notificaciones, admin vs paciente.',
-        'Si nadie menciona concurrencia, el docente la pone: “dos reservas al mismo horario”.',
+        'Casi nadie tacha más de “objetivo” a medias. Actores, fuera de alcance, CA y restricciones aparecen como huecos.',
+        'Si alguien dice “está todo implícito”, pedir un CA que se pueda romper con un POST.',
       ],
-      debrief: '“Esas preguntas son el primer commit. El código viene después.”',
+      debrief:
+        '“Eso que rodearon es el trabajo de ustedes. El agente no adivina actores ni fuera de alcance — los inventa.”',
     },
     teacherNotes: {
-      pacing: '9 min de walkthrough + 3 min de preguntas. Demo 3 solo si el reloj lo permite (queda buffer en la actividad).',
-      say: 'No vamos a programar el sistema de turnos ahora. Vamos a dejarlo tan especificado que programarlo sea la parte aburrida — y eso es el desafío de la casa.',
+      pacing:
+        '6 min flujo + checklist, 3 min mini-actividad, 3 min ejemplos/Demo 3. No implementar turnos.',
+      say: 'No vamos a programar el sistema de turnos ahora. Vamos a dejarlo tan especificado que programarlo sea la parte aburrida — y eso es el desafío de la casa. Ustedes redactan; el agente ejecuta.',
       watchFor:
-        'El aula quiere ver código. Mostrar un plan en viñetas vale más. El código del desafío es asincrónico.',
-      ifLate: 'Pasos 1–5. Testing/review: dos frases y al desafío.',
+        'El aula quiere ver código. Mostrar la checklist y un plan en viñetas vale más. El código del desafío es asincrónico.',
+      ifLate: 'Checklist en 2 min + mini-actividad. Pasos 6–8 en dos frases.',
       misconception:
-        'Si dicen “en el trabajo el ticket ya viene así de vago”, responder: “entonces el primer entregable del agente es la lista de preguntas, no el PR.”',
+        'Si dicen “en el trabajo el ticket ya viene así de vago”, responder: “entonces el primer entregable es completar las 8 partes (o la lista de preguntas), no el PR.”',
     },
   },
 ]
@@ -853,18 +934,60 @@ export const closingReflection = {
 export const practicalActivity = {
   title: 'Registrar gastos personales',
   duration: '25 minutos',
-  grouping: 'Duplas (o tríos si falta máquina). Un portavoz por grupo.',
-  goal: 'Practicar el método hasta el plan — no terminar una app. Al final de los 25 minutos cada dupla debe tener ambigüedades, reglas, contexto, un prompt y un plan (propio o criticado).',
+  grouping: 'Duplas (o tríos). Un portavoz. Laptops cerradas los primeros 12 min.',
+  goal: 'Practicar el método hasta el plan — no terminar una app. Prioridad: redactar un requerimiento completo en papel. Después: contexto, prompt y plan (propio, o criticando el plan semilla).',
   requirement: 'El sistema debe permitir registrar gastos personales con categoría y monto.',
   whyThis:
-    'Es deliberadamente pobre, como un ticket real. El caso de turnos queda para el walkthrough y el desafío; acá transfieren el método a otro dominio.',
+    'Es deliberadamente pobre, como un ticket real. El caso de turnos queda para el walkthrough y el desafío; acá transfieren el método a otro dominio. La primera mitad es sin PC a propósito: el criterio no necesita laptop.',
+  offlineDynamic: {
+    title: 'Ticket sospechoso (sin PC)',
+    duration: '12 min',
+    needsComputer: false,
+    materials: 'Papel, marcador o pizarra. Una hoja por dupla. Checklist de 8 partes a la vista (proyector o impresa).',
+    roles:
+      'Redactor escribe. Abogado del diablo solo pregunta “¿y si…?” y marca huecos. A los 8 min rotan 30 s el rol.',
+    framing:
+      'Cierren laptops. El entregable de esta mitad es un requerimiento con las 8 partes — no un prompt a la IA.',
+    steps: [
+      {
+        minutes: '0–1',
+        label: 'Leer el enunciado en voz alta. Subrayar palabras vagas (“permitir”, “gastos personales”).',
+      },
+      {
+        minutes: '1–4',
+        label: 'Individual → unir: mínimo 6 preguntas de ambigüedad. No responder todavía.',
+      },
+      {
+        minutes: '4–10',
+        label:
+          'Completar en papel las 8 partes (objetivo, actores, en/fuera de alcance, reglas, edge cases, CA, restricciones). Decidir; no acumular “depende”.',
+      },
+      {
+        minutes: '10–12',
+        label:
+          'Atacar: el abogado del diablo elige 1 CA y 1 edge case. Si no se puede romper con un ejemplo concreto, reescribir.',
+      },
+    ],
+    doneWhen: [
+      'Hay actores explícitos (aunque sea “un solo usuario local”).',
+      'Hay fuera de alcance con al menos 3 ítems.',
+      'Hay ≥3 reglas testeables y ≥3 CA observables.',
+      'Hay al menos 1 caso límite escrito (monto 0, categoría inventada, fecha futura…).',
+    ],
+    say: 'Ustedes son el ingeniero: deciden. La IA, si aparece después, ejecuta bajo lo que escribieron acá.',
+    debrief:
+      'En el plenario final (min 22–25): una dupla lee su CA más sólido; otra, el supuesto que iban a dejar colar (auth, USD, categorías libres).',
+    watchFor: [
+      'Duplas que abren el chat a los 2 minutos → pedir laptop abajo hasta el minuto 12.',
+      'Prosa en vez de partes → señalar la checklist en pantalla: “completen casillas, no un ensayo”.',
+      'MVP inflado (presupuestos, multi-moneda) → imponer el fuera de alcance de ejemplo y seguir.',
+    ],
+  },
   timing: [
-    { minutes: '0–3', label: 'Leer el enunciado y listar ambigüedades (individual, después unen listas).' },
-    { minutes: '3–8', label: 'Convertir 6–8 preguntas en reglas concretas. Elegir, no acumular “depende”.' },
-    { minutes: '8–13', label: 'Escribir la mini-spec (reglas + 5 criterios de aceptación).' },
-    { minutes: '13–18', label: 'Definir contexto (stack inventado pero coherente) y el prompt para el agente.' },
-    { minutes: '18–22', label: 'Pedir un plan a una IA o criticar el plan semilla. Marcar 2 riesgos.' },
-    { minutes: '22–25', label: 'Plenario: 2 duplas leen una regla y el peor supuesto que evitaron.' },
+    { minutes: '0–12', label: 'Dinámica sin PC: ambigüedades → 8 partes del requerimiento → atacar un CA.' },
+    { minutes: '12–17', label: 'Contexto (stack coherente) + prompt del plan. Sigue válido en papel.' },
+    { minutes: '17–22', label: 'Pedir plan a una IA o criticar el plan semilla. Marcar 2 riesgos / huecos.' },
+    { minutes: '22–25', label: 'Plenario: 2 duplas — un CA sólido y el peor supuesto evitado.' },
   ],
   guidedQuestions: [
     {
@@ -895,6 +1018,9 @@ export const practicalActivity = {
   specTemplate: `## Objetivo
 MVP para registrar gastos personales de un único usuario local.
 
+## Actores
+- Un único usuario local (sin auth en el MVP).
+
 ## En alcance
 - Alta de gasto: monto, categoría, fecha opcional, nota opcional (máx. 140 caracteres).
 - Listado ordenado por fecha descendente.
@@ -908,12 +1034,21 @@ MVP para registrar gastos personales de un único usuario local.
 - categoría ∈ {comida, transporte, vivienda, ocio, otros}.
 - fecha no puede ser futura.
 
+## Casos límite
+- monto 0 o negativo → 4xx, no persiste.
+- categoría desconocida → 4xx.
+- DELETE de id inexistente → 404.
+- fecha futura → 4xx.
+
 ## Criterios de aceptación
 1. POST de un gasto válido lo persiste y lo devuelve con id.
 2. POST con monto ≤ 0 responde error de validación (4xx) y no persiste.
 3. POST con categoría desconocida responde 4xx y no persiste.
 4. GET lista todos, más reciente primero.
-5. DELETE de un id inexistente responde 404.`,
+5. DELETE de un id inexistente responde 404.
+
+## Restricciones
+- TypeScript + API HTTP mínima; tests con Vitest/Jest; sin Docker obligatorio.`,
   contextTemplate: `Stack (ejemplo, pueden elegir otro si es coherente):
 - TypeScript, API HTTP mínima (Next.js route handlers o Express).
 - Persistencia in-memory o SQLite. Sin Docker obligatorio.
@@ -945,21 +1080,24 @@ Fallos plantados a propósito:
 - Un único test. El implementador se autoaprueba.
 - No dice dónde viven los archivos ni cómo correr tests.`,
   qualityCriteria: [
+    'Las 8 partes del requerimiento están (aunque sea en una línea cada una).',
     'Las reglas se pueden testear (no “el usuario debería poder cargar gastos de forma sencilla”).',
     'Hay una sección explícita de fuera de alcance.',
-    'El prompt prohíbe código hasta tener plan.',
+    'Hay al menos un caso límite escrito aparte del happy path.',
+    'El prompt prohíbe código hasta tener plan (si usaron IA).',
     'El plan nombra archivos, orden y tests — no solo “armar el backend”.',
-    'Hay al menos un riesgo (validación, persistencia al reiniciar, zona horaria).',
   ],
   steps: [
     'Listar ambigüedades del requerimiento (mínimo 6 preguntas).',
-    'Decidir reglas concretas; anotar también lo que queda fuera de alcance.',
-    'Redactar mini-spec con 5 criterios de aceptación verificables.',
+    'Completar las 8 partes (objetivo, actores, alcance, fuera, reglas, edge cases, CA, restricciones).',
+    'Atacar un CA y un edge case: si no se rompe con un ejemplo, reescribir.',
     'Definir contexto: stack, carpetas, cómo se testea, qué no tocar.',
-    'Escribir el prompt del agente (plan, no código).',
+    'Escribir el prompt del agente (plan, no código) — o pasar directo al plan semilla.',
     'Obtener o criticar un plan: marcar 2 huecos o riesgos.',
   ],
   methodology: `REQUERIMIENTO
+↓
+8 PARTES (papel)
 ↓
 ESPECIFICACIÓN
 ↓
@@ -968,18 +1106,20 @@ CONTEXTO
 PLAN
 ↓
 VALIDACIÓN`,
-  note: 'No es necesario programar. El entregable de los 25 minutos es el método aplicado: spec + contexto + prompt + plan criticado.',
+  note: 'No es necesario programar ni tener laptop. Los primeros 12 minutos son sin PC. El entregable de los 25 minutos es el método aplicado: requerimiento completo + contexto + prompt/plan criticado.',
   debriefQuestions: [
     '¿Qué supuesto iba a colar el agente si no lo escribían (auth, pesos vs dólares, categorías libres)?',
+    '¿Cuál de las 8 partes les costó más decidir? ¿Por qué?',
     '¿El plan semilla les pareció “suficiente”? ¿Por qué no lo es?',
     '¿Qué van a copiar tal cual al desafío de turnos?',
   ],
   teacherNotes: [
-    'Repartir roles en la dupla: uno escribe la spec, el otro ataca con “¿y si…?”. A los 8 minutos rotan.',
+    'Minuto 0: “laptops abajo”. La dinámica sin PC es el corazón; no la salteen por “avanzar al prompt”.',
+    'Repartir roles: redactor / abogado del diablo. A los 8 minutos rotan.',
     'Si una dupla discute 10 minutos sin decidir, imponer el MVP de las decisiones de ejemplo y pedirles que sigan. Decidir mal y explícito gana a no decidir.',
-    'Tener el plan semilla en pantalla a partir del minuto 18. Los que no llegaron a usar IA igual practican review.',
-    'Debrief corto y concreto. Elegir una dupla que se haya ido a multi-usuario o a charts y mostrar cómo la spec se infló.',
-    'Recoger 1 foto o 1 gist de una buena mini-spec para mostrar al cierre: “esto es el nivel que espero en SPEC.md del desafío”.',
+    'Tener el plan semilla en pantalla a partir del minuto 17. Los que no usan IA igual practican review.',
+    'Debrief corto. Elegir una dupla que se haya ido a multi-usuario o a charts y mostrar cómo la spec se infló.',
+    'Recoger 1 foto de una buena hoja de 8 partes para el cierre: “esto es el nivel que espero en SPEC.md del desafío”.',
   ],
 }
 
@@ -989,7 +1129,7 @@ export const finalChallenge = {
   description:
     'Actividad asincrónica (unas 4–6 horas de trabajo a lo largo de una semana). El alumno usa libremente herramientas de IA y agentes para transformar la especificación dada en software ejecutable, testeado y documentado.',
   objective:
-    'Evaluar si puede dirigir un proceso con IA — especificar, contextualizar, planificar, implementar, testear y registrar decisiones — no si programa sin IA. Usar IA es obligatorio y se documenta en AI.md.',
+    'Evaluar si puede dirigir un proceso con IA — especificar, contextualizar, planificar, implementar, testear y registrar decisiones — no si programa sin IA. Usar IA es obligatorio y se documenta en AI.md. Mismo oficio que en clase: el ingeniero decide y redacta; el agente ejecuta bajo la spec.',
   estimatedEffort: '4–6 horas',
   suggestedDeadline: '7 días corridos después de la clase',
   tools: ['ChatGPT', 'Claude', 'Cursor', 'GitHub Copilot', 'Claude Code', 'Codex', 'Gemini', 'Otros agentes'],

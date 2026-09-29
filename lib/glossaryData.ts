@@ -114,6 +114,16 @@ export const glossaryTerms: GlossaryTerm[] = [
       'Reglas de negocio y criterios de aceptación escritos de forma verificable. En este workshop, el contrato entre el alumno, el agente y el evaluador (SPEC.md del desafío).',
   },
   {
+    term: 'Requerimiento',
+    definition:
+      'Pedido inicial (a menudo vago). Un buen requerimiento se redacta en partes: objetivo, actores, alcance in/out, reglas verificables, casos límite, criterios de aceptación y restricciones. El ingeniero decide; el agente ejecuta bajo eso.',
+  },
+  {
+    term: 'Ambigüedad',
+    definition:
+      'Hueco del enunciado que el modelo llenará inventando producto (¿quién?, ¿cuántas?, ¿qué pasa si…?). Se trata listando preguntas antes de codear.',
+  },
+  {
     term: 'Rules',
     definition:
       'Reglas persistentes del proyecto (p. ej. en Cursor) que condicionan al agente: convenciones, “qué no tocar”, formato de errores. Contexto siempre-on o por glob.',
