@@ -47,6 +47,7 @@ export type DeckSlide = {
   attribution?: string
   background?: string
   autoAnimate?: boolean
+  notesExtra?: string
 }
 
 const notesFrom = (id: number): Slide['teacherNotes'] => {
@@ -78,34 +79,60 @@ export const deckSlides: DeckSlide[] = [
     kicker: 'Instituto Zona Oeste · Workshop práctico',
     title: 'Desarrollo con Agentes de IA',
     subtitle: 'Del IDE al ADE',
-    meta: ['2 horas', 'Pablo Botta', 'Método, no magia'],
+    meta: ['Pablo Botta', 'Método, no magia'],
     background: 'linear-gradient(155deg, #0b1c2e 0%, #121318 42%, #1b140c 100%)',
   },
   {
     type: 'hook',
     sourceId: 1,
     kicker: 'Antes de cualquier definición',
-    question: '¿Quién ya le pidió código a una IA esta semana?',
-    hint: 'Anoten esa herramienta. En 15 minutos la vamos a clasificar.',
+    question: '¿Quién ya le pidió código a un modelo de IA esta semana?',
+    hint: 'Levantá la mano. Anotá la herramienta. Ahora vemos cómo la usás.',
     background: 'linear-gradient(180deg, #101114 0%, #0d1a28 100%)',
+  },
+  {
+    type: 'cards',
+    sourceId: 1,
+    kicker: 'Mini-actividad · 4 min · conocernos',
+    title: 'Herramienta + cómo la usás',
+    subtitle: 'Recodá tu elección. En Ecosistema la clasificamos con la fórmula.',
+    notesExtra: 'Correr ya: manos → pizarra → 3 modos. No postergar a “después”.',
+    cards: [
+      {
+        kicker: '1 · Modelo',
+        title: '¿Quién esta semana usó?',
+        body: 'ChatGPT, Copilot, Cursor, Claude, Gemini, “ninguna”. Tres nombres a la pizarra.',
+      },
+      {
+        kicker: '2 · Modo',
+        title: '¿Cómo la usaste?',
+        body: 'Autocomplete · chat de código · agente que edita · pegar y rezar. Una frase por voluntario.',
+      },
+      {
+        kicker: '3 · Cierre',
+        title: 'Sin ranking',
+        body: 'No hay herramienta “correcta”. Hay modos.',
+      },
+    ],
+    background: 'linear-gradient(160deg, #0d1a28 0%, #121318 100%)',
   },
   {
     type: 'bullets',
     sourceId: 2,
     kicker: 'Introducción',
-    title: 'El problema no es el modelo',
+    title: 'La calidad no está en el modelo',
     bullets: [
       'La IA ya está en el flujo. Eso no está en discusión.',
-      'Muchos la usan como productora de código.',
-      'Falta el oficio: spec, contexto, validación.',
+      'Muchos ya la usan como creadora de software.',
+      'Pero sigue faltando profesionalismo: spec, contexto, validación.',
     ],
   },
   {
     type: 'flow',
     sourceId: 3,
     kicker: 'Cada salto cambió el rol',
-    title: 'Cómo cambió el desarrollo',
-    steps: ['IDE', 'Git', 'Cloud', 'CI/CD', 'AI Coding', 'Agentes'],
+    title: 'Cómo evolucionó el desarrollo de software',
+    steps: ['IDE', 'Git', 'CI/CD', 'AI Coding', 'Agentes'],
     subtitle: 'No es una moda de autocompletado. Es trabajo delegable y supervisado.',
     autoAnimate: true,
   },
@@ -120,17 +147,17 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'flow',
     sourceId: 4,
-    kicker: 'El desarrollo de software mantiene su ciclo',
+    kicker: 'El desarrollo de software mantiene su forma',
     title: 'Del requerimiento al software',
-    steps: ['Requerimiento', 'Spec', 'Contexto', 'Plan', 'Agente', 'Test', 'Review', 'Software'],
-    subtitle: 'Hoy practicamos hasta el plan. Implementar es el desafío de la casa.',
+    steps: ['Requerimiento', 'Spec', 'Contexto', 'Plan', 'Desarrollo', 'Test', 'Review', 'Software'],
+    subtitle: 'Hoy los agentes pueden hacer todo el trabajo. Pero en los requerimientos, Spec y Contexto están las decisiones humanas que definen el éxito.',
   },
   {
     type: 'section',
     sourceId: 5,
-    kicker: 'Bloque 02 · 15 min',
+    kicker: 'Actualidad del desarrollo de software',
     title: 'Ecosistema',
-    subtitle: 'Un modelo no es un agente. Confundirlos es el error más caro del aula.',
+    subtitle: 'Un modelo no es un agente. Y un agente sin dirección es un modelo con pistas.',
     background: 'linear-gradient(160deg, #082033 0%, #121318 100%)',
   },
   {
@@ -138,54 +165,54 @@ export const deckSlides: DeckSlide[] = [
     sourceId: 5,
     kicker: 'Anoten esto. Se reusa toda la clase.',
     title: 'La fórmula',
-    parts: ['Modelo', 'Objetivo', 'Contexto', 'Herramientas', 'Iterar'],
+    parts: ['Modelo', 'Objetivo (spec)', 'Contexto', 'Herramientas (Harness)', 'Iterar'],
     result: 'Agente',
   },
   {
     type: 'cards',
     sourceId: 5,
     kicker: 'Tres capas. Sin ranking de marcas.',
-    title: 'No es lo mismo hablar que actuar',
+    title: 'No es lo mismo hablar que actuar. Ejemplo práctico:',
     cards: [
       {
-        kicker: 'Chatbot',
-        title: 'Explica el cupo 3',
-        body: '“¿Qué es el límite de 3 reservas activas?” → texto. Sin repo ni tests.',
+        kicker: 'Chatbot IA',
+        title: 'Escribe una función que devuelva el cupo de reservas activas.',
+        body: 'Código en texto plano. Sin repo ni tests.',
       },
       {
-        kicker: 'Asistente',
-        title: 'Completa el test',
-        body: 'Mismo cupo 3: en el archivo abierto, termina el test del cuarto turno. Vos conducís.',
+        kicker: 'Asistente de IA',
+        title: 'Autocompleta la función que devuelva el cupo de reservas activas.',
+        body: 'Código en texto plano en el archivo abierto. Sin repo ni tests.',
       },
       {
         kicker: 'Agente',
-        title: 'Implementa CA3',
-        body: 'Mismo cupo 3: según SPEC.md, edita, corre Vitest, itera. Diff para revisar.',
+        title: 'Implementa la función que devuelva el cupo de reservas activas.',
+        body: 'Modificación de varios archivos según SPEC.md. Corre validaciones y agrega tests.',
       },
     ],
   },
   {
     type: 'hook',
     sourceId: 5,
-    kicker: 'Mini-actividad · 4 min · no la saltees',
-    question: 'La herramienta que nombraron: ¿chatbot, asistente o agente?',
-    hint: 'Justifiquen con la fórmula. El logo no cuenta.',
+    kicker: 'Mini-actividad · 4 min · remontamos el inicio',
+    question: 'La herramienta que anotaron: ¿chatbot, asistente o agente?',
+    hint: 'Misma que al minuto 0. Justifiquen con la fórmula.',
     background: 'linear-gradient(180deg, #1a150c 0%, #121318 100%)',
   },
   {
     type: 'cards',
     sourceId: 6,
     kicker: 'Límites que importan en el trabajo',
-    title: 'El modelo no es magia. Tiene tanque.',
+    title: 'El modelo no es magia. Tiene Contexto.',
     cards: [
       {
         kicker: 'Context window',
-        title: 'El tanque es finito',
+        title: 'El contexto es finito',
         body: 'Prompt + archivos + historial + respuesta. Si no entra, olvida o inventa.',
       },
       {
         kicker: 'Alucinaciones',
-        title: 'Plausible ≠ verdadero',
+        title: 'Posible ≠ verdadero',
         body: 'Importa un archivo que no existe. El test es el detector, no la confianza del chat.',
       },
       {
@@ -198,7 +225,7 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'flow',
     sourceId: 7,
-    kicker: 'Las marcas rotan. El mapa no.',
+    kicker: 'Las marcas rotan. Las formas no.',
     title: 'Ubiquen cualquier herramienta acá',
     steps: ['Proveedor', 'Modelo', 'Agente', 'Entorno', 'Herramientas', 'Proyecto'],
     subtitle: 'Si mañana sale “Forge IDE”: ¿tiene agente con tools o solo chat?',
@@ -206,9 +233,9 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'section',
     sourceId: 8,
-    kicker: 'Bloque 03 · 12 min',
+    kicker: 'Desarrollo con Agentes de IA',
     title: 'IDE → ADE',
-    subtitle: 'De editar un archivo a orquestar trabajo. El cursor deja de ser el centro.',
+    subtitle: 'De editar un archivo a orquestar trabajo. El IDE deja de ser el centro.',
     background: 'linear-gradient(160deg, #082033 0%, #121318 100%)',
   },
   {

@@ -129,6 +129,7 @@ function CardsSlide({ slide, notes }: { slide: DeckSlide; notes: string }) {
           </article>
         ))}
       </div>
+      {slide.subtitle && <p className="izo-hint-line fragment fade-up">{slide.subtitle}</p>}
       <Notes text={notes} />
     </div>
   )

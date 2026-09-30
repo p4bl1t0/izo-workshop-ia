@@ -251,7 +251,7 @@ export const facilitationGuide = {
     'Papel o pizarra para la dinámica sin PC (checklist de 8 partes). Plan semilla impreso o en pantalla.',
   ],
   pacing: [
-    'Minuto 0: abrir con la pregunta central, no con definiciones.',
+    'Minuto 0: reconocimiento (manos + herramienta + modo). No abrir con definiciones.',
     'Minutos 15–50: teoría densa. Cortar ADE o MCP si el grupo se atrasa; no recortar Context Engineering.',
     'Minutos 68–105: walkthrough (checklist de requerimiento) + actividad. Los primeros 12 min de la actividad son sin laptop.',
     'Últimos 15 minutos: no improvisar el desafío. Mostrar spec, plantillas y rúbrica en pantalla.',
@@ -349,13 +349,13 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 15,
     clock: '00:00 – 00:15',
     description:
-      'Pregunta central, evolución de herramientas y el nuevo rol: especificar, contextualizar y validar. Mini-actividad de mapeo.',
+      'Reconocimiento del aula (herramienta + modo), pregunta central, evolución de herramientas y el nuevo rol: especificar, contextualizar y validar.',
     teacherNotes: [
-      'Abrir con “¿quién ya le pide código a una IA?”. Anotar 3 respuestas en la pizarra.',
-      'Recorrer la línea IDE → Git → Cloud → CI/CD → AI Coding → Agentes en 3 minutos, sin historia de cada uno.',
-      'Cerrar el bloque con el flujo Requerimiento → Software en pantalla. Dejarlo visible el resto de la clase.',
+      'Abrir con “¿quién ya le pidió código a una IA esta semana?”. 4 min: manos, 3 nombres en pizarra, cómo la usan (autocomplete / chat / agente / pegar).',
+      'Guardar esas herramientas en voz alta: en Ecosistema las clasifican. No ranking — modos.',
+      'Recorrer la línea IDE → Git → Cloud → CI/CD → AI Coding → Agentes en 3 minutos. Cerrar con el flujo Requerimiento → Software visible.',
     ],
-    ifLate: 'Saltar la anécdota larga del prompt que no compilaba. Ir directo a la pregunta central.',
+    ifLate: 'Reconocimiento en 2 min (manos + un voluntario). Saltar anécdota del prompt que no compilaba.',
   },
   {
     id: 2,
@@ -368,7 +368,7 @@ export const programBlocks: ProgramBlock[] = [
     teacherNotes: [
       'Usar la fórmula AGENTE = Modelo + Objetivo + Contexto + Herramientas + Iteración como ancla visual.',
       'No ranking de modelos. Mencionar 3 proveedores como ejemplos y seguir.',
-      'La mini-actividad de clasificar ChatGPT / Copilot / Cursor Agent vale más que otra definición.',
+      'Remontar el reconocimiento del inicio: clasificar LA herramienta que cada uno anotó (chatbot / asistente / agente). Vale más que otra definición.',
     ],
     ifLate: 'No explicar temperatura ni tokens en detalle. “Hay un límite de contexto y a veces inventan” alcanza.',
   },
@@ -507,29 +507,29 @@ Problema → Especificación → Contexto → Agente → Código → Tests → R
       'Agentic Development es el siguiente paso después de AI Coding: dirigir procesos, no solo autocompletar.',
     ],
     miniActivity: {
-      title: 'Mapear tu flujo actual',
-      duration: '3 min',
-      grouping: 'Individual, 30 s de plenario',
+      title: 'Reconocimiento: herramienta + modo',
+      duration: '4 min',
+      grouping: 'Plenario, manos arriba',
       prompt:
-        'Anotá una tarea de las últimas dos semanas y marcá: la hice yo / la hice con un chatbot / la delegué a un agente / la revisé sin haberla escrito.',
+        '¿Quién ya le pidió código a una IA esta semana? Anotá la herramienta y, en una frase, cómo la usás: autocomplete, chat, agente que edita, o pegar y rezar.',
       steps: [
-        '30 s: elegir la tarea (un bug, un endpoint, un test, un README).',
-        '90 s: marcar en qué casillero cayó cada etapa (entender, implementar, testear, documentar).',
-        '60 s: dos voluntarios dicen qué casillero les dio más vergüenza dejar vacío.',
+        '60 s: manos arriba. Quien no usa IA anota “ninguna” igual.',
+        '90 s: 3 nombres a la pizarra (marcas distintas si se puede).',
+        '90 s: tres voluntarios dicen el modo. Docente escribe la pareja herramienta → modo.',
       ],
       expectedOutput: [
-        'La mayoría descubre que usa IA para implementar y casi nunca para especificar ni para review independiente.',
-        'Al menos una persona admite que pegó código sin entenderlo. Usarlo como gancho, no como humillación.',
+        'Un mapa rápido del aula: quién está en chat, quién en Copilot, quién ya tocó un agente.',
+        'Al menos un “pegar sin leer” o “ninguna” — usarlos como gancho, no como juicio.',
       ],
       debrief:
-        '“Hoy vamos a entrenar justo las casillas vacías: spec, contexto, plan y validación. Implementar va a ser lo más fácil.”',
+        '“Guardá esa pareja. En unos minutos la clasificamos: chatbot, asistente o agente. Hoy no ranking: modos.”',
     },
     teacherNotes: {
-      pacing: '12 min de exposición + 3 min de mini-actividad. El flujo grande queda en pantalla el resto de la clase.',
-      say: 'No vinimos a construir modelos. Vinimos a dejar de usarla como oráculo de código y empezar a usarla como equipo al que se dirige.',
+      pacing: '4 min reconocimiento + 8 min exposición + 3 min flujo en pantalla. El flujo grande queda visible el resto de la clase.',
+      say: 'No vinimos a construir modelos. Primero vemos cómo la usan hoy; después el oficio alrededor.',
       watchFor:
         'Si alguien dice “yo no uso IA”, invitarlo igual: el workshop es el método, no la herramienta favorita. Puede hacer la actividad en papel.',
-      ifLate: 'Saltar el segundo ejemplo. No saltar la mini-actividad: calibra al grupo.',
+      ifLate: 'Reconocimiento en 2 min (manos + un voluntario). Saltar el segundo ejemplo del cambio de paradigma.',
       misconception:
         'Evitar el debate “¿la IA nos deja sin trabajo?”. Reencuadrar: “el trabajo que queda es más de diseño y de criterio. Eso se entrena.”',
     },
@@ -585,13 +585,13 @@ Agente:      Objetivo → plan → acciones → observación → corrección →
       'Alucinaciones se mitigan con contexto, tests y revisión — no con más fe en el modelo.',
     ],
     miniActivity: {
-      title: 'Clasificá la herramienta',
+      title: 'Clasificá la tuya (remontamos el inicio)',
       duration: '4 min',
       grouping: 'Duplas, 1 min de plenario',
       prompt:
-        'Ubiquen ChatGPT, GitHub Copilot (inline), Cursor Chat, Cursor Agent / Claude Code y “un script que corre tests solo” en chatbot, asistente o agente. Justifiquen con la fórmula.',
+        'Tomá la herramienta que anotaste al inicio. Ubicala en chatbot, asistente o agente. Justificá con la fórmula. Después contrastá con ChatGPT, Copilot inline y Cursor Agent.',
       steps: [
-        '2 min: clasificar en silencio en dupla.',
+        '2 min: clasificar en silencio en dupla (primero la propia, después 2 marcas del aula).',
         '1 min: una dupla comparte. El resto objeta.',
         '1 min: el docente corrige con la fórmula, no con la marca.',
       ],
@@ -605,7 +605,7 @@ Agente:      Objetivo → plan → acciones → observación → corrección →
         '“Si mañana sale una herramienta nueva, no pregunten cómo se llama. Pregunten: ¿tiene objetivo, contexto, tools e iteración?”',
     },
     teacherNotes: {
-      pacing: '11 min de mapa mental + 4 min de clasificación. No entrar a APIs de proveedores.',
+      pacing: '11 min de mapa mental + 4 min de clasificación remontando el reconocimiento. No entrar a APIs de proveedores.',
       say: 'No vamos a elegir “el mejor modelo”. Vamos a dejar de confundir la materia prima con el sistema que trabaja.',
       watchFor:
         'Alumnos que usan “GPT” como sinónimo de todo. Pedirles: “¿el chat, el autocompletado o el agente que edita archivos?”',

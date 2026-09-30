@@ -22,12 +22,15 @@ export const slides: Slide[] = [
     title: 'Desarrollo con Agentes de IA',
     bullets: ['Del IDE al ADE', 'Workshop práctico · 2 horas', 'Pablo Botta'],
     teacherNotes: {
-      time: '1 min',
-      explain: 'Título, duración, que es práctico y que hay un desafío asincrónico al final.',
-      mainIdea: 'No venimos a construir IA. Venimos a usarla como parte del oficio de desarrollar.',
-      example: 'Mostrar el sitio: contenidos, actividad, desafío. “Todo queda acá.”',
+      time: '5 min (1 título + 4 reconocimiento)',
+      explain:
+        'Título corto. Después corre la mini-actividad de reconocimiento: manos arriba, herramienta + cómo la usan. Es para conocer al grupo y calibrar el aula.',
+      mainIdea: 'No venimos a construir IA. Venimos a usarla como parte del oficio de desarrollar — y primero vemos cómo la usan hoy.',
+      example: 'Mostrar el sitio en 20 s. Luego pizarra: ChatGPT / Copilot / Cursor / Claude / “ninguna”. Tres voluntarios dicen cómo (autocomplete, chat, agente, pegar sin leer).',
       question: '¿Quién ya le pidió código a una IA esta semana?',
-      transition: 'Anoten esa herramienta mentalmente. En 15 minutos la vamos a clasificar.',
+      transition:
+        'Anoten herramienta + modo. En el bloque Ecosistema la clasificamos con la fórmula (chatbot / asistente / agente).',
+      note: 'Si nadie levanta la mano, preguntar Copilot o “ChatGPT para un error”. Quien no usa IA hoy igual anota “ninguna” — el workshop es el método.',
     },
   },
   {
@@ -81,7 +84,7 @@ export const slides: Slide[] = [
       example: 'Señalar: hoy practicamos hasta PLAN en clase; IMPLEMENTAR es el desafío de la casa.',
       question: '¿En qué cajita de este flujo usan IA hoy, y en cuál nunca?',
       transition: 'Para dirigir agentes hay que saber qué son — y qué no.',
-      note: 'Mini-actividad del bloque 1 si no la hicieron al hablar. Si ya mapeó el aula, seguir.',
+      note: 'Si el reconocimiento del inicio quedó corto, 60 s: “en qué cajita del flujo usan IA hoy”. Si ya calibraron el aula, seguir.',
     },
   },
   {
@@ -99,9 +102,9 @@ export const slides: Slide[] = [
       explain: 'Tres capas. Sin ranking de marcas. La fórmula se apunta y se reusa toda la clase.',
       mainIdea: 'Un modelo responde. Un agente actúa, observa y corrige.',
       example: 'Mismo problema (cupo 3): chatbot explica la regla; asistente completa el test; agente implementa según SPEC.md y corre Vitest.',
-      question: 'La herramienta que nombraron al inicio: ¿chatbot, asistente o agente? ¿Por qué?',
-      transition: 'Hagamos eso en voz alta con cinco nombres conocidos.',
-      note: 'Acá corre la mini-actividad de clasificar (4 min). No la saltees: fija el vocabulario.',
+      question: 'La herramienta que anotaron al inicio: ¿chatbot, asistente o agente? ¿Por qué?',
+      transition: 'Misma herramienta, ahora con la fórmula. Después comparamos con cinco nombres conocidos.',
+      note: 'Remontá el reconocimiento del minuto 0. 4 min. No la saltees: fija el vocabulario con lo que ya dijeron.',
     },
   },
   {

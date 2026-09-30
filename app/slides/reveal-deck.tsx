@@ -124,7 +124,10 @@ export function RevealDeck() {
               data-background-gradient={slide.background}
               data-background-color={slide.background ? undefined : '#121318'}
             >
-              <DeckSlideView slide={slide} notes={formatSpeakerNotes(slide.sourceId)} />
+              <DeckSlideView
+                slide={slide}
+                notes={formatSpeakerNotes(slide.sourceId, slide.notesExtra)}
+              />
             </section>
           ))}
         </div>

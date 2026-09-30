@@ -195,7 +195,7 @@
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1.08;
-  max-width: 18ch;
+  max-width: 24ch;
 }
 
 .izo-hand {
@@ -221,7 +221,7 @@
 
 .izo-hint-line {
   margin: 28px 0 0;
-  max-width: 36ch;
+  /* max-width: 50ch; */
   color: var(--izo-cyan);
   font-size: 22px;
   line-height: 1.4;
@@ -478,7 +478,7 @@
 
 .izo-quote {
   margin: 0;
-  max-width: 16ch;
+  max-width: 24ch;
   color: #fff;
   font-size: 48px;
   font-weight: 700;
