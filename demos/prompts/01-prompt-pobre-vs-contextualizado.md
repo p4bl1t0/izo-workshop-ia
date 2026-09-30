@@ -66,4 +66,7 @@ Antes de codear: listá en 3 bullets qué archivos vas a tocar. Después impleme
 
 ## Si no hay red
 
-Leer en voz alta la diferencia: Prompt A → “Express + JWT + controllers/”. Prompt B → “App Router + Zod + tests + no tocar auth”.
+Preferible: actividad sin PC con 4 cartas (Vacío / Parcial / Ruido / Curado) en  
+`demos/actividades/mismo-pedido-distinto-contexto.md` (~10–12 min).
+
+Fallback rápido: leer en voz alta la diferencia — Prompt A → “Express + JWT + controllers/”. Prompt B → “App Router + Zod + tests + no tocar auth”.

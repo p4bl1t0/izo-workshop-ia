@@ -21,6 +21,8 @@ demos/
 │   ├── 00-setup.md
 │   ├── 01-prompt-pobre-vs-contextualizado.md
 │   └── …
+├── actividades/              ← dinámicas sin PC (imprimibles)
+│   └── mismo-pedido-distinto-contexto.md
 └── clinica-turnos/           ← proyecto base (copiar o abrir directo)
     ├── AGENTS.md
     ├── SPEC.md
@@ -32,7 +34,7 @@ demos/
 
 | Demo | Prioridad | Proyecto base | Notas |
 |------|-----------|---------------|-------|
-| 01 Prompt pobre vs contextualizado | **En vivo** | `clinica-turnos` | 2 sesiones nuevas |
+| 01 Prompt pobre vs contextualizado | **En vivo** | `clinica-turnos` | 2 sesiones nuevas; fallback sin PC: `actividades/mismo-pedido-distinto-contexto.md` |
 | 02 Analizar repositorio | Opcional | `clinica-turnos` | Sin escribir código |
 | 03 Plan antes de código | **En vivo** | `clinica-turnos` + `SPEC.md` | No implementar |
 | 04 Implementar paso 1 | Si hay tiempo | `clinica-turnos` | Tras demo 3 |
