@@ -392,7 +392,7 @@ export const deckSlides: DeckSlide[] = [
     subtitle: '0–12 min sin PC: 8 partes del requerimiento. Después contexto y plan.',
     meta: ['25 min', 'Duplas', 'Sin PC al inicio'],
     bullets: [
-      'Laptops abajo: redactor + abogado del diablo',
+      'Arrancar sin PC. Solo el requerimiento.',
       'Completar las 8 partes en papel; atacar un Criterio de Aceptación',
       'Min 17: plan semilla en pantalla (válido sin IA)',
     ],
@@ -402,19 +402,19 @@ export const deckSlides: DeckSlide[] = [
     },
     background: 'linear-gradient(155deg, #1a150c 0%, #121318 55%, #0c2236 100%)',
   },
-  {
-    type: 'section',
-    sourceId: 20,
-    kicker: 'Bloque 08 · 15 min',
-    title: 'Cierre',
-    subtitle: 'Lo que gana valor, lo que no se romantiza, y la consigna de la casa.',
-    background: 'linear-gradient(160deg, #1a150c 0%, #121318 100%)',
-  },
+  // {
+  //   type: 'section',
+  //   sourceId: 20,
+  //   kicker: 'Bloque 08 · 15 min',
+  //   title: 'Cierre',
+  //   subtitle: 'Lo que gana valor, lo que no se romantiza, y la consigna de la casa.',
+  //   background: 'linear-gradient(160deg, #1a150c 0%, #121318 100%)',
+  // },
   {
     type: 'compare',
     sourceId: 20,
     kicker: 'Human in the Loop no es opcional',
-    title: 'El oficio que gana valor',
+    title: 'El profesionalismo que gana valor',
     columns: [
       {
         title: 'Pierde valor relativo',
@@ -454,19 +454,19 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'challenge',
     sourceId: 22,
-    kicker: 'Desafío · 4–6 h · 7 días',
+    kicker: 'Desafío · Asincrónico',
     title: 'Reservas de turnos',
-    subtitle: 'La spec dada manda. El juez va a intentar el cuarto turno y el doble booking.',
+    subtitle: 'La spec dada manda. El juez intenta el 4.º cupo, el doble booking y cancelar tarde.',
     bullets: [
-      'IA obligatoria y documentada en AI.md',
-      'Cupo 3 · slot único · 24 h · no pasado',
-      'Entrega: src, tests, README, SPEC.md, AI.md',
+      'IA obligatoria y documentada en AI.md · Entrega: src, tests, README, SPEC.md, AI.md',
+      'Máx. 3 reservas vigentes (futuras y no canceladas) · un slot = una reserva · no pasado',
+      'Cancelar solo si faltan ≥ 24 h para el turno; más cerca, se rechaza',
     ],
     cards: [
-      { title: 'CA3', body: 'El cuarto turno activo falla' },
-      { title: 'CA4', body: 'Dos POST al mismo slot: uno pierde' },
-      { title: 'CA5', body: 'Cancelar 23 h 59 min antes: no' },
-      { title: 'CA6', body: 'Tras cancelar a tiempo, otro toma el slot' },
+      { title: 'CA3', body: 'Ya tiene 3 vigentes → la 4.ª del mismo usuario falla' },
+      { title: 'CA4', body: 'Dos reservas al mismo horario: una gana, la otra no' },
+      { title: 'CA5', body: 'A 23 h 59 del turno no se puede cancelar (≥ 24 h sí)' },
+      { title: 'CA6', body: 'Cancelación a tiempo libera el horario para otro' },
     ],
   },
   {
@@ -481,7 +481,7 @@ export const deckSlides: DeckSlide[] = [
     sourceId: 23,
     kicker: 'El material queda en el sitio',
     title: 'Gracias',
-    subtitle: 'Oficina de consultas: Recursos y Glosario. Preguntas de entrega, no de teoría nueva.',
+    subtitle: '@pablo_botta / pabloluisbotta@gmail.com',
     meta: ['Esc · overview', 'S · notas del docente', 'F · pantalla completa'],
   },
 ]
