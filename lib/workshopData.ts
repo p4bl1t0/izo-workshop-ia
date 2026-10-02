@@ -59,8 +59,9 @@ export const workshopMeta = {
   modality: 'Workshop práctico',
   prerequisites: 'Programación básica',
   instructor: 'Pablo Botta',
+  contact: '@pablo_botta / pabloluisbotta@gmail.com',
   quote:
-    'La IA puede escribir código. La nueva habilidad es aprender a dirigir, contextualizar y validar ese trabajo.',
+    'La IA puede escribir código. El oficio es definir, contextualizar, dirigir y validar.',
   centralQuestion:
     '¿Cómo pasa un desarrollador de "pedirle código a una IA" a diseñar y supervisar un proceso de desarrollo en colaboración con agentes de IA?',
   coreFlow: `REQUERIMIENTO
@@ -105,16 +106,16 @@ export const studentGuide = {
   studyPath: [
     { id: 'contenidos', label: 'Temas', detail: 'Mapa, SPEC/Rules/Skills, Cursor ADE, MCP y el flujo completo.' },
     { id: 'actividad', label: 'Actividad', detail: 'Gastos: dinámica sin PC + spec/contexto/plan. Sin soluciones.' },
-    { id: 'desafio', label: 'Desafío', detail: 'Reservas de turnos. 4–6 h. IA obligatoria.' },
+    { id: 'desafio', label: 'Desafío', detail: 'Reservas de turnos · asincrónico. IA obligatoria.' },
     { id: 'diapositivas', label: 'Diapositivas', detail: 'Deck Reveal.js para repasar la clase.' },
     { id: 'glosario', label: 'Glosario', detail: 'Cuando una palabra no cierra.' },
   ],
 }
 
-/** Partes de un buen requerimiento / mini-spec. El ingeniero las decide; el agente ejecuta bajo eso. */
+/** Partes de un buen requerimiento / mini-spec. El desarrollador las decide; el agente ejecuta bajo eso. */
 export const requirementPartsChecklist = {
   thesis:
-    'El ingeniero decide y redacta; el agente ejecuta bajo esa spec. Sin estas partes, el modelo inventa el producto.',
+    'El desarrollador decide; el agente ejecuta. Sin estas partes, el modelo inventa el producto.',
   parts: [
     {
       id: 'objetivo',
@@ -296,7 +297,7 @@ export const sections: WorkshopSection[] = [
     id: 'desafio',
     title: 'Desafío',
     eyebrow: 'Entrega',
-    summary: 'Consigna, spec, plantillas, rúbrica y checklist de entrega.',
+    summary: 'Consigna asincrónica, spec, plantillas, rúbrica y checklist de entrega.',
     audience: 'student',
   },
   {
@@ -427,8 +428,8 @@ export const programBlocks: ProgramBlock[] = [
     description:
       'Walkthrough “reservar un turno”: ambigüedad, checklist de 8 partes del requerimiento, SPEC.md, plan. Demo 3 si hay tiempo.',
     teacherNotes: [
-      'No implementar turnos en vivo. Anclar: el ingeniero redacta; el agente ejecuta bajo esa spec.',
-      'Mostrar la checklist de 8 partes antes de pedir preguntas. Mini-actividad: tachar qué falta en el ticket pobre.',
+      'No implementar turnos en vivo. Anclar: el desarrollador redacta; el agente ejecuta bajo esa spec.',
+      'Mostrar los componentes del requerimiento (8 partes) antes de pedir preguntas. Mini-actividad: tachar qué falta en el ticket pobre.',
       'Si el tiempo alcanza, Demo 3: pedir un plan y criticar juntos 2 minutos.',
     ],
     ifLate: 'Checklist (2 min) + 5 preguntas del aula + pasos 1–5. Testing/review en dos frases.',
@@ -443,8 +444,8 @@ export const programBlocks: ProgramBlock[] = [
       'Duplas: dinámica sin PC (12 min) redactando el requerimiento de gastos; luego contexto/prompt/plan (semilla si no hay laptop).',
     teacherNotes: [
       'Proteger este bloque. Si llegás tarde, recortá MCP y ADE, no la dinámica sin PC.',
-      '0–12 min: papel/pizarra, laptops cerradas. Roles: redactor / abogado del diablo.',
-      'Debrief de 3 min: 2 duplas leen un CA y el peor supuesto que evitaron.',
+      '0–12 min: arrancar sin PC. Solo el requerimiento. Roles: redactor / abogado del diablo.',
+      'Debrief de 3 min: 2 duplas leen un Criterio de Aceptación y el peor supuesto que evitaron.',
     ],
     ifLate: 'Solo la dinámica sin PC (0–12) + plenario con plan semilla. Contexto/prompt quedan de tarea.',
   },
@@ -455,11 +456,11 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 15,
     clock: '01:45 – 02:00',
     description:
-      'Habilidades que ganan valor, riesgos, consignas del desafío asincrónico, plantillas y rúbrica.',
+      'Profesionalismo que gana valor, riesgos, consignas del desafío asincrónico, plantillas y rúbrica.',
     teacherNotes: [
       'No cerrar con “pregunten”. Cerrar con la spec del desafío en pantalla y la fecha de entrega.',
       'Mostrar SPEC.md y AI.md vacíos. Decir qué no se evalúa (programar sin IA).',
-      'Dejar 2 minutos para preguntas sobre la entrega, no sobre teoría nueva.',
+      'Dejar 2 minutos para preguntas sobre la entrega. Contacto: @pablo_botta / pabloluisbotta@gmail.com.',
     ],
     ifLate: 'Saltar la lista pierde/gana valor. Mostrar desafío + rúbrica + quote de cierre.',
   },
@@ -812,7 +813,7 @@ AGENTE → MCP CLIENT → MCP SERVER → HERRAMIENTA → SISTEMA`,
       'Practicar el flujo completo sobre un requerimiento realista, aprender qué partes debe tener una buena redacción, y ver por qué un enunciado vago produce software incorrecto aunque el modelo sea bueno.',
     body: [
       'El enunciado “el sistema debe permitir que un usuario reserve un turno” parece trabajo. Para un agente es una invitación a inventar el producto: una reserva por usuario o cien, con o sin overlap, con o sin cancelación, autenticado o anónimo, agenda infinita o slots. Si no se decide, se decide igual — en el código, sin que nadie lo haya aprobado.',
-      'Antes del diff, el oficio es redactar. Un buen requerimiento (o la mini-spec que le sigue) no es prosa larga: son partes concretas — objetivo, actores, alcance in/out, reglas verificables, casos límite, criterios de aceptación y restricciones. El ingeniero las decide y las escribe; el agente ejecuta bajo esa spec. Sin esas partes, “usar Cursor” es operar un generador, no dirigir un proceso.',
+      'Antes del diff, el oficio es redactar. Un buen requerimiento (o la mini-spec que le sigue) no es prosa larga: son partes concretas — objetivo, actores, alcance in/out, reglas verificables, casos límite, criterios de aceptación y restricciones. El desarrollador las decide y las escribe; el agente ejecuta bajo esa spec. Sin esas partes, “usar Cursor” es operar un generador, no dirigir un proceso.',
       'El flujo de este workshop fuerza esas decisiones. (1) Leer el requerimiento como sospechoso. (2) Listar ambigüedades en forma de preguntas. (3) Completar las partes del requerimiento y convertirlas en SPEC verificable (lo mismo que exigirá el desafío en SPEC.md). (4) Adjuntar contexto: stack, Rules/Skills o AGENTS.md, “qué no tocar”, cómo se testea. (5) Pedir un plan sin modificar código. (6) Implementar el plan aprobado en Cursor Agent, revisando diffs. (7) Tests de caso feliz y edge cases; intentar romper. (8) Review con otra sesión o agente (quien implementó no se autoaprueba) y un humano al final.',
       'Separar plan de implementación no es ceremonia. Un plan malo se corrige en un párrafo. Un módulo malo se corrige en una hora y deja tests que testean el error. Usar un agente distinto para QA no es moda multiagente: es el mismo principio que no dejar que el autor de un PR se haga el unique reviewer.',
     ],
@@ -841,7 +842,7 @@ REVIEW → SOFTWARE`,
       },
       {
         title: 'SPEC del desafío (lo que manda)',
-        body: 'La spec dada del desafío fija cupo 3, slot único, no pasado y cancelación 24 h. Tu SPEC.md reescribe esas reglas, decide auth/HTTP y no puede borrar el cupo. Sin ese contrato, Cursor Agent improvisa el producto — y el evaluador lo rompe con el cuarto turno.',
+        body: 'La spec dada del desafío fija cupo 3, slot único, no pasado y cancelación 24 h. Tu SPEC.md reescribe esas reglas, decide auth/HTTP y no puede borrar el cupo. Sin ese contrato, Cursor Agent improvisa el producto — y el evaluador intenta el 4.º cupo, el doble booking y cancelar tarde.',
       },
       {
         title: 'El prompt del plan (copiar)',
@@ -866,7 +867,7 @@ REVIEW → SOFTWARE`,
       },
     ],
     takeaways: [
-      'El ingeniero decide y redacta las partes del requerimiento; el agente ejecuta bajo esa spec.',
+      'El desarrollador decide y redacta las partes del requerimiento; el agente ejecuta bajo esa spec.',
       'La calidad del software generado sigue a la calidad de la especificación y del contexto.',
       'Separar planificación de implementación reduce retrabajo. Implementador ≠ revisor.',
     ],
@@ -930,13 +931,13 @@ export const closingReflection = {
     'Validación y seguridad',
   ],
   closingQuote:
-    'La ventaja ya no está solamente en escribir código más rápido. Está en saber definir qué debe construirse, proporcionar el contexto adecuado, dirigir agentes y validar que el resultado sea correcto.',
+    'La ventaja ya no es tipear más rápido. El oficio es definir, contextualizar, dirigir y validar.',
 }
 
 export const practicalActivity = {
   title: 'Registrar gastos personales',
   duration: '25 minutos',
-  grouping: 'Duplas (o tríos). Un portavoz. Laptops cerradas los primeros 12 min.',
+  grouping: 'Duplas (o tríos). Un portavoz. Arrancar sin PC: solo el requerimiento los primeros 12 min.',
   goal: 'Practicar el método hasta el plan — no terminar una app. Prioridad: redactar un requerimiento completo en papel. Después: contexto, prompt y plan (propio, o criticando el plan semilla).',
   requirement: 'El sistema debe permitir registrar gastos personales con categoría y monto.',
   whyThis:
@@ -949,7 +950,7 @@ export const practicalActivity = {
     roles:
       'Redactor escribe. Abogado del diablo solo pregunta “¿y si…?” y marca huecos. A los 8 min rotan 30 s el rol.',
     framing:
-      'Cierren laptops. El entregable de esta mitad es un requerimiento con las 8 partes — no un prompt a la IA.',
+      'Arrancar sin PC. Solo el requerimiento. El entregable de esta mitad tiene las 8 partes — no un prompt a la IA.',
     steps: [
       {
         minutes: '0–1',
@@ -967,7 +968,7 @@ export const practicalActivity = {
       {
         minutes: '10–12',
         label:
-          'Atacar: el abogado del diablo elige 1 CA y 1 edge case. Si no se puede romper con un ejemplo concreto, reescribir.',
+          'Atacar: el abogado del diablo elige 1 Criterio de Aceptación y 1 edge case. Si no se puede romper con un ejemplo concreto, reescribir.',
       },
     ],
     doneWhen: [
@@ -986,7 +987,7 @@ export const practicalActivity = {
     ],
   },
   timing: [
-    { minutes: '0–12', label: 'Dinámica sin PC: ambigüedades → 8 partes del requerimiento → atacar un CA.' },
+    { minutes: '0–12', label: 'Arrancar sin PC: ambigüedades → 8 partes del requerimiento → atacar un Criterio de Aceptación.' },
     { minutes: '12–17', label: 'Contexto (stack coherente) + prompt del plan. Sigue válido en papel.' },
     { minutes: '17–22', label: 'Pedir plan a una IA o criticar el plan semilla. Marcar 2 riesgos / huecos.' },
     { minutes: '22–25', label: 'Plenario: 2 duplas — un CA sólido y el peor supuesto evitado.' },
@@ -1092,7 +1093,7 @@ Fallos plantados a propósito:
   steps: [
     'Listar ambigüedades del requerimiento (mínimo 6 preguntas).',
     'Completar las 8 partes (objetivo, actores, alcance, fuera, reglas, edge cases, CA, restricciones).',
-    'Atacar un CA y un edge case: si no se rompe con un ejemplo, reescribir.',
+    'Atacar un Criterio de Aceptación y un edge case: si no se rompe con un ejemplo, reescribir.',
     'Definir contexto: stack, carpetas, cómo se testea, qué no tocar.',
     'Escribir el prompt del agente (plan, no código) — o pasar directo al plan semilla.',
     'Obtener o criticar un plan: marcar 2 huecos o riesgos.',
@@ -1108,7 +1109,7 @@ CONTEXTO
 PLAN
 ↓
 VALIDACIÓN`,
-  note: 'No es necesario programar ni tener laptop. Los primeros 12 minutos son sin PC. El entregable de los 25 minutos es el método aplicado: requerimiento completo + contexto + prompt/plan criticado.',
+  note: 'No es necesario programar ni tener laptop. Arrancar sin PC: los primeros 12 minutos son solo el requerimiento. El entregable de los 25 minutos es el método aplicado: requerimiento completo + contexto + prompt/plan criticado.',
   debriefQuestions: [
     '¿Qué supuesto iba a colar el agente si no lo escribían (auth, pesos vs dólares, categorías libres)?',
     '¿Cuál de las 8 partes les costó más decidir? ¿Por qué?',
@@ -1116,7 +1117,7 @@ VALIDACIÓN`,
     '¿Qué van a copiar tal cual al desafío de turnos?',
   ],
   teacherNotes: [
-    'Minuto 0: “laptops abajo”. La dinámica sin PC es el corazón; no la salteen por “avanzar al prompt”.',
+    'Minuto 0: “arrancar sin PC”. La dinámica sin laptop es el corazón; no la salteen por “avanzar al prompt”.',
     'Repartir roles: redactor / abogado del diablo. A los 8 minutos rotan.',
     'Si una dupla discute 10 minutos sin decidir, imponer el MVP de las decisiones de ejemplo y pedirles que sigan. Decidir mal y explícito gana a no decidir.',
     'Tener el plan semilla en pantalla a partir del minuto 17. Los que no usan IA igual practican review.',
@@ -1126,12 +1127,12 @@ VALIDACIÓN`,
 }
 
 export const finalChallenge = {
-  title: 'Desafío Final — Del requerimiento al software',
-  subtitle: 'Reservas de turnos, de la spec al sistema validado',
+  title: 'Desafío · Asincrónico — Reservas de turnos',
+  subtitle: 'La spec dada manda. El juez intenta el 4.º cupo, el doble booking y cancelar tarde.',
   description:
     'Actividad asincrónica (unas 4–6 horas de trabajo a lo largo de una semana). El alumno usa libremente herramientas de IA y agentes para transformar la especificación dada en software ejecutable, testeado y documentado.',
   objective:
-    'Evaluar si puede dirigir un proceso con IA — especificar, contextualizar, planificar, implementar, testear y registrar decisiones — no si programa sin IA. Usar IA es obligatorio y se documenta en AI.md. Mismo oficio que en clase: el ingeniero decide y redacta; el agente ejecuta bajo la spec.',
+    'Evaluar si puede dirigir un proceso con IA — especificar, contextualizar, planificar, implementar, testear y registrar decisiones — no si programa sin IA. Usar IA es obligatorio y se documenta en AI.md. Mismo profesionalismo que en clase: el desarrollador decide y redacta; el agente ejecuta bajo la spec.',
   estimatedEffort: '4–6 horas',
   suggestedDeadline: '7 días corridos después de la clase',
   tools: ['ChatGPT', 'Claude', 'Cursor', 'GitHub Copilot', 'Claude Code', 'Codex', 'Gemini', 'Otros agentes'],
@@ -1171,10 +1172,10 @@ Los ítems 6 y 7 son status codes HTTP de la API (no mensajes sueltos). La consi
 ## Criterios de aceptación (el evaluador los va a intentar romper)
 - CA1: listar disponibles no incluye pasados ni ocupados.
 - CA2: reservar un slot libre lo marca ocupado y cuenta para el cupo del usuario.
-- CA3: un cuarto intento de reserva activa del mismo usuario falla.
-- CA4: dos reservas sobre el mismo slot: una gana, la otra falla (aunque sea secuencial en tests).
-- CA5: cancelar 24 h 1 min antes del slot está permitido; 23 h 59 min antes, no.
-- CA6: tras cancelar a tiempo, otro usuario puede tomar el slot.
+- CA3: ya tiene 3 reservas vigentes → la 4.ª del mismo usuario falla.
+- CA4: dos reservas al mismo horario: una gana, la otra no (aunque sea secuencial en tests).
+- CA5: a 23 h 59 del turno no se puede cancelar (≥ 24 h sí).
+- CA6: cancelación a tiempo libera el horario para otro.
 - CA7: hay tests automatizados que cubren CA1–CA6 (no hace falta un test por CA si uno cubre varios, pero los seis comportamientos tienen que fallar si se rompen).
 
 ## Restricciones técnicas
@@ -1350,7 +1351,7 @@ FEEDBACK`,
   ],
   exampleEvidence: `Criterio: Máximo 3 reservas activas (CA3).
 Resultado: INCUMPLIDO.
-Evidencia: El cuarto POST /reservations del mismo X-User-Id devuelve 201.
+Evidencia: El 4.º POST /reservations del mismo X-User-Id (ya con 3 vigentes) devuelve 201.
 Test del evaluador: rejects_fourth_active_reservation
 Esperado: HTTP 4xx | Obtenido: HTTP 201
 Puntos en cumplimiento funcional: recorte proporcional.`,
@@ -1364,12 +1365,12 @@ Puntos en cumplimiento funcional: recorte proporcional.`,
     'Sin secretos ni features de fuera de alcance que rompan el MVP',
   ],
   teacherNotes: [
-    'En clase: proyectar la spec dada y CA1–CA6. Decir en voz alta: “el juez va a intentar el cuarto turno y el doble booking”. Eso calibra más que la rúbrica en abstracto.',
+    'En clase: proyectar la spec dada y CA1–CA6. Decir en voz alta: “el juez intenta el 4.º cupo, el doble booking y cancelar tarde”. Eso calibra más que la rúbrica en abstracto.',
     'Aclarar que la spec dada manda sobre el SPEC.md del alumno si hay contradicción. SPEC.md sirve para decisiones (códigos, auth), no para borrar el cupo de 3.',
     'No exigir auth real: un header documentado evita que el desafío se vuelva un curso de JWT. Quien implemente auth bien puede sumar en calidad, no en cumplimiento si los CA fallan.',
     'Insistir: 403/404 y 409/400 son códigos HTTP; el alumno elige uno por caso y lo documenta. Vercel/Render son opciones fáciles si quieren URL de demo; no sustituyen tests.',
-    'Evaluación sugerida: primero \`comando de test del alumno\`; si no corre, techo bajo en rúbrica. Después 4 tests privados (cupo, conflicto, pasado, 24 h). Después lectura de AI.md para el 5% de documentación/proceso.',
+    'Evaluación sugerida: primero `comando de test del alumno`; si no corre, techo bajo en rúbrica. Después 4 tests privados (cupo, conflicto, pasado, 24 h). Después lectura de AI.md para el 5% de documentación/proceso.',
     'Si no hay sandbox de agentes el primer año, el docente hace de Judge con la misma rúbrica. El relato multiagente sigue siendo el modelo a futuro, no un bloqueante.',
-    'Feedback útil cita evidencia (“tu cuarto POST da 201”) no adjetivos (“poca IA”). El oficio se corrige con contraejemplos.',
+    'Feedback útil cita evidencia (“tu 4.º POST da 201”) no adjetivos (“poca IA”). El profesionalismo se corrige con contraejemplos.',
   ],
 }

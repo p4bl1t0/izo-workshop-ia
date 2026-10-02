@@ -414,6 +414,7 @@ export function WorkshopApp() {
       <footer className="border-t border-white/10 bg-gradient-to-b from-[#27282B] to-[#0077C8] px-5 py-8 text-center text-sm text-white/80 md:px-10">
         <p>Instituto Superior Particular Incorporado Nº 9045 &ldquo;Zona Oeste&rdquo;</p>
         <p className="mt-1 text-white/60">Material de estudio · {workshopMeta.title}</p>
+        <p className="mt-2 text-white/70">{workshopMeta.contact}</p>
       </footer>
     </main>
   )
@@ -437,7 +438,7 @@ function HomeSection({
       <p className="mt-4 text-base leading-7 text-white/80">{workshopMeta.tagline}</p>
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
         <MetaBadge label="Clase" value={`${workshopMeta.duration} · ${workshopMeta.instructor}`} />
-        <MetaBadge label="Entrega" value="Desafío · 4–6 h · 7 días" />
+        <MetaBadge label="Entrega" value="Desafío · Asincrónico" />
       </div>
       <div className="mt-8">
         <QuoteBlock>{workshopMeta.quote}</QuoteBlock>
@@ -488,7 +489,11 @@ function HomeSection({
         </div>
       </div>
       <div className="mt-8">
-        <SectionHeader eyebrow="Cierre del oficio" title="Qué gana valor" summary={closingReflection.question} />
+        <SectionHeader
+          eyebrow="Human in the Loop no es opcional"
+          title="El profesionalismo que gana valor"
+          summary={closingReflection.question}
+        />
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <Card>
             <p className="text-xs font-bold uppercase text-[#bfbfbf]">Pierde valor relativo</p>
@@ -1241,7 +1246,7 @@ function ChallengeSection({
   return (
     <>
       <SectionHeader
-        eyebrow="Entrega · asincrónico"
+        eyebrow="Entrega"
         title={finalChallenge.title}
         summary="Enunciado, spec que manda, plantillas y rúbrica. Usá IA. Documentá el proceso. El código sin AI.md no cumple."
       />
