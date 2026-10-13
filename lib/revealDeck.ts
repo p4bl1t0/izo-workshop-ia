@@ -502,6 +502,9 @@ export const deckSlides: DeckSlide[] = [
     kicker: 'El material queda en el sitio',
     title: 'Gracias',
     subtitle: '@pablo_botta / pabloluisbotta@gmail.com',
+    image: '/qr.png',
+    imageAlt: 'QR al material del workshop',
+    href: 'https://izo-workshop-ia.vercel.app/slides',
     meta: ['Esc · overview', 'S · notas del docente', 'F · pantalla completa'],
   },
 ]

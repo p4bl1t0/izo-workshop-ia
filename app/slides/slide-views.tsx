@@ -298,6 +298,35 @@ function ThanksSlide({ slide, notes }: { slide: DeckSlide; notes: string }) {
       <Kicker>{slide.kicker}</Kicker>
       <h2 className="izo-thanks">{slide.title}</h2>
       {slide.subtitle && <p className="izo-subtitle wide">{slide.subtitle}</p>}
+      {(slide.image || slide.href) && (
+        <div className="izo-thanks-access">
+          {slide.image &&
+            (slide.href ? (
+              <a
+                href={slide.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="izo-thanks-qr"
+              >
+                <img src={slide.image} alt={slide.imageAlt ?? 'QR al material'} />
+              </a>
+            ) : (
+              <span className="izo-thanks-qr">
+                <img src={slide.image} alt={slide.imageAlt ?? 'QR al material'} />
+              </span>
+            ))}
+          {slide.href && (
+            <a
+              href={slide.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="izo-thanks-url"
+            >
+              {slide.href.replace(/^https?:\/\//, '')}
+            </a>
+          )}
+        </div>
+      )}
       {slide.meta && (
         <div className="izo-meta">
           {slide.meta.map((item) => (
