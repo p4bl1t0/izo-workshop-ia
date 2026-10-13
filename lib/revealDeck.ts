@@ -13,6 +13,7 @@ export type DeckSlideType =
   | 'activity'
   | 'challenge'
   | 'quote'
+  | 'image'
   | 'thanks'
 
 export type DeckCard = {
@@ -45,6 +46,9 @@ export type DeckSlide = {
   meta?: string[]
   quote?: string
   attribution?: string
+  image?: string
+  imageAlt?: string
+  href?: string
   background?: string
   autoAnimate?: boolean
   notesExtra?: string
@@ -141,7 +145,7 @@ export const deckSlides: DeckSlide[] = [
     sourceId: 4,
     kicker: 'El disparador de este workshop',
     question: '¿Cómo pasamos de pedirle código a dirigir un proceso con agentes?',
-    hint: 'Especificar · Contextualizar · Validar',
+    hint: 'Comunicación con el cliente. Reglas de negocio. Criterio del profesional: Especificar · Contextualizar · Validar',
     background: 'linear-gradient(180deg, #121318 0%, #0c2236 100%)',
   },
   {
@@ -150,7 +154,20 @@ export const deckSlides: DeckSlide[] = [
     kicker: 'El desarrollo de software mantiene su forma',
     title: 'Del requerimiento al software',
     steps: ['Requerimiento', 'Spec', 'Contexto', 'Plan', 'Desarrollo', 'Test', 'Review', 'Software'],
-    subtitle: 'Hoy los agentes pueden hacer todo el trabajo. Pero en los requerimientos, Spec y Contexto están las decisiones humanas que definen el éxito.',
+    subtitle: 'Hoy los agentes pueden hacer (casi) todo el trabajo. Pero en los requerimientos, Spec y Contexto están las decisiones humanas que definen el éxito.',
+  },
+  {
+    type: 'image',
+    sourceId: 4,
+    kicker: 'Guillermo Rauch · @rauchg',
+    title: 'Saber cuándo parar - Trabajo hecho sobre trabajo perfecto',
+    subtitle: 'Aun en un mundo de tokens infinitos, hay que saber cuándo parar y qué tradeoffs aceptar. Los agentes NO van a frenar',
+    image: '/rauch-tweet-hardening.png',
+    imageAlt: 'Tweet de Guillermo Rauch sobre endurecer y optimizar software sin fin, y el criterio humano para saber cuándo parar',
+    href: 'https://x.com/rauchg/status/2107962327169675566',
+    attribution: 'x.com/rauchg',
+    notesExtra:
+      'Puente: el pipeline sigue siendo el mismo, pero el agente no tiene freno. Hardening y optimización ad infinitum tienen costo real (tiempo, atención, oportunidad). El oficio es decidir tradeoffs.',
   },
   {
     type: 'section',
@@ -163,15 +180,15 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'formula',
     sourceId: 5,
-    kicker: 'Anoten esto. Se reusa toda la clase.',
+    kicker: 'Agente de IA',
     title: 'La fórmula',
-    parts: ['Modelo', 'Objetivo (spec)', 'Contexto', 'Herramientas (Harness)', 'Iterar'],
+    parts: ['Modelo LLM', 'Objetivo (spec)', 'Contexto', 'Herramientas (Harness)', 'Iterar'],
     result: 'Agente',
   },
   {
     type: 'cards',
     sourceId: 5,
-    kicker: 'Tres capas. Sin ranking de marcas.',
+    kicker: 'Tres capas de uso para la IA',
     title: 'No es lo mismo hablar que actuar. Ejemplo práctico:',
     cards: [
       {
@@ -203,7 +220,7 @@ export const deckSlides: DeckSlide[] = [
     type: 'cards',
     sourceId: 6,
     kicker: 'Límites que importan en el trabajo',
-    title: 'El modelo no es magia. Tiene Contexto.',
+    title: 'El modelo no hace magia. Tiene Contexto.',
     cards: [
       {
         kicker: 'Context window',
@@ -222,14 +239,14 @@ export const deckSlides: DeckSlide[] = [
       },
     ],
   },
-  {
-    type: 'flow',
-    sourceId: 7,
-    kicker: 'Las marcas rotan. Las formas no.',
-    title: 'Ubiquen cualquier herramienta acá',
-    steps: ['Proveedor', 'Modelo', 'Agente', 'Entorno', 'Herramientas', 'Proyecto'],
-    subtitle: 'Si mañana sale “Forge IDE”: ¿tiene agente con tools o solo chat?',
-  },
+  // {
+  //   type: 'flow',
+  //   sourceId: 7,
+  //   kicker: 'Los modelos rotan. Las formas no.',
+  //   title: 'Ubiquen cualquier herramienta acá',
+  //   steps: ['Proveedor', 'Modelo', 'Agente', 'Entorno', 'Herramientas', 'Proyecto'],
+  //   subtitle: 'Si mañana sale “Forge IDE”: ¿tiene agente con tools o solo chat?',
+  // },
   {
     type: 'section',
     sourceId: 8,
@@ -274,22 +291,22 @@ export const deckSlides: DeckSlide[] = [
     ],
     subtitle: 'Cursor / Codex / Claude Code / OpenCode',
   },
-  {
-    type: 'section',
-    sourceId: 12,
-    kicker: '¿Qué es el contexto?',
-    title: 'Contexto',
-    subtitle: 'El prompt es lo que le decimos al modelo. El contexto es lo que el modelo va a saber sobre el proyecto.',
-    background: 'linear-gradient(160deg, #1a150c 0%, #121318 100%)',
-  },
-  {
-    type: 'formula',
-    sourceId: 12,
-    kicker: 'Codificar con Agentes',
-    title: '¿Qué decide el resultado?',
-    parts: ['Modelo', 'Prompt', 'Contexto', 'Herramientas'],
-    result: 'Resultado',
-  },
+  // {
+  //   type: 'section',
+  //   sourceId: 12,
+  //   kicker: '¿Qué es el contexto?',
+  //   title: 'Contexto',
+  //   subtitle: 'El prompt es lo que le decimos al modelo. El contexto es lo que el modelo va a saber sobre el proyecto.',
+  //   background: 'linear-gradient(160deg, #1a150c 0%, #121318 100%)',
+  // },
+  // {
+  //   type: 'formula',
+  //   sourceId: 12,
+  //   kicker: 'Codificar con Agentes',
+  //   title: '¿Qué decide el resultado?',
+  //   parts: ['Modelo', 'Prompt', 'Contexto', 'Herramientas'],
+  //   result: 'Resultado',
+  // },
   {
     type: 'hook',
     sourceId: 12,
@@ -327,14 +344,14 @@ export const deckSlides: DeckSlide[] = [
     sourceId: 15,
     kicker: 'El profesional en desarrollo de Software',
     title: 'Del requerimiento al software',
-    subtitle: 'Ocho pasos. Un enunciado. Cero magia.',
+    subtitle: 'Ocho partes. Un enunciado. Cero magia.',
     background: 'linear-gradient(160deg, #082033 0%, #121318 100%)',
   },
   {
     type: 'ticket',
     sourceId: 16,
-    kicker: 'El requerimiento pobre',
-    title: 'Esto parece trabajo. Para un agente es una invitación a inventar el producto.',
+    kicker: '',
+    title: 'El requerimiento pobre. Para un agente es una invitación a inventar el producto.',
     ticket: {
       label: 'Ticket · P1 · sin spec',
       body: 'El sistema debe permitir que un usuario solicite un turno.',
@@ -370,7 +387,7 @@ export const deckSlides: DeckSlide[] = [
     kicker: 'Antes del primer diff',
     title: 'SPEC, Rules y plan',
     bullets: [
-      'SPEC.md: reglas verificables + fuera de alcance.',
+      'SPEC.md: 8 partes + reglas verificables + fuera de alcance.',
       'Rules/Skills: cómo trabaja el agente; “qué no tocar”.',
       '“Generá un plan. No modifiques código.”',
     ],
@@ -456,11 +473,14 @@ export const deckSlides: DeckSlide[] = [
     sourceId: 22,
     kicker: 'Desafío · Asincrónico · reprogramar',
     title: 'Reprogramar un turno',
-    subtitle: 'Mismo consultorio. Spec dura. El juez intenta el 4.º cupo, reprogramar tarde y moverse a un slot ocupado.',
+    subtitle: 'Mismo consultorio. Spec dura.',
+    // href: 'https://github.com/p4bl1t0/izo-desafio-turnos-ia/tree/main',
+    attribution: 'github.com/p4bl1t0/izo-desafio-turnos-ia',
     bullets: [
-      'IA obligatoria y documentada en AI.md · Entrega: src, tests, README, SPEC.md, AI.md',
+      'IA documentada en AI.md · Entrega: src, tests, README, SPEC.md, AI.md',
       'Reservar + listar + reprogramar a otro slot libre · máx. 3 vigentes · no pasado',
       'Reprogramar solo si faltan ≥ 24 h; libera el slot viejo y ocupa el nuevo',
+      'https://github.com/p4bl1t0/izo-desafio-turnos-ia/tree/main'
     ],
     cards: [
       { title: 'CA3', body: 'Ya tiene 3 vigentes → la 4.ª del mismo usuario falla' },

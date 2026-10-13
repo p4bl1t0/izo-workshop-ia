@@ -231,6 +231,16 @@ function ChallengeSlide({ slide, notes }: { slide: DeckSlide; notes: string }) {
           </div>
         ))}
       </div>
+      {slide.href && (
+        <a
+          href={slide.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="izo-attr fragment fade-up"
+        >
+          {slide.attribution ?? slide.href}
+        </a>
+      )}
       <Notes text={notes} />
     </div>
   )
@@ -241,6 +251,42 @@ function QuoteSlide({ slide, notes }: { slide: DeckSlide; notes: string }) {
     <div className="izo-slide">
       <blockquote className="izo-quote">{slide.quote}</blockquote>
       {slide.attribution && <p className="izo-attr fragment fade-up">{slide.attribution}</p>}
+      <Notes text={notes} />
+    </div>
+  )
+}
+
+function ImageSlide({ slide, notes }: { slide: DeckSlide; notes: string }) {
+  const figure = slide.image ? (
+    <figure className="izo-shot">
+      <img src={slide.image} alt={slide.imageAlt ?? slide.title ?? ''} />
+    </figure>
+  ) : null
+
+  return (
+    <div className="izo-slide izo-slide-media">
+      <Kicker>{slide.kicker}</Kicker>
+      {slide.title && <h2 className="izo-title">{slide.title}</h2>}
+      <div className="izo-media">
+        {slide.href && figure ? (
+          <a href={slide.href} target="_blank" rel="noopener noreferrer" className="izo-media-link">
+            {figure}
+          </a>
+        ) : (
+          figure
+        )}
+        <div className="izo-media-copy">
+          {slide.subtitle && <p className="izo-media-quote">{slide.subtitle}</p>}
+          {slide.attribution &&
+            (slide.href ? (
+              <a href={slide.href} target="_blank" rel="noopener noreferrer" className="izo-attr">
+                {slide.attribution}
+              </a>
+            ) : (
+              <p className="izo-attr">{slide.attribution}</p>
+            ))}
+        </div>
+      </div>
       <Notes text={notes} />
     </div>
   )
@@ -292,6 +338,8 @@ export function DeckSlideView({ slide, notes }: { slide: DeckSlide; notes: strin
       return <ChallengeSlide slide={slide} notes={notes} />
     case 'quote':
       return <QuoteSlide slide={slide} notes={notes} />
+    case 'image':
+      return <ImageSlide slide={slide} notes={notes} />
     case 'thanks':
       return <ThanksSlide slide={slide} notes={notes} />
   }

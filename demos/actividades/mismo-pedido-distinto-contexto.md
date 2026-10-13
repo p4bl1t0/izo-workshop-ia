@@ -4,7 +4,7 @@
 **Cuándo:** Bloque 4 — Context Engineering (antes o en lugar de Demo 1 si no hay red).  
 **Duración:** 10–12 min (6 trabajo + 4 plenario).  
 **Grupos:** 4 (uno por carta). Duplas si el aula es chica.  
-**Material:** imprimir este archivo; cortar por las líneas `✂`. Una carta por grupo. No se muestran entre sí hasta el plenario.
+**Material:** imprimir `mismo-pedido-distinto-contexto.pdf` (o este `.md`); cortar por las líneas `✂`. Una carta por grupo. No se muestran entre sí hasta el plenario.
 
 ---
 

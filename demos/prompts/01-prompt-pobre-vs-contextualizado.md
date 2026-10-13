@@ -75,7 +75,7 @@ Antes de codear: listá en 3 bullets qué archivos vas a tocar. Después impleme
 
 ## Si no hay red
 
-Preferible: actividad sin PC con 4 cartas (Vacío / Parcial / Ruido / Curado) en  
-`demos/actividades/mismo-pedido-distinto-contexto.md` (~10–12 min) — mismo pedido: cancelar.
+Preferible: actividad sin PC con 4 cartas (Vacío / Parcial / Ruido / Curado).  
+Imprimir `demos/actividades/mismo-pedido-distinto-contexto.pdf` (~10–12 min) — mismo pedido: cancelar.
 
 Fallback rápido: leer en voz alta la diferencia — Prompt A → “Express + JWT + cancelar siempre”. Prompt B → “App Router + Zod + 24 h + solo propia + no tocar auth”.

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Actividad — Mismo pedido, distinto contexto</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm 16mm;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      color: #111;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 18pt;
+      margin: 0 0 0.4em;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 13pt;
+      margin: 1.1em 0 0.35em;
+      border-bottom: 1.5px solid #111;
+      padding-bottom: 0.15em;
+    }
+
+    h3 {
+      font-size: 11.5pt;
+      margin: 0.9em 0 0.3em;
+    }
+
+    p, li { margin: 0.35em 0; }
+
+    .meta {
+      font-size: 9.5pt;
+      color: #333;
+      margin-bottom: 1em;
+    }
+
+    .meta strong { color: #111; }
+
+    .callout {
+      border: 2px solid #111;
+      padding: 0.75em 1em;
+      margin: 0.8em 0 1em;
+      background: #f7f7f7;
+    }
+
+    .callout p { margin: 0.25em 0; }
+
+    .quote {
+      font-style: italic;
+      margin: 0.4em 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      margin: 0.6em 0 1em;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 0.35em 0.45em;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th { background: #eee; font-weight: 700; }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.6em;
+      border-bottom: 3px solid #111;
+      padding-bottom: 0.35em;
+    }
+
+    .card-header .badge {
+      margin-left: 1em;
+    }
+
+    .card-header h1 {
+      margin: 0;
+      font-size: 16pt;
+    }
+
+    .badge {
+      font-size: 10pt;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1.5px solid #111;
+      padding: 0.2em 0.55em;
+      white-space: nowrap;
+    }
+
+    .pedido {
+      border-left: 4px solid #111;
+      padding: 0.5em 0.8em;
+      margin: 0.7em 0 1em;
+      background: #fafafa;
+      font-size: 12pt;
+    }
+
+    .pedido .label {
+      font-size: 8.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.25em;
+      color: #444;
+    }
+
+    .context-box {
+      border: 1px solid #999;
+      padding: 0.7em 0.9em;
+      margin: 0.5em 0 1em;
+      min-height: 3em;
+    }
+
+    .context-box.empty {
+      background: repeating-linear-gradient(
+        -45deg,
+        #f5f5f5,
+        #f5f5f5 8px,
+        #eee 8px,
+        #eee 16px
+      );
+      color: #555;
+      font-style: italic;
+      text-align: center;
+      padding: 1.4em;
+    }
+
+    ul.compact { margin: 0.3em 0 0.6em; padding-left: 1.2em; }
+    ul.compact li { margin: 0.15em 0; }
+
+    pre, code {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 9pt;
+    }
+
+    pre {
+      background: #f3f3f3;
+      border: 1px solid #ccc;
+      padding: 0.55em 0.7em;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 0.4em 0 0.7em;
+    }
+
+    .task {
+      border: 2px dashed #111;
+      padding: 0.65em 0.85em;
+      margin-top: 1em;
+    }
+
+    .cut-hint {
+      text-align: center;
+      font-size: 8.5pt;
+      color: #666;
+      margin: 0 0 0.8em;
+      letter-spacing: 0.08em;
+    }
+
+    .template-lines {
+      margin: 0.5em 0 0;
+    }
+
+    .template-lines .q {
+      font-weight: 700;
+      margin: 0.85em 0 0.35em;
+    }
+
+    .line {
+      border-bottom: 1px solid #999;
+      height: 1.55em;
+      margin: 0.15em 0;
+    }
+
+    .header-fields {
+      display: flex;
+      margin: 0.8em 0 1em;
+      font-size: 11pt;
+    }
+
+    .header-fields span {
+      flex: 1;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.2em;
+      margin-right: 1.5em;
+    }
+
+    .header-fields span:last-child {
+      margin-right: 0;
+    }
+
+    .footer-note {
+      margin-top: 1.2em;
+      font-size: 9pt;
+      color: #555;
+    }
+
+    .docente-only {
+      font-size: 9.5pt;
+      color: #333;
+    }
+
+    .warn {
+      font-weight: 700;
+    }
+
+    .small { font-size: 9.5pt; color: #333; }
+
+    .section-label {
+      font-size: 8.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #555;
+      margin: 0 0 0.3em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== DOCENTE ========== -->
+  <section>
+    <p class="section-label">Hoja del docente · no entregar a alumnos</p>
+    <h1>Actividad sin PC — Mismo pedido, distinto contexto</h1>
+    <p class="meta">
+      <strong>Dominio:</strong> turnos · caso de uso: <strong>cancelar</strong><br />
+      <strong>Cuándo:</strong> Bloque 4 — Context Engineering (antes o en lugar de Demo 1 si no hay red)<br />
+      <strong>Duración:</strong> 10–12 min (6 trabajo + 4 plenario) · <strong>Grupos:</strong> 4 (uno por carta)
+    </p>
+
+    <h2>Cómo imprimir</h2>
+    <ol>
+      <li>Imprimí este PDF a doble cara si querés ahorrar papel (opcional).</li>
+      <li><strong>Páginas 2–5:</strong> plantillas de respuesta (una por grupo; imprimí extras si hay duplas).</li>
+      <li><strong>Páginas 6–9:</strong> cartas A / B / C / D — una por grupo. Cortá o entregá la hoja entera.</li>
+      <li>Los grupos <span class="warn">no se muestran</span> las cartas entre sí hasta el plenario.</li>
+      <li>Esta primera página es solo para vos: no fotocopiarla para el aula.</li>
+    </ol>
+
+    <h2>Consigna (leer en voz alta · 30 s)</h2>
+    <div class="callout">
+      <p class="quote">Son el <strong>modelo</strong>. Solo pueden usar lo que está en su hoja.</p>
+      <p class="quote">En <strong>6 minutos</strong> completen la plantilla de respuesta.</p>
+      <p class="quote"><strong>No inventen</strong> contexto que no esté escrito.</p>
+    </div>
+    <p>Después: plenario A → B → C → D.</p>
+    <p class="small">Criterios: ¿inventó stack? ¿auth? ¿reglas de negocio? ¿tests? ¿el ruido diluyó lo importante?</p>
+    <p><strong>Cierre:</strong> <em>Mismo pedido. Distinto contexto. Distinta calidad.</em></p>
+
+    <h2>Rúbrica rápida (plenario)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>A Vacío</th>
+          <th>B Parcial</th>
+          <th>C Ruido</th>
+          <th>D Curado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Inventa stack (Express/JWT/Prisma…)</td>
+          <td>sí</td>
+          <td>poco</td>
+          <td>a veces</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td>Respeta auth / “qué no tocar”</td>
+          <td>no</td>
+          <td>no</td>
+          <td>dudoso</td>
+          <td>sí</td>
+        </tr>
+        <tr>
+          <td>Reglas (propia, ventana 24 h, libera slot)</td>
+          <td>no</td>
+          <td>inventa</td>
+          <td>diluidas</td>
+          <td>sí</td>
+        </tr>
+        <tr>
+          <td>Menciona tests</td>
+          <td>no</td>
+          <td>raro</td>
+          <td>raro</td>
+          <td>sí</td>
+        </tr>
+        <tr>
+          <td>Se pierde en ruido</td>
+          <td>—</td>
+          <td>—</td>
+          <td>sí</td>
+          <td>no</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="docente-only">
+      <strong>Esperado por carta:</strong>
+      A inventa Express/JWT/Prisma ·
+      B App Router plausible pero inventa auth ·
+      C diluye el SPEC enterrado en ruido ·
+      D ruta cancel + tests + X-User-Id + 24 h + libera slot.
+    </p>
+  </section>
+
+  <!-- ========== PLANTILLAS (4) ========== -->
+  <section class="page-break">
+    <p class="cut-hint">✂ PLANTILLA DE RESPUESTA · Grupo 1 de 4</p>
+    <h1>Plantilla de respuesta</h1>
+    <p class="small">Completá solo con lo que está en tu carta. No inventes contexto que no esté escrito.</p>
+    <div class="header-fields">
+      <span>Grupo: ________</span>
+      <span>Carta: ____________</span>
+    </div>
+    <div class="template-lines">
+      <p class="q">1) Stack / tecnologías que voy a usar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">2) Archivos o carpetas que voy a crear / tocar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">3) Reglas de negocio que voy a implementar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">4) Qué asumo o qué preguntaría al humano:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+    </div>
+    <p class="footer-note">Sos el modelo. Solo podés usar lo de tu hoja. Tenés 6 minutos.</p>
+  </section>
+
+  <section class="page-break">
+    <p class="cut-hint">✂ PLANTILLA DE RESPUESTA · Grupo 2 de 4</p>
+    <h1>Plantilla de respuesta</h1>
+    <p class="small">Completá solo con lo que está en tu carta. No inventes contexto que no esté escrito.</p>
+    <div class="header-fields">
+      <span>Grupo: ________</span>
+      <span>Carta: ____________</span>
+    </div>
+    <div class="template-lines">
+      <p class="q">1) Stack / tecnologías que voy a usar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">2) Archivos o carpetas que voy a crear / tocar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">3) Reglas de negocio que voy a implementar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">4) Qué asumo o qué preguntaría al humano:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+    </div>
+    <p class="footer-note">Sos el modelo. Solo podés usar lo de tu hoja. Tenés 6 minutos.</p>
+  </section>
+
+  <section class="page-break">
+    <p class="cut-hint">✂ PLANTILLA DE RESPUESTA · Grupo 3 de 4</p>
+    <h1>Plantilla de respuesta</h1>
+    <p class="small">Completá solo con lo que está en tu carta. No inventes contexto que no esté escrito.</p>
+    <div class="header-fields">
+      <span>Grupo: ________</span>
+      <span>Carta: ____________</span>
+    </div>
+    <div class="template-lines">
+      <p class="q">1) Stack / tecnologías que voy a usar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">2) Archivos o carpetas que voy a crear / tocar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">3) Reglas de negocio que voy a implementar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">4) Qué asumo o qué preguntaría al humano:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+    </div>
+    <p class="footer-note">Sos el modelo. Solo podés usar lo de tu hoja. Tenés 6 minutos.</p>
+  </section>
+
+  <section class="page-break">
+    <p class="cut-hint">✂ PLANTILLA DE RESPUESTA · Grupo 4 de 4</p>
+    <h1>Plantilla de respuesta</h1>
+    <p class="small">Completá solo con lo que está en tu carta. No inventes contexto que no esté escrito.</p>
+    <div class="header-fields">
+      <span>Grupo: ________</span>
+      <span>Carta: ____________</span>
+    </div>
+    <div class="template-lines">
+      <p class="q">1) Stack / tecnologías que voy a usar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">2) Archivos o carpetas que voy a crear / tocar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">3) Reglas de negocio que voy a implementar:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <p class="q">4) Qué asumo o qué preguntaría al humano:</p>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+    </div>
+    <p class="footer-note">Sos el modelo. Solo podés usar lo de tu hoja. Tenés 6 minutos.</p>
+  </section>
+
+  <!-- ========== CARTA A ========== -->
+  <section class="page-break">
+    <p class="cut-hint">✂ CARTA A · entregar solo al Grupo A</p>
+    <div class="card-header">
+      <h1>Carta A — Vacío</h1>
+      <span class="badge">Grupo A</span>
+    </div>
+    <p class="small"><strong>No miren las otras cartas.</strong> Sos el modelo. Solo podés usar lo que está en esta hoja.</p>
+
+    <div class="pedido">
+      <div class="label">Pedido (igual para todos)</div>
+      <strong>Creá un endpoint para cancelar un turno.</strong>
+    </div>
+
+    <h2>Contexto disponible</h2>
+    <div class="context-box empty">(Ninguno. Solo el pedido de arriba.)</div>
+
+    <div class="task">
+      <strong>Tu tarea:</strong> Completá la plantilla de respuesta <strong>solo</strong> con lo que podés inferir del pedido.
+    </div>
+  </section>
+
+  <!-- ========== CARTA B ========== -->
+  <section class="page-break">
+    <p class="cut-hint">✂ CARTA B · entregar solo al Grupo B</p>
+    <div class="card-header">
+      <h1>Carta B — Parcial</h1>
+      <span class="badge">Grupo B</span>
+    </div>
+    <p class="small"><strong>No miren las otras cartas.</strong> Sos el modelo. Solo podés usar lo que está en esta hoja.</p>
+
+    <div class="pedido">
+      <div class="label">Pedido (igual para todos)</div>
+      <strong>Creá un endpoint para cancelar un turno.</strong>
+    </div>
+
+    <h2>Contexto disponible</h2>
+    <div class="context-box">
+      <p><strong>Stack del proyecto</strong></p>
+      <ul class="compact">
+        <li>Next.js App Router</li>
+        <li>TypeScript</li>
+      </ul>
+      <p class="small">(No hay SPEC. No hay reglas de auth. No hay “qué no tocar”. No hay tests mencionados.)</p>
+    </div>
+
+    <div class="task">
+      <strong>Tu tarea:</strong> Completá la plantilla de respuesta <strong>solo</strong> con el pedido + este contexto.
+    </div>
+  </section>
+
+  <!-- ========== CARTA C ========== -->
+  <section class="page-break">
+    <p class="cut-hint">✂ CARTA C · entregar solo al Grupo C</p>
+    <div class="card-header">
+      <h1>Carta C — Ruido</h1>
+      <span class="badge">Grupo C</span>
+    </div>
+    <p class="small"><strong>No miren las otras cartas.</strong> Sos el modelo. Solo podés usar lo que está en esta hoja.</p>
+
+    <div class="pedido">
+      <div class="label">Pedido (igual para todos)</div>
+      <strong>Creá un endpoint para cancelar un turno.</strong>
+    </div>
+
+    <h2>Contexto disponible</h2>
+
+    <h3>package-lock.json (extracto)</h3>
+    <pre>"node_modules/lodash": { "version": "4.17.21" }
+"node_modules/left-pad": { "version": "1.3.0" }
+"node_modules/moment": { "version": "2.29.4" }
+… (847 líneas más omitidas)</pre>
+
+    <h3>Módulo de pagos (src/lib/payments.ts)</h3>
+    <p>Cobros con Mercado Pago. Webhooks en <code>/api/webhooks/mp</code>. No confundir <code>PaymentIntent</code> con <code>Appointment</code>. Refunds ≠ cancelar turno.</p>
+
+    <h3>Branding</h3>
+    <p>Logo en <code>public/logo-clinica.svg</code>. Colores: <code>#0B3D91</code> / <code>#F5F7FA</code>. README de marketing: “La clínica del futuro”.</p>
+
+    <h3>PR #128 (merged hace 8 meses)</h3>
+    <p>“Migración incompleta de Express a Next — dejar controllers/ por compatibilidad temporal.”</p>
+
+    <h3>PR #201 (abierto)</h3>
+    <p>“Spike: ¿JWT o cookies? Discutir en el próximo refinement.”</p>
+
+    <h3>Notas de una reunión vieja</h3>
+    <p>“Quizás Prisma en Q3. O Drizzle. O nada. Cancelación ‘flexible’ para pacientes VIP.”</p>
+
+    <h3>SPEC.md (al final del dump)</h3>
+    <ul class="compact">
+      <li>Auth: header <code>X-User-Id</code> (no JWT).</li>
+      <li>Cancelar solo una reserva <strong>propia</strong>.</li>
+      <li>Cancelación permitida solo si faltan <strong>≥ 24 h</strong> para el inicio del slot.</li>
+      <li>Cancelar a tiempo <strong>libera</strong> el slot (vuelve a disponible).</li>
+      <li>Stack real: Next.js App Router, Zod, Vitest, store in-memory (<code>src/lib/store.ts</code>).</li>
+      <li>No modificar <code>src/lib/auth.ts</code>.</li>
+      <li>Patrón: <code>src/app/api/patients/route.ts</code>. Reserva ya existe en <code>POST /api/appointments</code>.</li>
+    </ul>
+
+    <div class="task">
+      <strong>Tu tarea:</strong> Completá la plantilla. Tenés <strong>6 minutos</strong>. Usá lo que creas relevante.
+    </div>
+  </section>
+
+  <!-- ========== CARTA D ========== -->
+  <section class="page-break">
+    <p class="cut-hint">✂ CARTA D · entregar solo al Grupo D</p>
+    <div class="card-header">
+      <h1>Carta D — Curado</h1>
+      <span class="badge">Grupo D</span>
+    </div>
+    <p class="small"><strong>No miren las otras cartas.</strong> Sos el modelo. Solo podés usar lo que está en esta hoja.</p>
+
+    <div class="pedido">
+      <div class="label">Pedido (igual para todos)</div>
+      <strong>Creá un endpoint para cancelar un turno.</strong>
+    </div>
+
+    <h2>Contexto disponible</h2>
+    <p>Sos un agente de implementación en este repositorio.</p>
+
+    <h3>Stack y convenciones</h3>
+    <ul class="compact">
+      <li>Next.js App Router, TypeScript estricto</li>
+      <li>Validación con Zod en handlers</li>
+      <li>Tests con Vitest (<code>npm test</code>)</li>
+      <li>Auth: header <code>X-User-Id</code> (<code>src/lib/auth.ts</code>). <strong>No</strong> agregues JWT ni middleware nuevo.</li>
+      <li>Persistencia in-memory en <code>src/lib/store.ts</code> (<strong>no</strong> Prisma ni base de datos)</li>
+      <li>Ya existe <code>POST /api/appointments</code> para crear reservas.</li>
+    </ul>
+
+    <h3>Tarea</h3>
+    <p>Implementá cancelación de una reserva propia según estas reglas MVP:</p>
+    <ul class="compact">
+      <li>solo el dueño (<code>X-User-Id</code>) puede cancelar</li>
+      <li>cancelar solo si faltan <strong>≥ 24 h</strong> para el inicio del slot</li>
+      <li>cancelar a tiempo <strong>libera</strong> el slot</li>
+      <li>sin header → 401; reserva ajena → 403 o 404 (documentar)</li>
+    </ul>
+
+    <h3>Restricciones</h3>
+    <ul class="compact">
+      <li>Reutilizá el patrón de <code>src/app/api/patients/route.ts</code></li>
+      <li>Agregá o actualizá tests en <code>tests/</code></li>
+      <li><strong>No</strong> modifiques <code>src/lib/auth.ts</code> ni el contrato de <code>X-User-Id</code></li>
+      <li><strong>No</strong> escribas README ni refactors fuera de alcance</li>
+      <li><strong>No</strong> implementes pagos ni reprogramación</li>
+    </ul>
+    <p>Antes de “codear”: listá en la plantilla qué archivos vas a tocar.</p>
+
+    <div class="task">
+      <strong>Tu tarea:</strong> Completá la plantilla de respuesta <strong>solo</strong> con este contexto.
+    </div>
+  </section>
+
+</body>
+</html>
