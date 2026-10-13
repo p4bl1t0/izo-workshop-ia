@@ -136,7 +136,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   {
     term: 'Edge cases',
     definition:
-      'Casos límite del negocio que el happy path no cubre (cuarto cupo, doble booking, cancelación tarde, slot pasado). Se enseñan y se testean con ese nombre.',
+      'Casos límite del negocio que el happy path no cubre (cuarto cupo, reprogramar tarde, slot ocupado, slot pasado). Se enseñan y se testean con ese nombre.',
   },
   {
     term: 'Criterio de aceptación',

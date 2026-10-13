@@ -33,12 +33,12 @@ export const demos: Demo[] = [
     promptPath: 'demos/prompts/01-prompt-pobre-vs-contextualizado.md',
     objective: 'Mostrar cómo el contexto transforma la calidad de la respuesta, con el mismo pedido de negocio.',
     context: 'Tener un proyecto Next.js (App Router) o, si no hay repo, simularlo nombrando Prisma, Zod y Vitest en el segundo prompt.',
-    prompt: `Pobre: "Creá un endpoint para reservar turnos."
+    prompt: `Pobre: "Creá un endpoint para cancelar un turno."
 
-Contextualizado: "En este proyecto Next.js con App Router, Prisma y PostgreSQL, implementá POST /api/appointments según estas reglas: usuario identificado, máximo 3 reservas activas, slot único, no reservar en el pasado. TypeScript estricto, validación con Zod, tests con Vitest. No modifiques auth. No escribas README."`,
+Contextualizado: "Next.js App Router, Zod, Vitest, store in-memory, auth X-User-Id. Implementá cancelar reserva propia: ≥24 h antes, libera el slot, ajena 403|404. No modifiques auth. No reprogramés ni pagos."`,
     expectedResult:
-      'El pobre inventa stack (Express, JWT, nombres genéricos). El contextualizado encaja: rutas App Router, Zod, límites de negocio, no toca auth.',
-    observe: '¿Respeta “no toques auth”? ¿Nombra tests? ¿Inventa carpetas que no existen?',
+      'El pobre inventa stack (Express, JWT) y cancela siempre. El contextualizado encaja: ruta de cancel, Zod, ventana 24 h, solo propia, no toca auth.',
+    observe: '¿Respeta “no toques auth”? ¿Menciona 24 h y liberar slot? ¿Inventa carpetas que no existen?',
     conclusion: 'Context Engineering no es opcional: es la diferencia entre código usable y código descartable.',
     teacherNotes: [
       'Correr los dos prompts en sesiones nuevas, no en el mismo hilo.',
@@ -90,7 +90,7 @@ Contextualizado: "En este proyecto Next.js con App Router, Prisma y PostgreSQL, 
     title: 'Agente implementando una funcionalidad',
     priority: 'optional',
     duration: '5 min',
-    when: 'Solo si el walkthrough terminó temprano y hay un plan aprobado. Nunca en lugar de la actividad de gastos.',
+    when: 'Solo si el walkthrough terminó temprano y hay un plan aprobado. Nunca en lugar de la actividad de turnos.',
     promptPath: 'demos/prompts/04-implementar-paso-1.md',
     objective: 'Mostrar supervisión de diffs: aceptar lo acotado, rechazar lo extra.',
     context: 'Plan del demo 3, aprobado en voz alta.',

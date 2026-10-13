@@ -51,7 +51,7 @@ Si falta algo: **“Plan incompleto — agregá X antes de implementar.”**
 
 ## Qué NO hacer en esta demo
 
-No dejar que el agente implemente. Decir: “Plan aprobado queda para el desafío; ahora seguimos con la actividad de gastos.”
+No dejar que el agente implemente. Decir: “Plan aprobado queda para el desafío; ahora ustedes redactan el requerimiento de turnos en papel.”
 
 ---
 

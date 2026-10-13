@@ -1,5 +1,6 @@
 # Actividad sin PC — Mismo pedido, distinto contexto
 
+**Dominio:** turnos · caso de uso: **cancelar** (después en papel: solicitar; desafío: reprogramar).  
 **Cuándo:** Bloque 4 — Context Engineering (antes o en lugar de Demo 1 si no hay red).  
 **Duración:** 10–12 min (6 trabajo + 4 plenario).  
 **Grupos:** 4 (uno por carta). Duplas si el aula es chica.  
@@ -52,7 +53,7 @@ Grupo: ____   Carta: ____________
 |---|---------|-----------|---------|----------|
 | Inventa stack (Express/JWT/Prisma…) | sí | poco | a veces | no |
 | Respeta auth / “qué no tocar” | no | no | dudoso | sí |
-| Reglas (cupo 3, slot único, pasado) | no | inventa | diluidas | sí |
+| Reglas (propia, ventana 24 h, libera slot) | no | inventa | diluidas | sí |
 | Menciona tests | no | raro | raro | sí |
 | Se pierde en ruido | — | — | sí | no |
 
@@ -68,7 +69,7 @@ Grupo: ____   Carta: ____________
 
 ## Pedido (igual para todos)
 
-> Creá un endpoint para reservar turnos.
+> Creá un endpoint para cancelar un turno.
 
 ---
 
@@ -86,7 +87,7 @@ Completá la plantilla de respuesta **solo** con lo que podés inferir del pedid
 
 ### Notas del docente (no imprimir / tachar antes de fotocopiar)
 
-Esperado: Express o Nest, JWT, `controllers/`, Prisma o Mongo, sin cupos, sin tests, sin `X-User-Id`.
+Esperado: Express o Nest, JWT, `controllers/`, Prisma o Mongo, cancelación siempre permitida, sin “solo propia”, sin liberar slot, sin tests, sin `X-User-Id`.
 
 ✂ — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -98,7 +99,7 @@ Esperado: Express o Nest, JWT, `controllers/`, Prisma o Mongo, sin cupos, sin te
 
 ## Pedido (igual para todos)
 
-> Creá un endpoint para reservar turnos.
+> Creá un endpoint para cancelar un turno.
 
 ---
 
@@ -121,7 +122,7 @@ Completá la plantilla de respuesta **solo** con el pedido + este contexto.
 
 ### Notas del docente (no imprimir / tachar antes de fotocopiar)
 
-Esperado: ruta App Router plausible (`app/api/...`), pero inventan JWT/sesión, base de datos, reglas de cupo o nombres genéricos. Casi nunca tests ni “no tocar auth”.
+Esperado: ruta App Router plausible (`app/api/.../cancel` o `DELETE`), pero inventan JWT/sesión, soft-delete genérico, sin ventana 24 h ni “solo propia”. Casi nunca tests ni “no tocar auth”.
 
 ✂ — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -133,7 +134,7 @@ Esperado: ruta App Router plausible (`app/api/...`), pero inventan JWT/sesión, 
 
 ## Pedido (igual para todos)
 
-> Creá un endpoint para reservar turnos.
+> Creá un endpoint para cancelar un turno.
 
 ---
 
@@ -151,7 +152,7 @@ Esperado: ruta App Router plausible (`app/api/...`), pero inventan JWT/sesión, 
 ### Módulo de pagos (src/lib/payments.ts)
 
 Cobros con Mercado Pago. Webhooks en `/api/webhooks/mp`.  
-No confundir `PaymentIntent` con `Appointment`.
+No confundir `PaymentIntent` con `Appointment`. Refunds ≠ cancelar turno.
 
 ### Branding
 
@@ -168,17 +169,17 @@ README de marketing: “La clínica del futuro”.
 
 ### Notas de una reunión vieja
 
-“Quizás Prisma en Q3. O Drizzle. O nada.”
+“Quizás Prisma en Q3. O Drizzle. O nada. Cancelación ‘flexible’ para pacientes VIP.”
 
 ### SPEC.md (al final del dump)
 
 - Auth: header `X-User-Id` (no JWT).
-- Máximo **3** reservas activas por usuario.
-- Un slot = una reserva activa.
-- No reservar slots en el pasado.
+- Cancelar solo una reserva **propia**.
+- Cancelación permitida solo si faltan **≥ 24 h** para el inicio del slot.
+- Cancelar a tiempo **libera** el slot (vuelve a disponible).
 - Stack real: Next.js App Router, Zod, Vitest, store in-memory (`src/lib/store.ts`).
 - No modificar `src/lib/auth.ts`.
-- Patrón: `src/app/api/patients/route.ts`.
+- Patrón: `src/app/api/patients/route.ts`. Reserva ya existe en `POST /api/appointments`.
 
 ---
 
@@ -190,7 +191,7 @@ Completá la plantilla. Tenés **6 minutos**. Usá lo que creas relevante.
 
 ### Notas del docente (no imprimir / tachar antes de fotocopiar)
 
-Esperado: diluyen el SPEC (abajo/chico), mezclan pagos o JWT del PR, o inventan Prisma por la “nota de reunión”. El punto: más tokens ≠ mejor contexto.
+Esperado: diluyen el SPEC (abajo/chico), mezclan refunds de pagos o JWT del PR, o inventan “cancelación VIP”. El punto: más tokens ≠ mejor contexto.
 
 ✂ — — — — — — — — — — — — — — — — — — — — — — — — —
 
@@ -202,7 +203,7 @@ Esperado: diluyen el SPEC (abajo/chico), mezclan pagos o JWT del PR, o inventan 
 
 ## Pedido (igual para todos)
 
-> Creá un endpoint para reservar turnos.
+> Creá un endpoint para cancelar un turno.
 
 ---
 
@@ -217,15 +218,16 @@ Sos un agente de implementación en este repositorio.
 - Tests con Vitest (`npm test`)
 - Auth: header `X-User-Id` (`src/lib/auth.ts`). **No** agregues JWT ni middleware nuevo.
 - Persistencia in-memory en `src/lib/store.ts` (**no** Prisma ni base de datos)
+- Ya existe `POST /api/appointments` para crear reservas.
 
 **Tarea**
 
-Implementá `POST /api/appointments` para crear una reserva según estas reglas MVP:
+Implementá cancelación de una reserva propia según estas reglas MVP:
 
-- usuario identificado
-- máximo **3** reservas activas por usuario
-- un slot = una reserva activa
-- no reservar en el pasado
+- solo el dueño (`X-User-Id`) puede cancelar
+- cancelar solo si faltan **≥ 24 h** para el inicio del slot
+- cancelar a tiempo **libera** el slot
+- sin header → 401; reserva ajena → 403 o 404 (documentar)
 
 **Restricciones**
 
@@ -233,6 +235,7 @@ Implementá `POST /api/appointments` para crear una reserva según estas reglas 
 - Agregá o actualizá tests en `tests/`
 - **No** modifiques `src/lib/auth.ts` ni el contrato de `X-User-Id`
 - **No** escribas README ni refactors fuera de alcance
+- **No** implementes pagos ni reprogramación
 
 Antes de “codear”: listá en la plantilla qué archivos vas a tocar.
 
@@ -246,4 +249,4 @@ Completá la plantilla de respuesta **solo** con este contexto.
 
 ### Notas del docente (no imprimir / tachar antes de fotocopiar)
 
-Esperado: `src/app/api/appointments/route.ts`, `src/lib/appointments.ts`, tests; Zod + `X-User-Id`; cupo 3 / slot / pasado; no JWT ni Prisma.
+Esperado: ruta DELETE o POST cancel en appointments; `src/lib/appointments.ts`; tests de propia / 24 h / libera slot; Zod + `X-User-Id`; no JWT ni Prisma ni refunds.

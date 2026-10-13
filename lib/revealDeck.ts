@@ -293,9 +293,9 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'hook',
     sourceId: 12,
-    kicker: 'Actividad + Demo',
+    kicker: 'Actividad + Demo · cancelar un turno',
     question: 'Mismo pedido. Distinto contexto. ¿Qué va a contestar el modelo?',
-    hint: 'Sin PC: 4 cartas (Vacío / Parcial / Ruido / Curado). Ver demos/actividades/.',
+    hint: 'Pedido: “Creá un endpoint para cancelar un turno.” Sin PC: 4 cartas (Vacío / Parcial / Ruido / Curado).',
     background: 'linear-gradient(180deg, #0d1a28 0%, #121318 100%)',
   },
   // {
@@ -337,7 +337,7 @@ export const deckSlides: DeckSlide[] = [
     title: 'Esto parece trabajo. Para un agente es una invitación a inventar el producto.',
     ticket: {
       label: 'Ticket · P1 · sin spec',
-      body: 'El sistema debe permitir que un usuario reserve un turno.',
+      body: 'El sistema debe permitir que un usuario solicite un turno.',
     },
     subtitle: 'Pobreza entra → software posible → negocio incorrecto.',
   },
@@ -387,18 +387,18 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'activity',
     sourceId: 19,
-    kicker: 'El corazón de la clase · proteger este bloque',
-    title: 'Registrar gastos personales',
-    subtitle: '0–12 min sin PC: 8 partes del requerimiento. Después contexto y plan.',
+    kicker: 'El corazón de la clase · solicitar · proteger este bloque',
+    title: 'Solicitar un turno',
+    subtitle: '0–12 min sin PC: 8 partes. Mismo dominio; otro caso de uso (antes cancelar; después reprogramar).',
     meta: ['25 min', 'Duplas', 'Sin PC al inicio'],
     bullets: [
-      'Arrancar sin PC. Solo el requerimiento.',
+      'Dominio turnos: cartas = cancelar · acá = solicitar · casa = reprogramar.',
       'Completar las 8 partes en papel; atacar un Criterio de Aceptación',
       'Min 17: plan semilla en pantalla (válido sin IA)',
     ],
     ticket: {
       label: 'Requerimiento',
-      body: 'El sistema debe permitir registrar gastos personales con categoría y monto.',
+      body: 'El sistema debe permitir que un usuario solicite un turno.',
     },
     background: 'linear-gradient(155deg, #1a150c 0%, #121318 55%, #0c2236 100%)',
   },
@@ -454,19 +454,19 @@ export const deckSlides: DeckSlide[] = [
   {
     type: 'challenge',
     sourceId: 22,
-    kicker: 'Desafío · Asincrónico',
-    title: 'Reservas de turnos',
-    subtitle: 'La spec dada manda. El juez intenta el 4.º cupo, el doble booking y cancelar tarde.',
+    kicker: 'Desafío · Asincrónico · reprogramar',
+    title: 'Reprogramar un turno',
+    subtitle: 'Mismo consultorio. Spec dura. El juez intenta el 4.º cupo, reprogramar tarde y moverse a un slot ocupado.',
     bullets: [
       'IA obligatoria y documentada en AI.md · Entrega: src, tests, README, SPEC.md, AI.md',
-      'Máx. 3 reservas vigentes (futuras y no canceladas) · un slot = una reserva · no pasado',
-      'Cancelar solo si faltan ≥ 24 h para el turno; más cerca, se rechaza',
+      'Reservar + listar + reprogramar a otro slot libre · máx. 3 vigentes · no pasado',
+      'Reprogramar solo si faltan ≥ 24 h; libera el slot viejo y ocupa el nuevo',
     ],
     cards: [
       { title: 'CA3', body: 'Ya tiene 3 vigentes → la 4.ª del mismo usuario falla' },
-      { title: 'CA4', body: 'Dos reservas al mismo horario: una gana, la otra no' },
-      { title: 'CA5', body: 'A 23 h 59 del turno no se puede cancelar (≥ 24 h sí)' },
-      { title: 'CA6', body: 'Cancelación a tiempo libera el horario para otro' },
+      { title: 'CA4', body: 'Reprogramar a slot libre: libera el viejo y ocupa el nuevo' },
+      { title: 'CA5', body: 'A 23 h 59 del turno actual no se puede reprogramar (≥ 24 h sí)' },
+      { title: 'CA6', body: 'Destino ocupado o pasado falla; tras OK, otro toma el slot liberado' },
     ],
   },
   {

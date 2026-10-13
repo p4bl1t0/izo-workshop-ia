@@ -38,7 +38,7 @@ export const rubricCriteria: RubricCriterion[] = [
     levels: [
       {
         name: 'Insuficiente',
-        description: 'Solo happy path. El cuarto POST o el doble booking pasan.',
+        description: 'Solo happy path. El cuarto POST o reprogramar tarde pasan.',
       },
       {
         name: 'Suficiente',
@@ -80,7 +80,7 @@ export const rubricCriteria: RubricCriterion[] = [
       },
       {
         name: 'Suficiente',
-        description: 'Se puede seguir el flujo reserva/cancelar. Algo de ruido de agente, pero acotado.',
+        description: 'Se puede seguir el flujo solicitar/reprogramar. Algo de ruido de agente, pero acotado.',
       },
       {
         name: 'Excelente',

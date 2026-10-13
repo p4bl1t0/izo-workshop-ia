@@ -89,8 +89,8 @@ export const studentGuide = {
   howToUseTitle: 'Cómo usar este sitio',
   howToUse: [
     'Leé los seis temas en orden. Cada uno cierra con ideas para recordar y un ejercicio corto.',
-    'Hacé la actividad de gastos: primero en papel (8 partes del requerimiento), después contexto y plan. Sin mirar soluciones.',
-    'El desafío de turnos es la entrega. La spec dada manda; documentá el proceso en AI.md.',
+    'Hacé la actividad de solicitar un turno: primero en papel (8 partes), después contexto y plan. Sin mirar soluciones.',
+    'El desafío es reprogramar un turno (mismo consultorio, spec dura). La spec dada manda; documentá el proceso en AI.md.',
     'Cuando trabes, pasá por Glosario y Recursos. Las marcas cambian; los conceptos no.',
     'Las diapositivas están abiertas para repasar el recorrido de la clase (Reveal.js).',
   ],
@@ -105,8 +105,8 @@ export const studentGuide = {
   studyPathTitle: 'Camino de estudio',
   studyPath: [
     { id: 'contenidos', label: 'Temas', detail: 'Mapa, SPEC/Rules/Skills, Cursor ADE, MCP y el flujo completo.' },
-    { id: 'actividad', label: 'Actividad', detail: 'Gastos: dinámica sin PC + spec/contexto/plan. Sin soluciones.' },
-    { id: 'desafio', label: 'Desafío', detail: 'Reservas de turnos · asincrónico. IA obligatoria.' },
+    { id: 'actividad', label: 'Actividad', detail: 'Solicitar un turno: dinámica sin PC + spec/contexto/plan.' },
+    { id: 'desafio', label: 'Desafío', detail: 'Reprogramar un turno · asincrónico. IA obligatoria.' },
     { id: 'diapositivas', label: 'Diapositivas', detail: 'Deck Reveal.js para repasar la clase.' },
     { id: 'glosario', label: 'Glosario', detail: 'Cuando una palabra no cierra.' },
   ],
@@ -127,7 +127,7 @@ export const requirementPartsChecklist = {
       id: 'actores',
       name: 'Actores',
       ask: '¿Quién usa el sistema? ¿Hay roles distintos?',
-      tip: '“Usuario” sin más es una trampa. Paciente ≠ admin; dueño de gastos ≠ multi-usuario.',
+      tip: '“Usuario” sin más es una trampa. Paciente ≠ admin; autenticado ≠ anónimo.',
     },
     {
       id: 'en-alcance',
@@ -290,14 +290,14 @@ export const sections: WorkshopSection[] = [
     id: 'actividad',
     title: 'Actividad',
     eyebrow: 'Práctica',
-    summary: 'Enunciado de gastos: dinámica sin PC + spec, contexto y plan. Sin código.',
+    summary: 'Solicitar un turno: dinámica sin PC + spec, contexto y plan. Sin código.',
     audience: 'student',
   },
   {
     id: 'desafio',
     title: 'Desafío',
     eyebrow: 'Entrega',
-    summary: 'Consigna asincrónica, spec, plantillas, rúbrica y checklist de entrega.',
+    summary: 'Reprogramar un turno: consignas, spec, plantillas, rúbrica y checklist.',
     audience: 'student',
   },
   {
@@ -441,11 +441,11 @@ export const programBlocks: ProgramBlock[] = [
     minutes: 25,
     clock: '01:20 – 01:45',
     description:
-      'Duplas: dinámica sin PC (12 min) redactando el requerimiento de gastos; luego contexto/prompt/plan (semilla si no hay laptop).',
+      'Duplas: dinámica sin PC (12 min) redactando el requerimiento de solicitar un turno; luego contexto/prompt/plan (semilla si no hay laptop).',
     teacherNotes: [
       'Proteger este bloque. Si llegás tarde, recortá MCP y ADE, no la dinámica sin PC.',
       '0–12 min: arrancar sin PC. Solo el requerimiento. Roles: redactor / abogado del diablo.',
-      'Debrief de 3 min: 2 duplas leen un Criterio de Aceptación y el peor supuesto que evitaron.',
+      'Debrief de 3 min: 2 duplas. Anclar hilo: cartas=cancelar · papel=solicitar · casa=reprogramar.',
     ],
     ifLate: 'Solo la dinámica sin PC (0–12) + plenario con plan semilla. Contexto/prompt quedan de tarea.',
   },
@@ -711,11 +711,11 @@ ORGANIZACIÓN    ← seguridad, compliance, estilo de PRs`,
     examples: [
       {
         title: 'Mismo pedido, distinto contexto',
-        body: 'Pobre: “Creá un endpoint para reservar turnos.” Contextualizado: “Next.js App Router, Prisma, Zod, Vitest. Implementá POST /api/appointments según SPEC.md. No modifiques el módulo de auth. Reutilizá el patrón de /api/patients.” El primero inventa Express y JWT. El segundo encaja.',
+        body: 'Pobre: “Creá un endpoint para cancelar un turno.” Contextualizado: “Next.js App Router, Zod, Vitest, X-User-Id. Cancelar propia ≥24 h antes; libera el slot. No modifiques auth.” El primero inventa Express y JWT. El segundo encaja.',
       },
       {
         title: 'SPEC, Rules y Skills (mismo repo de turnos)',
-        body: 'SPEC.md: “máximo 3 reservas activas; cancelar solo hasta 24 h antes”. Rule: “no toques auth; errores de negocio en 4xx con código; tests en Vitest”. Skill: “cuando agregues una regla de negocio, primero proponé el test que la rompe, después el código”. El SPEC define el producto; Rules y Skills definen cómo el agente trabaja sobre ese producto.',
+        body: 'SPEC.md: “máximo 3 reservas activas; reprogramar solo hasta 24 h antes”. Rule: “no toques auth; errores de negocio en 4xx con código; tests en Vitest”. Skill: “cuando agregues una regla de negocio, primero proponé el test que la rompe, después el código”. El SPEC define el producto; Rules y Skills definen cómo el agente trabaja sobre ese producto.',
       },
       {
         title: 'Contexto que conviene tener escrito',
@@ -838,11 +838,11 @@ REVIEW → SOFTWARE`,
     examples: [
       {
         title: 'Del enunciado pobre a reglas',
-        body: 'Preguntas: ¿quién reserva? ¿un usuario autenticado? ¿cuántas reservas activas? ¿qué pasa si dos POST llegan al mismo slot? ¿se puede cancelar? ¿hasta cuándo? ¿turnos en el pasado? Decisiones de ejemplo: usuario autenticado; máximo 3 reservas futuras; slot único; cancelación hasta 24 h antes; 400 si el slot está ocupado o es pasado. Eso ya se puede testear.',
+        body: 'Preguntas: ¿quién solicita? ¿autenticado? ¿cuántas reservas activas? ¿dos POST al mismo slot? ¿turnos en el pasado? Decisiones: usuario autenticado; máximo 3 vigentes; slot único; no pasado; 400/409 si ocupado. Cancelar y reprogramar son otros casos de uso del mismo dominio.',
       },
       {
         title: 'SPEC del desafío (lo que manda)',
-        body: 'La spec dada del desafío fija cupo 3, slot único, no pasado y cancelación 24 h. Tu SPEC.md reescribe esas reglas, decide auth/HTTP y no puede borrar el cupo. Sin ese contrato, Cursor Agent improvisa el producto — y el evaluador intenta el 4.º cupo, el doble booking y cancelar tarde.',
+        body: 'La spec dada del desafío fija cupo 3, solicitar + reprogramar, no pasado y ventana 24 h para reprogramar. Tu SPEC.md reescribe esas reglas, decide auth/HTTP y no puede borrar el cupo. Sin ese contrato, Cursor Agent improvisa el producto — y el evaluador intenta el 4.º cupo, reprogramar tarde y un slot ocupado.',
       },
       {
         title: 'El prompt del plan (copiar)',
@@ -892,7 +892,7 @@ REVIEW → SOFTWARE`,
     teacherNotes: {
       pacing:
         '6 min flujo + checklist, 3 min mini-actividad, 3 min ejemplos/Demo 3. No implementar turnos.',
-      say: 'No vamos a programar el sistema de turnos ahora. Vamos a dejarlo tan especificado que programarlo sea la parte aburrida — y eso es el desafío de la casa. Ustedes redactan; el agente ejecuta.',
+      say: 'No vamos a programar solicitar ni reprogramar ahora. Vamos a dejar solicitar tan especificado que programarlo sea la parte aburrida — reprogramar es el desafío de la casa. Ustedes redactan; el agente ejecuta.',
       watchFor:
         'El aula quiere ver código. Mostrar la checklist y un plan en viñetas vale más. El código del desafío es asincrónico.',
       ifLate: 'Checklist en 2 min + mini-actividad. Pasos 6–8 en dos frases.',
@@ -935,13 +935,13 @@ export const closingReflection = {
 }
 
 export const practicalActivity = {
-  title: 'Registrar gastos personales',
+  title: 'Solicitar un turno',
   duration: '25 minutos',
   grouping: 'Duplas (o tríos). Un portavoz. Arrancar sin PC: solo el requerimiento los primeros 12 min.',
   goal: 'Practicar el método hasta el plan — no terminar una app. Prioridad: redactar un requerimiento completo en papel. Después: contexto, prompt y plan (propio, o criticando el plan semilla).',
-  requirement: 'El sistema debe permitir registrar gastos personales con categoría y monto.',
+  requirement: 'El sistema debe permitir que un usuario solicite un turno.',
   whyThis:
-    'Es deliberadamente pobre, como un ticket real. El caso de turnos queda para el walkthrough y el desafío; acá transfieren el método a otro dominio. La primera mitad es sin PC a propósito: el criterio no necesita laptop.',
+    'Mismo consultorio, tres casos de uso: cartas = cancelar · acá = solicitar · desafío = reprogramar. El ticket es deliberadamente pobre, como uno real. En clase ustedes redactan; en casa la SPEC dada de reprogramar manda. La primera mitad es sin PC a propósito: el criterio no necesita laptop.',
   offlineDynamic: {
     title: 'Ticket sospechoso (sin PC)',
     duration: '12 min',
@@ -954,7 +954,7 @@ export const practicalActivity = {
     steps: [
       {
         minutes: '0–1',
-        label: 'Leer el enunciado en voz alta. Subrayar palabras vagas (“permitir”, “gastos personales”).',
+        label: 'Leer el enunciado en voz alta. Subrayar palabras vagas (“permitir”, “usuario”, “solicite”, “turno”).',
       },
       {
         minutes: '1–4',
@@ -972,18 +972,18 @@ export const practicalActivity = {
       },
     ],
     doneWhen: [
-      'Hay actores explícitos (aunque sea “un solo usuario local”).',
+      'Hay actores explícitos (paciente autenticado ≠ admin; o “un usuario con X-User-Id”).',
       'Hay fuera de alcance con al menos 3 ítems.',
       'Hay ≥3 reglas testeables y ≥3 CA observables.',
-      'Hay al menos 1 caso límite escrito (monto 0, categoría inventada, fecha futura…).',
+      'Hay al menos 1 caso límite escrito (4.º cupo, slot pasado, doble booking…).',
     ],
     say: 'Ustedes son el ingeniero: deciden. La IA, si aparece después, ejecuta bajo lo que escribieron acá.',
     debrief:
-      'En el plenario final (min 22–25): una dupla lee su CA más sólido; otra, el supuesto que iban a dejar colar (auth, USD, categorías libres).',
+      'En el plenario final (min 22–25): una dupla lee su CA más sólido; otra, el supuesto que iban a dejar colar (sin cupo, overlap, cancelar siempre, turno en el pasado).',
     watchFor: [
       'Duplas que abren el chat a los 2 minutos → pedir laptop abajo hasta el minuto 12.',
       'Prosa en vez de partes → señalar la checklist en pantalla: “completen casillas, no un ensayo”.',
-      'MVP inflado (presupuestos, multi-moneda) → imponer el fuera de alcance de ejemplo y seguir.',
+      'MVP inflado (pagos, agenda del médico, notificaciones) → imponer el fuera de alcance de ejemplo y seguir.',
     ],
   },
   timing: [
@@ -994,70 +994,74 @@ export const practicalActivity = {
   ],
   guidedQuestions: [
     {
-      question: '¿Quién registra el gasto? ¿Hay usuarios o es una sola persona?',
-      sampleDecision: 'Un único usuario local, sin auth (MVP). Lo dejamos explícito para no inventar JWT.',
+      question: '¿Quién solicita el turno? ¿Un paciente autenticado o cualquiera con un userId en el body?',
+      sampleDecision: 'Paciente autenticado vía header X-User-Id. Si falta → 401. No inventamos JWT en el MVP.',
     },
     {
-      question: '¿El monto puede ser cero o negativo? ¿En qué moneda?',
-      sampleDecision: 'Monto > 0, 2 decimales, moneda ARS fija en el MVP. Rechazar 0 y negativos con error de validación.',
+      question: '¿Cuántas reservas activas puede tener un usuario a la vez?',
+      sampleDecision: 'Máximo 3 reservas vigentes (futuras y no canceladas). La 4.ª del mismo usuario falla.',
     },
     {
-      question: '¿Categorías libres o de una lista?',
-      sampleDecision: 'Lista cerrada: comida, transporte, vivienda, ocio, otros. No strings libres: si no, no hay reportes.',
+      question: '¿Qué pasa si dos POST llegan al mismo slot?',
+      sampleDecision: 'Un slot = una reserva. La segunda falla (409 o 400; elegir uno y documentarlo).',
     },
     {
-      question: '¿Se puede editar o borrar? ¿Hay fecha distinta al momento de carga?',
-      sampleDecision: 'Alta y borrado. Sin edición (evita historial). Fecha del gasto opcional; default = ahora.',
+      question: '¿Se puede solicitar un horario en el pasado?',
+      sampleDecision: 'No. Slot pasado → rechazo 4xx. No persiste.',
     },
     {
-      question: '¿Hay tope, presupuestos, multi-moneda, adjuntos?',
-      sampleDecision: 'Fuera de alcance. Un renglón en la spec “No incluye” evita que el agente arme un ERP.',
+      question: '¿Hay cancelación, reprogramación, pagos, UI del médico?',
+      sampleDecision: 'Cancelar ya se vio en las cartas. Reprogramar es el desafío. Acá: fuera de alcance pagos, agenda admin, notificaciones.',
     },
     {
       question: '¿Cómo se demuestra que funciona?',
-      sampleDecision: 'Tests: alta válida; monto inválido; categoría inválida; listado ordenado por fecha desc.',
+      sampleDecision: 'Tests: alta válida; 4.º cupo; slot ocupado; slot pasado. El juez del desafío agrega reprogramar tarde y destino ocupado.',
     },
   ],
   specTemplate: `## Objetivo
-MVP para registrar gastos personales de un único usuario local.
+API MVP para que un paciente autenticado solicite turnos sobre slots predefinidos.
 
 ## Actores
-- Un único usuario local (sin auth en el MVP).
+- Paciente autenticado (identificado con \`X-User-Id\`).
+- No hay rol admin en el MVP.
 
 ## En alcance
-- Alta de gasto: monto, categoría, fecha opcional, nota opcional (máx. 140 caracteres).
-- Listado ordenado por fecha descendente.
-- Borrado por id.
+- Solicitar (crear) una reserva sobre un slot existente.
+- Listar las reservas del usuario actual.
+- (Opcional en clase) rechazar slot ocupado / pasado / 4.º cupo.
 
 ## Fuera de alcance
-- Auth, multi-usuario, presupuestos, adjuntos, multi-moneda, reportes gráficos.
+- Pagos, agenda del profesional, notificaciones, UI rica.
+- Cancelar (cartas de contexto) y reprogramar (desafío con SPEC dada).
 
 ## Reglas
-- monto > 0, máximo 2 decimales, moneda ARS.
-- categoría ∈ {comida, transporte, vivienda, ocio, otros}.
-- fecha no puede ser futura.
+- Usuario identificado; sin header → 401.
+- Máximo 3 reservas activas (futuras y no canceladas) por usuario.
+- Un slot = una reserva.
+- No solicitar en el pasado.
 
 ## Casos límite
-- monto 0 o negativo → 4xx, no persiste.
-- categoría desconocida → 4xx.
-- DELETE de id inexistente → 404.
-- fecha futura → 4xx.
+- Ya tiene 3 vigentes → la 4.ª falla.
+- Dos POST al mismo slot: una gana, la otra no.
+- Slot en el pasado → 4xx, no persiste.
+- Operación sobre reserva ajena → 403 o 404 (elegir y documentar).
 
 ## Criterios de aceptación
-1. POST de un gasto válido lo persiste y lo devuelve con id.
-2. POST con monto ≤ 0 responde error de validación (4xx) y no persiste.
-3. POST con categoría desconocida responde 4xx y no persiste.
-4. GET lista todos, más reciente primero.
-5. DELETE de un id inexistente responde 404.
+1. POST válido crea la reserva y la asocia al userId del header.
+2. Sin \`X-User-Id\` → 401.
+3. Ya tiene 3 vigentes → la 4.ª del mismo usuario falla.
+4. Slot ocupado → falla (código documentado).
+5. Slot pasado → falla y no persiste.
 
 ## Restricciones
 - TypeScript + API HTTP mínima; tests con Vitest/Jest; sin Docker obligatorio.`,
-  contextTemplate: `Stack (ejemplo, pueden elegir otro si es coherente):
+  contextTemplate: `Stack (ejemplo, alineado a demos/clinica-turnos; pueden elegir otro si es coherente):
 - TypeScript, API HTTP mínima (Next.js route handlers o Express).
 - Persistencia in-memory o SQLite. Sin Docker obligatorio.
 - Tests con Vitest o Jest. Un script \`npm test\`.
 - Convención: archivos en src/, tests en tests/.
-- No agregar autenticación ni UI compleja salvo que el plan lo justifique en una línea.`,
+- Auth de demo: header \`X-User-Id\`. No tocar un módulo de auth aparte si ya existe.
+- No agregar UI compleja salvo que el plan lo justifique en una línea.`,
   promptTemplate: `Sos un agente de implementación. Leé la spec y el contexto de abajo.
 
 Tarea: proponé un plan de implementación paso a paso.
@@ -1070,21 +1074,21 @@ Restricciones:
 [pegar mini-spec]
 [pegar contexto]`,
   seedPlan: `Plan semilla (para grupos sin IA o para criticar):
-1. Modelo Expense { id, amount, category, date, note }.
-2. POST /expenses, GET /expenses, DELETE /expenses/:id.
-3. Validar monto y categoría en el handler.
+1. Modelo Appointment { id, userId, slotId, status }.
+2. POST /api/appointments, GET /api/appointments.
+3. Validar que el slot exista y no esté ocupado.
 4. Array in-memory.
 5. Un test de alta feliz.
 
 Fallos plantados a propósito:
-- No menciona fecha futura.
-- No menciona 404 en delete.
-- No menciona orden del listado.
+- No menciona cupo de 3 reservas.
+- No menciona slot en el pasado.
+- No menciona 401 sin X-User-Id.
 - Un único test. El implementador se autoaprueba.
 - No dice dónde viven los archivos ni cómo correr tests.`,
   qualityCriteria: [
     'Las 8 partes del requerimiento están (aunque sea en una línea cada una).',
-    'Las reglas se pueden testear (no “el usuario debería poder cargar gastos de forma sencilla”).',
+    'Las reglas se pueden testear (no “el usuario debería poder solicitar de forma sencilla”).',
     'Hay una sección explícita de fuera de alcance.',
     'Hay al menos un caso límite escrito aparte del happy path.',
     'El prompt prohíbe código hasta tener plan (si usaron IA).',
@@ -1109,73 +1113,75 @@ CONTEXTO
 PLAN
 ↓
 VALIDACIÓN`,
-  note: 'No es necesario programar ni tener laptop. Arrancar sin PC: los primeros 12 minutos son solo el requerimiento. El entregable de los 25 minutos es el método aplicado: requerimiento completo + contexto + prompt/plan criticado.',
+  note: 'No es necesario programar ni tener laptop. Arrancar sin PC: los primeros 12 minutos son solo el requerimiento. El entregable de los 25 minutos es el método aplicado. En casa: mismo consultorio, caso de uso reprogramar, con SPEC dada.',
   debriefQuestions: [
-    '¿Qué supuesto iba a colar el agente si no lo escribían (auth, pesos vs dólares, categorías libres)?',
+    '¿Qué supuesto iba a colar el agente si no lo escribían (sin cupo, overlap, turno pasado)?',
     '¿Cuál de las 8 partes les costó más decidir? ¿Por qué?',
     '¿El plan semilla les pareció “suficiente”? ¿Por qué no lo es?',
-    '¿Qué van a copiar tal cual al desafío de turnos?',
+    '¿Qué de solicitar llevan al desafío de reprogramar (cupo, slot único, auth) y qué es nuevo (ventana 24 h, liberar/ocupar)?',
   ],
   teacherNotes: [
     'Minuto 0: “arrancar sin PC”. La dinámica sin laptop es el corazón; no la salteen por “avanzar al prompt”.',
     'Repartir roles: redactor / abogado del diablo. A los 8 minutos rotan.',
     'Si una dupla discute 10 minutos sin decidir, imponer el MVP de las decisiones de ejemplo y pedirles que sigan. Decidir mal y explícito gana a no decidir.',
     'Tener el plan semilla en pantalla a partir del minuto 17. Los que no usan IA igual practican review.',
-    'Debrief corto. Elegir una dupla que se haya ido a multi-usuario o a charts y mostrar cómo la spec se infló.',
-    'Recoger 1 foto de una buena hoja de 8 partes para el cierre: “esto es el nivel que espero en SPEC.md del desafío”.',
+    'Debrief corto. Elegir una dupla que se haya ido a pagos/notificaciones y mostrar cómo la spec se infló.',
+    'Anclar hilo: cartas=cancelar → papel=solicitar → casa=reprogramar. Recoger 1 foto de una buena hoja de 8 partes.',
   ],
 }
 
 export const finalChallenge = {
-  title: 'Desafío · Asincrónico — Reservas de turnos',
-  subtitle: 'La spec dada manda. El juez intenta el 4.º cupo, el doble booking y cancelar tarde.',
+  title: 'Desafío · Asincrónico — Reprogramar un turno',
+  subtitle:
+    'Mismo consultorio que la clase. La spec dada manda. El juez intenta el 4.º cupo, reprogramar tarde y moverse a un slot ocupado.',
   description:
-    'Actividad asincrónica (unas 4–6 horas de trabajo a lo largo de una semana). El alumno usa libremente herramientas de IA y agentes para transformar la especificación dada en software ejecutable, testeado y documentado.',
+    'Actividad asincrónica (unas 4–6 horas a lo largo de una semana). Mismo dominio de turnos: en clase cancelaron (cartas) y solicitaron (papel); acá el caso de uso es reprogramar, con SPEC dura e implementación. El alumno usa libremente herramientas de IA y agentes para transformar la especificación dada en software ejecutable, testeado y documentado.',
   objective:
-    'Evaluar si puede dirigir un proceso con IA — especificar, contextualizar, planificar, implementar, testear y registrar decisiones — no si programa sin IA. Usar IA es obligatorio y se documenta en AI.md. Mismo profesionalismo que en clase: el desarrollador decide y redacta; el agente ejecuta bajo la spec.',
+    'Evaluar si puede dirigir un proceso con IA — especificar, contextualizar, planificar, implementar, testear y registrar decisiones — no si programa sin IA. Usar IA es obligatorio y se documenta en AI.md. Mismo profesionalismo que en clase: el desarrollador decide y redacta; el agente ejecuta bajo la spec dada (no bajo la mini-spec que inventaron en papel).',
   estimatedEffort: '4–6 horas',
   suggestedDeadline: '7 días corridos después de la clase',
   tools: ['ChatGPT', 'Claude', 'Cursor', 'GitHub Copilot', 'Claude Code', 'Codex', 'Gemini', 'Otros agentes'],
   scenario:
-    'Un consultorio chico quiere un MVP para que pacientes autenticados reserven turnos sobre una agenda de slots. No hay UI sofisticada: alcanza una API (y una UI mínima opcional). El producto se define por las reglas de negocio, no por el framework.',
+    'El mismo consultorio chico ya sabe pedir turnos. Ahora necesita que pacientes autenticados puedan reprogramar una reserva propia a otro slot libre, con reglas claras. No hay UI sofisticada: alcanza una API (UI mínima opcional). El producto se define por las reglas de negocio, no por el framework.',
   givenSpec: `## Producto
-API de reserva de turnos para un único consultorio.
+API de turnos para un único consultorio, con foco en **reprogramar** una reserva propia a otro slot.
 
 ## Actores
 - Paciente autenticado. En el MVP no es obligatorio login real (JWT/sesión/OAuth).
   - Opción válida y recomendada: simular al usuario con el header HTTP \`X-User-Id\` (string). Quien envía el request “es” ese paciente.
-  - Comportamiento esperado con \`X-User-Id\`: si falta → típicamente 401; listar/cancelar solo sobre reservas de ese userId; reservar asocia el slot a ese userId; los tests envían el header de forma explícita.
+  - Comportamiento esperado con \`X-User-Id\`: si falta → típicamente 401; listar/reprogramar solo sobre reservas de ese userId; reservar asocia el slot a ese userId; los tests envían el header de forma explícita.
   - Auth real también vale: documentar el flujo y cómo lo ejercitan los tests.
   - Obligatorio documentar la elección en README.md (cómo autenticarse / qué header mandar) y en SPEC.md (sección “Decisión de auth”).
 - No hay rol admin en el MVP, salvo un seed de slots.
 
 ## En alcance
 - Listar slots disponibles (futuros y libres).
-- Reservar un slot libre.
+- Solicitar (reservar) un slot libre.
 - Listar las reservas del usuario actual.
-- Cancelar una reserva propia.
+- Reprogramar una reserva propia a otro slot libre.
 
 ## Fuera de alcance
-- Pagos, recordatorios, videollamada, multi-profesional, overbooking comercial, app móvil.
+- Cancelar (sin reprogramar), pagos, recordatorios, videollamada, multi-profesional, overbooking comercial, app móvil.
 
 ## Reglas de negocio (obligatorias)
 1. Un slot no puede tener más de una reserva activa.
-2. Un usuario no puede tener más de 3 reservas activas (futuras y no canceladas).
-3. No se puede reservar un slot en el pasado.
-4. Cancelación permitida solo hasta 24 horas antes del inicio del slot.
-5. Cancelar un slot lo vuelve a dejar disponible.
-6. Operaciones sobre reservas ajenas → código HTTP 403 o 404 (elegir uno y usarlo siempre igual; documentarlo en SPEC.md).
-7. Slot inexistente o ya ocupado → código HTTP 409 o 400 (elegir uno y usarlo siempre igual; documentarlo en SPEC.md).
+2. Un usuario no puede tener más de 3 reservas activas (futuras y no canceladas / no reprogramadas fuera).
+3. No se puede reservar ni reprogramar hacia un slot en el pasado.
+4. Reprogramar solo una reserva **propia**.
+5. Reprogramar permitido solo si faltan **≥ 24 horas** para el inicio del slot **actual** de la reserva.
+6. Reprogramar a tiempo **libera** el slot viejo y **ocupa** el nuevo (misma reserva, nuevo slotId; o equivalente documentado).
+7. Operaciones sobre reservas ajenas → código HTTP 403 o 404 (elegir uno y usarlo siempre igual; documentarlo en SPEC.md).
+8. Slot destino inexistente o ya ocupado → código HTTP 409 o 400 (elegir uno y usarlo siempre igual; documentarlo en SPEC.md).
 
-Los ítems 6 y 7 son status codes HTTP de la API (no mensajes sueltos). La consistencia cuenta: el evaluador compara respuesta real vs. SPEC.md.
+Los ítems 7 y 8 son status codes HTTP de la API (no mensajes sueltos). La consistencia cuenta: el evaluador compara respuesta real vs. SPEC.md.
 
 ## Criterios de aceptación (el evaluador los va a intentar romper)
 - CA1: listar disponibles no incluye pasados ni ocupados.
-- CA2: reservar un slot libre lo marca ocupado y cuenta para el cupo del usuario.
+- CA2: solicitar un slot libre lo marca ocupado y cuenta para el cupo del usuario.
 - CA3: ya tiene 3 reservas vigentes → la 4.ª del mismo usuario falla.
-- CA4: dos reservas al mismo horario: una gana, la otra no (aunque sea secuencial en tests).
-- CA5: a 23 h 59 del turno no se puede cancelar (≥ 24 h sí).
-- CA6: cancelación a tiempo libera el horario para otro.
+- CA4: reprogramar a un slot libre futuro libera el viejo y ocupa el nuevo (misma reserva / mismo userId).
+- CA5: a 23 h 59 del turno **actual** no se puede reprogramar (≥ 24 h sí).
+- CA6: reprogramar a slot ocupado o pasado falla; tras reprogramar OK, otro usuario puede tomar el slot liberado.
 - CA7: hay tests automatizados que cubren CA1–CA6 (no hace falta un test por CA si uno cubre varios, pero los seis comportamientos tienen que fallar si se rompen).
 
 ## Restricciones técnicas
@@ -1190,8 +1196,8 @@ Los ítems 6 y 7 son status codes HTTP de la API (no mensajes sueltos). La consi
     'Si usan header `X-User-Id` en lugar de auth real, debe decirse en README y SPEC.md. Inventar un JWT a medias sin tests de auth no suma.',
   ],
   howToUseSpecAndAi: `## SPEC.md — interpretación operativa
-- Para qué: decisiones que la spec dada deja abiertas (auth, códigos HTTP) + reglas reescritas verificables.
-- Qué va: auth; códigos HTTP (ajena / slot ocupado o inexistente / validaciones); reglas 1–7; fuera de alcance extra; comando de test y mapa CA → casos.
+- Para qué: decisiones que la spec dada deja abiertas (auth, códigos HTTP, forma del endpoint de reprogramar) + reglas reescritas verificables.
+- Qué va: auth; códigos HTTP (ajena / slot ocupado o inexistente / validaciones); reglas 1–8; fuera de alcance extra; comando de test y mapa CA → casos.
 - Qué no va: bitácora de prompts ni historial con el agente (eso es AI.md).
 - Cuándo: antes o durante la implementación (no al final como relleno).
 - “Listo”: alguien ajeno podría implementar solo con SPEC.md + spec dada; coincide con los tests; no contradice la spec dada.
@@ -1221,10 +1227,10 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
 ├── SPEC.md
 └── AI.md`,
   specMd:
-    'Interpretación operativa: auth y códigos HTTP decididos, reglas 1–7 reescritas, fuera de alcance y mapa de tests. Completar antes/durante la impl. “Listo” = coincide con tests y no contradice la spec dada. No es copy-paste ni bitácora de IA.',
+    'Interpretación operativa: auth y códigos HTTP decididos, reglas 1–8 reescritas, fuera de alcance y mapa de tests. Completar antes/durante la impl. “Listo” = coincide con tests y no contradice la spec dada. No es copy-paste ni bitácora de IA.',
   aiMd:
     'Bitácora del proceso con IA (durante el trabajo): herramientas, plan, delegación, rechazos, incidentes, comando final en verde. “Listo” = se puede reconstruir el oficio. No pongas acá las reglas HTTP (van en SPEC.md).',
-  specMdTemplate: `# SPEC.md — Reservas de turnos
+  specMdTemplate: `# SPEC.md — Reprogramar un turno
 
 > Completá todas las secciones. Decisiones + reglas verificables (no copy-paste).
 > Antes/durante la implementación. “Listo” = coincide con tests y no contradice la spec dada.
@@ -1235,11 +1241,15 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
 - Cómo se identifica al usuario en los tests:
 - Si falta autenticación, ¿qué responde la API?:
 
+## Endpoint de reprogramar
+- Método y ruta (ej. PATCH /api/appointments/:id, POST .../reschedule):
+- Body / params (nuevo slotId, etc.):
+
 ## Códigos HTTP elegidos
 > Elegí un código por fila y usalo siempre igual.
 - Operación sobre reserva ajena (403 o 404):
-- Slot inexistente o ya ocupado (409 o 400):
-- Validación (pasado, cupo, ventana de cancelación):
+- Slot destino inexistente o ya ocupado (409 o 400):
+- Validación (pasado, cupo, ventana de 24 h para reprogramar):
 
 ## Reglas (reescritas, verificables)
 1.
@@ -1249,6 +1259,7 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
 5.
 6.
 7.
+8.
 
 ## Fuera de alcance (además de lo dado)
 -
@@ -1282,11 +1293,11 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
   goodVsBad: [
     {
       title: 'SPEC.md débil',
-      body: '“El usuario puede reservar turnos de forma intuitiva. Se usó Node.” No hay cupo, no hay códigos HTTP elegidos, no hay CA. El evaluador no sabe qué era intención y qué fue accidente.',
+      body: '“El usuario puede reprogramar turnos de forma intuitiva. Se usó Node.” No hay ventana 24 h, no hay códigos HTTP, no hay CA. El evaluador no sabe qué era intención y qué fue accidente.',
     },
     {
       title: 'SPEC.md sólida',
-      body: 'Reescribe las 7 reglas, elige 409 en conflicto de slot y 404 en reserva ajena, documenta X-User-Id (y 401 si falta), lista los tests por CA, y un párrafo de fuera de alcance (“no hay lista de espera”).',
+      body: 'Reescribe las 8 reglas, elige 409 en slot destino ocupado y 404 en reserva ajena, documenta X-User-Id, define PATCH/POST de reprogramar, lista tests por CA, y deja cancelar fuera de alcance.',
     },
     {
       title: 'AI.md débil',
@@ -1294,7 +1305,7 @@ No es entregable por sí solo: zip suelto, gist o repo externo sin el PR en el r
     },
     {
       title: 'AI.md sólida',
-      body: 'Tres herramientas, el prompt del plan, “el agente quiso agregar pagos y lo corté”, el test de ventana de 24 h que falló dos veces, comando de test en verde al final.',
+      body: 'Tres herramientas, el prompt del plan, “el agente quiso agregar cancelar y lo corté”, el test de reprogramar a 23 h 59 que falló dos veces, comando de test en verde al final.',
     },
   ],
   evaluationFlow: `ENTREGA DEL ALUMNO
@@ -1345,32 +1356,32 @@ FEEDBACK`,
   evaluatorCapabilities: [
     'Leer archivos y ejecutar el comando de test documentado.',
     'Ejecutar la aplicación si el README lo permite de forma no interactiva.',
-    'Crear tests adicionales contra las reglas de negocio (cupo, conflicto de slot, ventana de 24 h).',
+    'Crear tests adicionales contra las reglas de negocio (cupo, reprogramar tarde, destino ocupado, liberar slot).',
     'Comparar comportamiento con la spec dada y con el SPEC.md del alumno (si contradice la spec dada, gana la spec dada).',
     'Justificar cada recorte de puntaje con evidencia (comando, status HTTP, nombre de test).',
   ],
-  exampleEvidence: `Criterio: Máximo 3 reservas activas (CA3).
+  exampleEvidence: `Criterio: Ventana de 24 h para reprogramar (CA5).
 Resultado: INCUMPLIDO.
-Evidencia: El 4.º POST /reservations del mismo X-User-Id (ya con 3 vigentes) devuelve 201.
-Test del evaluador: rejects_fourth_active_reservation
-Esperado: HTTP 4xx | Obtenido: HTTP 201
+Evidencia: PATCH/POST de reprogramar a 23 h 59 del slot actual del mismo X-User-Id devuelve 200.
+Test del evaluador: rejects_reschedule_inside_24h_window
+Esperado: HTTP 4xx | Obtenido: HTTP 200
 Puntos en cumplimiento funcional: recorte proporcional.`,
   deliveryChecklist: [
     'Estructura src/, tests/, README.md, SPEC.md, AI.md en el PR del repo de entregas',
-    'SPEC.md con decisiones (auth, códigos HTTP 403/404 y 409/400) y reglas reescritas',
+    'SPEC.md con decisiones (auth, endpoint de reprogramar, códigos HTTP 403/404 y 409/400) y reglas reescritas',
     'AI.md con herramientas, rechazos y verificación — no una línea',
     'Tests que cubren los comportamientos CA1–CA6',
     'README con instalar, testear y (server local o URL) en menos de 10 minutos',
     'Comando de test en verde en un checkout limpio',
-    'Sin secretos ni features de fuera de alcance que rompan el MVP',
+    'Sin secretos ni features de fuera de alcance (p. ej. cancelar suelto) que rompan el MVP',
   ],
   teacherNotes: [
-    'En clase: proyectar la spec dada y CA1–CA6. Decir en voz alta: “el juez intenta el 4.º cupo, el doble booking y cancelar tarde”. Eso calibra más que la rúbrica en abstracto.',
-    'Aclarar que la spec dada manda sobre el SPEC.md del alumno si hay contradicción. SPEC.md sirve para decisiones (códigos, auth), no para borrar el cupo de 3.',
+    'En clase: proyectar la spec dada y CA1–CA6. Decir en voz alta: “el juez intenta el 4.º cupo, reprogramar tarde y un slot ocupado”. Anclar: cartas=cancelar · papel=solicitar · casa=reprogramar.',
+    'Aclarar que la spec dada manda sobre el SPEC.md del alumno si hay contradicción. SPEC.md sirve para decisiones (códigos, auth, forma del endpoint), no para borrar el cupo de 3 ni la ventana 24 h.',
     'No exigir auth real: un header documentado evita que el desafío se vuelva un curso de JWT. Quien implemente auth bien puede sumar en calidad, no en cumplimiento si los CA fallan.',
-    'Insistir: 403/404 y 409/400 son códigos HTTP; el alumno elige uno por caso y lo documenta. Vercel/Render son opciones fáciles si quieren URL de demo; no sustituyen tests.',
-    'Evaluación sugerida: primero `comando de test del alumno`; si no corre, techo bajo en rúbrica. Después 4 tests privados (cupo, conflicto, pasado, 24 h). Después lectura de AI.md para el 5% de documentación/proceso.',
+    'Insistir: 403/404 y 409/400 son códigos HTTP; el alumno elige uno por caso y lo documenta. Cancelar sin reprogramar está fuera de alcance a propósito.',
+    'Evaluación sugerida: primero `comando de test del alumno`; si no corre, techo bajo en rúbrica. Después tests privados (cupo, reprogramar OK, 24 h, destino ocupado). Después lectura de AI.md para el 5% de documentación/proceso.',
     'Si no hay sandbox de agentes el primer año, el docente hace de Judge con la misma rúbrica. El relato multiagente sigue siendo el modelo a futuro, no un bloqueante.',
-    'Feedback útil cita evidencia (“tu 4.º POST da 201”) no adjetivos (“poca IA”). El profesionalismo se corrige con contraejemplos.',
+    'Feedback útil cita evidencia (“tu reprogramar a 23h59 da 200”) no adjetivos (“poca IA”). El profesionalismo se corrige con contraejemplos.',
   ],
 }
